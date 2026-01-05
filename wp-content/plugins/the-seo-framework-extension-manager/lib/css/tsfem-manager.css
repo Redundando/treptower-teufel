@@ -1,0 +1,202 @@
+/* ### Extensions pane.
+/*--------------------------------------*/
+.tsfem-extension-entry-wrap {
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+
+.tsfem-extension-entry-wrap {
+	margin-bottom: 1.5em;
+}
+
+.tsfem-extension-entry-wrap:last-of-type {
+	margin-bottom: 0;
+}
+
+.tsfem-extension-entry {
+	margin: 0;
+	padding: .33em;
+	min-height: 122px;
+	border-radius: 6px;
+	border: 1px solid #ccd0d4;
+	align-self: auto;
+	justify-content: center;
+}
+
+.tsfem-extension-entry > * {
+	min-height: 100px;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	width: auto;
+	justify-content: flex-start;
+}
+
+.tsfem-extension-icon-wrap {
+	flex-grow: 0;
+	flex-basis: 120px;
+	align-self: center;
+	padding: 1em;
+}
+
+.tsfem-extension-entry-icon {
+	fill: #333;
+	color: #333;
+	transition: color .5s;
+}
+
+.tsfem-extension-activated .tsfem-extension-entry-icon {
+	color: #0ebfe9;
+}
+
+.tsfem-extension-about-wrap {
+	flex-direction: column;
+	justify-content: space-around;
+	padding: .667em 1em;
+	flex-grow: 1;
+	flex-basis: 170px;
+}
+
+.tsfem-extension-header {
+	gap: 1ch;
+}
+
+.tsfem-extension-description-wrap {
+	flex-grow: 3;
+	flex-basis: 280px;
+}
+
+.tsfem-extension-description-footer {
+	display: block;
+	width: 100%;
+	white-space: pre-line;
+}
+
+.tsfem-extension-title {
+	font-size: 1.33em;
+	word-break: break-word;
+	font-weight: 600;
+	margin: 0;
+	padding: 0;
+	transition: color .5s;
+}
+
+.tsfem-extension-activated .tsfem-extension-title {
+	color: #0ebfe9;
+}
+
+.tsfem-extension-entry .tsfem-extension-title:after {
+	content: "\2022\00fe0e";
+	margin-left: .75ch;
+	font-weight: 400;
+	font-size: 1em;
+	color: transparent;
+	transition: color .5s;
+}
+body.rtl .tsfem-extension-entry .tsfem-extension-title:after {
+	margin-left: initial;
+	margin-right: .75ch;
+}
+
+.tsfem-extension-entry.tsfem-extension-activated .tsfem-extension-title:after {
+	color: currentColor;
+}
+
+.tsfem-extension-type {
+	margin: 0;
+	padding: 0;
+	font-size: .83em;
+}
+
+.tsfem-extension-subheader {
+	padding: .667em 0;
+}
+
+.tsfem-extension-action > *,
+.tsfem-extension-action input {
+	width: 100%;
+	text-align: center;
+}
+
+.tsfem-extension-party:before {
+	display: inline-block;
+	width: 1em;
+	line-height: 1;
+	font-family: dashicons;
+	font-style: normal;
+	font-weight: 400;
+	font-size: 1.225em;
+	vertical-align: middle;
+	content: "";
+	margin-right: .333em;
+}
+body.rtl .tsfem-extension-party:before {
+	margin-right: initial;
+	margin-left: .333em;
+}
+
+.tsfem-extension-first-party-icon:before {
+	content: "\f338";
+}
+
+.tsfem-extension-third-party-icon:before {
+	content: "\f307";
+}
+
+.tsfem-extension-description {
+	padding: 1em;
+}
+
+.tsfem-extension-description-header {
+	padding-bottom: 1em;
+}
+
+/* # Start Activation Layout.
+/*----------------------------------------------------------------------------*/
+
+#tsfem-page-wrap #input-activation {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#tsfem-page-wrap #input-activation input {
+	margin-left: 0;
+	margin-right: 0;
+	width: 100%;
+	font-size: 13px;
+}
+
+#tsfem-page-wrap #input-activation input {
+	margin: .2em 0;
+}
+
+#tsfem-page-wrap #input-activation input:first-child {
+	margin-top: 0;
+}
+
+/* ## Flipping descriptions
+/*----------------------------------------------------------------------------*/
+
+.tsfem-flip-hide-down,
+.tsfem-flip-hide-up {
+	transform: rotateX(90deg) translateY(.5em);
+	transform-origin: 0 100% 0;
+	opacity: 0;
+	transition: transform .25s, opacity 0.25s;
+}
+
+.tsfem-flip-hide-down {
+	transform: rotateX(-90deg) translateY(-2em);
+}
+
+.tsfem-flip-show-down,
+.tsfem-flip-show-up {
+	transform: rotateX(0deg) translateY(0em);
+	opacity: 1;
+	transition: transform .25s, opacity .125s;
+}

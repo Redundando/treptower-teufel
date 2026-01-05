@@ -1,0 +1,7 @@
+{
+	"slug" : "transport",
+	"namespace" : "\\TSF_Extension_Manager\\Extension\\Transport",
+	"test" : {
+		"_base" : "transport.php"
+	}
+}

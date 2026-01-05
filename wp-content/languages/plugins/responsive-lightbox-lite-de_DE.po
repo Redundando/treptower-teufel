@@ -1,0 +1,149 @@
+# Translation of Plugins - Responsive Lightbox - Stable (latest release) in German
+# This file is distributed under the same license as the Plugins - Responsive Lightbox - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2016-11-27 22:23:07+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/3.0.0-alpha.2\n"
+"Language: de\n"
+"Project-Id-Version: Plugins - Responsive Lightbox - Stable (latest release)\n"
+
+#. Author URI of the plugin/theme
+msgid "http://weaveapps.com"
+msgstr "https://weaveapps.com"
+
+#. Author of the plugin/theme
+msgid "subhansanjaya"
+msgstr "subhansanjaya"
+
+#. Description of the plugin/theme
+msgid "This plugin offers a nice and elegant way to add Lightbox functionality for images, html content and media on your webpages."
+msgstr "Dieses Plugin bietet eine schöne, elegante Möglichkeit einer Website die Lightbox-Funktionalität für Bilder, HMTL-Inhalt und weitere Medien hinzuzufügen."
+
+#. Plugin URI of the plugin/theme
+msgid "http://wordpress.org/plugins/responsive-lightbox-lite/"
+msgstr "https://de.wordpress.org/plugins/responsive-lightbox-lite/"
+
+#. Plugin Name of the plugin/theme
+msgid "Responsive Lightbox"
+msgstr "Responsive Lightbox Lite"
+
+#: responsive-lightbox-lite.php:480
+msgid "Settings restored to defaults."
+msgstr "Einstellungen wurden zurückgesetzt."
+
+#: responsive-lightbox-lite.php:433
+msgid "General settings"
+msgstr "Allgemeine Einstellungen"
+
+#: responsive-lightbox-lite.php:428
+msgid "Footer"
+msgstr "Footer"
+
+#: responsive-lightbox-lite.php:427
+msgid "Header"
+msgstr "Header"
+
+#: responsive-lightbox-lite.php:423
+msgid "Disable"
+msgstr "Deaktivieren"
+
+#: responsive-lightbox-lite.php:422
+msgid "Enable"
+msgstr "Aktivieren"
+
+#: responsive-lightbox-lite.php:414
+msgid "Reset to defaults"
+msgstr "Zurücksetzen auf Voreinstellungen"
+
+#: responsive-lightbox-lite.php:399
+msgid "on WordPress.org"
+msgstr "auf WordPress.org"
+
+#: responsive-lightbox-lite.php:399
+msgid "rate it"
+msgstr "bewerte es"
+
+#: responsive-lightbox-lite.php:399
+msgid "Please, "
+msgstr "Bitte "
+
+#: responsive-lightbox-lite.php:398
+msgid "Do you like this plugin?"
+msgstr "Dir gefällt dieses Plugin?"
+
+#: responsive-lightbox-lite.php:395
+msgid "Weave Apps"
+msgstr "Weave Apps"
+
+#: responsive-lightbox-lite.php:395
+msgid "Plugin URL"
+msgstr "Plugin-URL"
+
+#: responsive-lightbox-lite.php:395
+msgid "Plugin URI: "
+msgstr "Plugin-URI:"
+
+#: responsive-lightbox-lite.php:372
+msgid "Delete settings on plugin deactivation."
+msgstr "Alle Einstellungen bei der Deaktivierung des Plugins löschen."
+
+#: responsive-lightbox-lite.php:355
+msgid "Display single post images as a gallery."
+msgstr "Zeige einzelne Bild-Beiträge als Galerie an."
+
+#: responsive-lightbox-lite.php:338
+msgid "Add lightbox to WordPress image links by default."
+msgstr "Lightbox standardmässig den WordPress Bild-Links hinzufügen."
+
+#: responsive-lightbox-lite.php:321
+msgid "Add lightbox to YouTube and Vimeo video links by default."
+msgstr "Lightbox standardmässig zu YouTube- und Vimeo-Links hinzufügen."
+
+#: responsive-lightbox-lite.php:304
+msgid "Add lightbox to WordPress image galleries by default."
+msgstr "Lightbox standardmässig den WordPress-Galerien hinzufügen."
+
+#: responsive-lightbox-lite.php:287
+msgid "Select where all the lightbox scripts should be placed."
+msgstr "Auswahl, wo alle Lightbox-Scripts plaziert werden sollen."
+
+#: responsive-lightbox-lite.php:267
+msgid "Enter a space separated list of events."
+msgstr "Gib eine durch Leerzeichen getrennte Liste an Ereignissen ein."
+
+#: responsive-lightbox-lite.php:264
+msgid "Enable triggering lightbox on custom jquery events."
+msgstr "Berechtige Lightbox zum Auslösen benutzterdefinierter jQuery-Ereignisse."
+
+#: responsive-lightbox-lite.php:243
+msgid "Deactivation"
+msgstr "Deaktivierung"
+
+#: responsive-lightbox-lite.php:242
+msgid "Loading place"
+msgstr "Laden im"
+
+#: responsive-lightbox-lite.php:241
+msgid "Custom events"
+msgstr "Benutzerdefinierte Ereignisse"
+
+#: responsive-lightbox-lite.php:240
+msgid "Image links"
+msgstr "Bild-Links"
+
+#: responsive-lightbox-lite.php:239
+msgid "Video links"
+msgstr "Video-Links"
+
+#: responsive-lightbox-lite.php:238
+msgid "Galleries"
+msgstr "Galerien"
+
+#: responsive-lightbox-lite.php:224 responsive-lightbox-lite.php:225
+#: responsive-lightbox-lite.php:381 responsive-lightbox-lite.php:393
+msgid "Responsive Lightbox Lite"
+msgstr "Responsive Lightbox Lite"

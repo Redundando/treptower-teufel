@@ -1,0 +1,27 @@
+<?php
+
+/*
+ * Template Name: Full Width
+ * description: >-
+  Full width template
+ */
+
+get_header(); ?>
+	<main id="content" class="full-width">
+		<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+			<div class="entry-content">
+				<?php if ( has_post_thumbnail() ) { the_post_thumbnail(); } ?>
+				<?php the_content(); ?>
+				<div class="entry-links"><?php wp_link_pages(); ?></div>
+			</div>
+		</article>
+		<?php if ( comments_open() && ! post_password_required() ) { comments_template( '', true ); } ?>
+		<?php endwhile; endif; ?>
+	</main>
+</div>
+<div class="bottom-side-bar">
+	<?php get_sidebar(); ?>
+</div>
+<div>
+<?php get_footer(); ?>

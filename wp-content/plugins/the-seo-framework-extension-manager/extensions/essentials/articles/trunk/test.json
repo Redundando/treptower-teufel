@@ -1,0 +1,7 @@
+{
+	"slug" : "articles",
+	"namespace" : "\\TSF_Extension_Manager\\Extension\\Articles",
+	"test" : {
+		"_base" : "articles.php"
+	}
+}

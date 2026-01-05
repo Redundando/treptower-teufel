@@ -1,0 +1,45 @@
+:root{
+
+--white-color: #fff;
+--black-color: #000;
+
+--primary-lightest-color:#F3F3F3;
+--primary-light-color: #BEBEBE;
+--primary-middle-color: #888888;
+--primary-dark-color: #4B4B4B;
+--primary-darkest-color: #0E0E0E;
+
+--secondary-lightest-color:#fbb0b9;
+--secondary-light-color: #f88492;
+--secondary-middle-color: #f25f70;
+--secondary-dark-color: #d83a4d;
+--secondary-darkest-color: #b51a2c;
+
+/* https://hihayk.github.io/scale/#2/2/60/90/-0/0/0/0/70f25f/112/242/95/white */
+
+--tertiary-lightest-color:#F1FEEF;
+--tertiary-light-color: #B0F8A7;
+--tertiary-middle-color: #70f25f;
+--tertiary-dark-color: #4EA943;
+--tertiary-darkest-color: #2D6126;
+
+
+}
+
+.has-white-color-color {color: var(--white-color);} .has-white-color-background-color {background-color: var(--white-color);}
+.has-black-color-color {color: var(--black-color);} .has-black-color-background-color {background-color: var(--black-color);}
+.has-primary-lightest-color-color {color: var(--primary-lightest-color);} .has-primary-lightest-color-background-color {background-color: var(--primary-lightest-color);}
+.has-primary-light-color-color {color: var(--primary-light-color);} .has-primary-light-color-background-color {background-color: var(--primary-light-color);}
+.has-primary-middle-color-color {color: var(--primary-middle-color);} .has-primary-middle-color-background-color {background-color: var(--primary-middle-color);}
+.has-primary-dark-color-color {color: var(--primary-dark-color);} .has-primary-dark-color-background-color {background-color: var(--primary-dark-color);}
+.has-primary-darkest-color-color {color: var(--primary-darkest-color);} .has-primary-darkest-color-background-color {background-color: var(--primary-darkest-color);}
+.has-secondary-lightest-color-color {color: var(--secondary-lightest-color);} .has-secondary-lightest-color-background-color {background-color: var(--secondary-lightest-color);}
+.has-secondary-light-color-color {color: var(--secondary-light-color);} .has-secondary-light-color-background-color {background-color: var(--secondary-light-color);}
+.has-secondary-middle-color-color {color: var(--secondary-middle-color);} .has-secondary-middle-color-background-color {background-color: var(--secondary-middle-color);}
+.has-secondary-dark-color-color {color: var(--secondary-dark-color);} .has-secondary-dark-color-background-color {background-color: var(--secondary-dark-color);}
+.has-secondary-darkest-color-color {color: var(--secondary-darkest-color);} .has-secondary-darkest-color-background-color {background-color: var(--secondary-darkest-color);}
+.has-tertiary-lightest-color-color {color: var(--tertiary-lightest-color);} .has-tertiary-lightest-color-background-color {background-color: var(--tertiary-lightest-color);}
+.has-tertiary-light-color-color {color: var(--tertiary-light-color);} .has-tertiary-light-color-background-color {background-color: var(--tertiary-light-color);}
+.has-tertiary-middle-color-color {color: var(--tertiary-middle-color);} .has-tertiary-middle-color-background-color {background-color: var(--tertiary-middle-color);}
+.has-tertiary-dark-color-color {color: var(--tertiary-dark-color);} .has-tertiary-dark-color-background-color {background-color: var(--tertiary-dark-color);}
+.has-tertiary-darkest-color-color {color: var(--tertiary-darkest-color);} .has-tertiary-darkest-color-background-color {background-color: var(--tertiary-darkest-color);}

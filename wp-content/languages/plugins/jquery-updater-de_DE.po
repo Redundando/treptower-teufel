@@ -1,0 +1,36 @@
+# Translation of Plugins - jQuery Updater - Stable (latest release) in German
+# This file is distributed under the same license as the Plugins - jQuery Updater - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-08-23 15:47:48+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/4.0.0-alpha.1\n"
+"Language: de\n"
+"Project-Id-Version: Plugins - jQuery Updater - Stable (latest release)\n"
+
+#: jquery-updater.php:142
+msgid "Save"
+msgstr "Speichern"
+
+#. Author URI of the plugin
+msgid "http://www.ramoonus.nl/"
+msgstr "http://www.ramoonus.nl/"
+
+#. Author of the plugin
+msgid "Ramoonus"
+msgstr "Ramoonus"
+
+#. Description of the plugin
+msgid "This plugin updates jQuery to the latest  stable version."
+msgstr "Dieses Plugin aktualisiert jQuery auf die neueste stabile Version."
+
+#. Plugin URI of the plugin
+msgid "http://www.ramoonus.nl/wordpress/jquery-updater/"
+msgstr "http://www.ramoonus.nl/wordpress/jquery-updater/"
+
+#. Plugin Name of the plugin
+msgid "jQuery Updater"
+msgstr "jQuery Updater"

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/matomo" isTestSource="false" packagePrefix="Piwik" />
+      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/matomo/app" isTestSource="false" packagePrefix="Piwik" />
+      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/matomo/app/core" isTestSource="false" packagePrefix="Piwik" />
+      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/matomo/classes" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/pdf-embedder/src" isTestSource="false" packagePrefix="PDFEmbedder" />
+      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/wpdiscuz/forms" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/wpforms-lite/src" isTestSource="false" packagePrefix="WPForms" />
+      <sourceFolder url="file://$MODULE_DIR$/wp-includes" isTestSource="false" packagePrefix="PHPMailer" />
+      <sourceFolder url="file://$MODULE_DIR$/wp-includes/SimplePie/src" isTestSource="false" packagePrefix="SimplePie" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

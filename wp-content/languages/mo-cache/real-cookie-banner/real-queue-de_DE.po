@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: n/a\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: n/a\n"
+"PO-Revision-Date: 2023-08-09 13:40+0000\n"
+"Last-Translator: Matthias Günter <matthias.guenter@devowl.io>\n"
+"Language-Team: German (informal) <https://translate.devowl.io/projects/"
+"devowl-wp-real-queue-backend-php/develop/de@informal/>\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.16.4\n"
+
+#: queue/Executor.php:59
+msgid "Process failed due to an unexpected error."
+msgstr "Prozess aufgrund eines unerwarteten Fehlers fehlgeschlagen."
+
+#. translators:
+#: queue/Executor.php:145
+#, php-format
+msgid ""
+"%1$d / %2$d (thereof %3$d remaining) tasks could not be executed properly."
+msgstr ""
+"%1$d / %2$d (davon %3$d verbleibende) Aufgaben konnten nicht ordnungsgemäß "
+"ausgeführt werden."
+
+#: queue/Job.php:349
+msgid ""
+"The passed callable persisted to the job cannot be called (`is_callable`)"
+msgstr ""
+"Der übergebene Callable, der im Job persistiert, kann nicht aufgerufen "
+"werden (`is_callable`)"
+
+#: queue/Job.php:382
+msgid "This job is already running in another thread on your server."
+msgstr "Dieser Job läuft bereits in einem anderen Thread auf deinem Server."
+
+#: queue/Job.php:410
+msgid "Unexpected exception."
+msgstr "Unerwarteter Fehler."
