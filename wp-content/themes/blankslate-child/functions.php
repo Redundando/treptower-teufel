@@ -1,13 +1,15 @@
 <?php
 add_action( 'wp_enqueue_scripts', 'enqueue_parent_styles' );
 function enqueue_parent_styles() {
-	if (!$_GET["color"])
+	$color = isset($_GET['color']) ? sanitize_key($_GET['color']) : '';
+
+	if ($color)
 	{
 		wp_enqueue_style( 'color-style', get_stylesheet_directory_uri().'/colors.css' );
 	} 
 	else
 	{
-		wp_enqueue_style( 'color-style', get_stylesheet_directory_uri().'/'.$_GET["color"].'.css' );
+		wp_enqueue_style( 'color-style', get_stylesheet_directory_uri().'/'.$color.'.css' );
 	}
 	wp_enqueue_style( 'parent-style', get_template_directory_uri().'/style.css' );
 }
