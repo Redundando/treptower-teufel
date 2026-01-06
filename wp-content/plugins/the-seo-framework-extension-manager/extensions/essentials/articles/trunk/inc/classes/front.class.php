@@ -11,7 +11,7 @@ if ( \tsfem()->_blocked_extension_file( $_instance, $bits[1] ) ) return;
 
 /**
  * Articles extension for The SEO Framework
- * Copyright (C) 2017 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2017 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -246,7 +246,7 @@ final class Front extends Core {
 		 */
 		$data = \apply_filters(
 			'the_seo_framework_articles_data',
-			$this->get_article_data()
+			$this->get_article_data(),
 		);
 
 		if ( $data ) {
@@ -262,7 +262,7 @@ final class Front extends Core {
 
 			return \sprintf(
 				'<script type="application/ld+json">%s</script>',
-				$schema
+				$schema,
 			) . "\n";
 		}
 

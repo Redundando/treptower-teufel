@@ -15,7 +15,7 @@ if ( \tsfem()->_blocked_extension_file( $_instance, $bits[1] ) ) return;
 
 /**
  * Transport extension for The SEO Framework
- * copyright (C) 2022 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2022 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -453,6 +453,7 @@ final class Admin {
 	 * @return string
 	 */
 	private function get_sse_worker_location() {
+
 		if ( \SCRIPT_DEBUG ) {
 			$min = '';
 			$ext = '?' . uniqid( hrtime( true ) );
@@ -460,6 +461,7 @@ final class Admin {
 			$min = '.min';
 			$ext = '';
 		}
+
 		return \esc_url( \set_url_scheme( \TSFEM_E_TRANSPORT_DIR_URL . "lib/js/sse.worker{$min}.js$ext" ) );
 	}
 

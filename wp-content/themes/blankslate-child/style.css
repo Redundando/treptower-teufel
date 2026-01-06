@@ -340,11 +340,13 @@ h1.entry-title{
 .big-button a{
     padding: 15px;
 	width:100%;
+	height: unset;
 }
 
 .big-button a:hover{
 	filter: brightness(1.1);
 }
+
 
 .join-symbol a:before{
 	content: "\21AA";	

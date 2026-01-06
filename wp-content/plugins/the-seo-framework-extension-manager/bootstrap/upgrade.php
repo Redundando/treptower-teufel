@@ -9,7 +9,7 @@ namespace TSF_Extension_Manager;
 
 /**
  * The SEO Framework - Extension Manager plugin
- * Copyright (C) 2018 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2018 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -55,7 +55,7 @@ function _do_critical_core_upgrade( $upgrader ) {
 				'core',
 				'2500',
 				function ( $version ) {
-					// Declare success when the option doesn't exist or is succesfully deleted.
+					// Declare success when the option doesn't exist or is successfully deleted.
 					return ! \get_option( 'tsfem_tested_environment_version' ) || \delete_option( 'tsfem_tested_environment_version' );
 				}
 			);
@@ -65,7 +65,7 @@ function _do_critical_core_upgrade( $upgrader ) {
 				'core',
 				'2700',
 				function ( $version ) {
-					// Declare success when the option doesn't exist or is succesfully deleted.
+					// Declare success when the option doesn't exist or is successfully deleted.
 					return \update_option(
 						\TSF_EXTENSION_MANAGER_ACTIVE_EXTENSIONS_OPTIONS,
 						\get_option( \TSF_EXTENSION_MANAGER_SITE_OPTIONS, [] )['active_extensions'] ?? [],

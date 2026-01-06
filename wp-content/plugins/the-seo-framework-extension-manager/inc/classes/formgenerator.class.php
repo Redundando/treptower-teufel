@@ -14,7 +14,7 @@ use function \TSF_Extension_Manager\Transition\{
 
 /**
  * The SEO Framework - Extension Manager plugin
- * Copyright (C) 2017 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2017 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -1579,7 +1579,7 @@ final class FormGenerator {
 						'-$1',
 						preg_replace( '/[^a-z0-9_\-]/i', '', $k )
 					) ), // dash case.
-					htmlspecialchars( json_encode( $v, \JSON_UNESCAPED_SLASHES ), \ENT_COMPAT, 'UTF-8' )
+					htmlspecialchars( json_encode( $v, \JSON_UNESCAPED_SLASHES ), \ENT_COMPAT, 'UTF-8' ),
 				);
 			} else {
 				$ret[] = \sprintf(
@@ -1589,7 +1589,7 @@ final class FormGenerator {
 						'-$1',
 						preg_replace( '/[^a-z0-9_\-]/i', '', $k )
 					) ), // dash case.
-					\esc_attr( $v )
+					\esc_attr( $v ),
 				);
 			}
 		}

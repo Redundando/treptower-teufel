@@ -11,7 +11,7 @@ if ( \tsfem()->_blocked_extension_file( $_instance, $bits[1] ) ) return;
 
 /**
  * Transport extension for The SEO Framework
- * copyright (C) 2022 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2022 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -155,7 +155,7 @@ final class Handler {
 
 			$ini_max_execution_time = (int) ini_get( 'max_execution_time' );
 
-			if ( 0 !== $ini_max_execution_time )
+			if ( 0 !== $ini_max_execution_time && \function_exists( 'set_time_limit' ) )
 				set_time_limit( max( $ini_max_execution_time, $timeout ) );
 
 			$time_limit = ini_get( 'max_input_time' );
@@ -233,17 +233,17 @@ final class Handler {
 										);
 									} else {
 										$store->store(
-											\esc_html__( 'Data transformed succesfully.', 'the-seo-framework-extension-manager' )
+											\esc_html__( 'Data transformed successfully.', 'the-seo-framework-extension-manager' )
 										);
 									}
 								} else {
 									if ( $results['inserted'] ) {
 										$store->store(
-											\esc_html__( 'Data inserted succesfully.', 'the-seo-framework-extension-manager' )
+											\esc_html__( 'Data inserted successfully.', 'the-seo-framework-extension-manager' )
 										);
 									} else {
 										$store->store(
-											\esc_html__( 'Data imported succesfully.', 'the-seo-framework-extension-manager' )
+											\esc_html__( 'Data imported successfully.', 'the-seo-framework-extension-manager' )
 										);
 									}
 								}

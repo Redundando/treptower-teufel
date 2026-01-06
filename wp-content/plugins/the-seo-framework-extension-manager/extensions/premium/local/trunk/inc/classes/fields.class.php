@@ -9,7 +9,7 @@ namespace TSF_Extension_Manager\Extension\Local;
 
 /**
  * Local extension for The SEO Framework
- * Copyright (C) 2017 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2017 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -291,7 +291,7 @@ final class Fields {
 				'_ret' => 's',
 				'_req' => false,
 				'_type' => 'text',
-				'_pattern' => '^\p{Sc}{1,4}$|\p{Sc}[0-9\.]*\s*-\s*\p{Sc}?(([1-9][0-9]*(\.{0,1}[0-9]+)?)|(0\.(0[1-9]+|[1-9][0-9]*)))', // This expects unicode support. https://regex101.com/r/N3f5lF/6
+				'_pattern' => '^\p{Sc}{1,4}$|\p{Sc}[0-9\.]*\s*-\s*\p{Sc}?(([1-9][0-9]*(\.{0,1}[0-9]+)?)|(0\.(0[1-9]+|[1-9][0-9]*)))', // This expects unicode support. https://regex101.com/r/N3f5lF/7
 				'_desc' => [
 					\__( 'Price range', 'the-seo-framework-extension-manager' ),
 					[

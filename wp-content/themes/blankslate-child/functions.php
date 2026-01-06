@@ -3,7 +3,8 @@ add_action( 'wp_enqueue_scripts', 'enqueue_parent_styles' );
 function enqueue_parent_styles() {
 	$color = isset($_GET['color']) ? sanitize_key($_GET['color']) : '';
 
-	if ($color)
+
+	if ($color=="")
 	{
 		wp_enqueue_style( 'color-style', get_stylesheet_directory_uri().'/colors.css' );
 	} 

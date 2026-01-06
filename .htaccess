@@ -17,6 +17,9 @@ RewriteRule . /treptower-teufel/index.php [L]
 
 # END WordPress
 
+
+# END WordPress
+
 # Wordfence WAF
 <Files ".user.ini">
 <IfModule mod_authz_core.c>

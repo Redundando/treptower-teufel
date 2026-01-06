@@ -1,25 +1,37 @@
 <?php
 /**
+ * The SEO Framework - Extension Manager
+ *
+ * @package   TSF_Extension_Manager\Bootstrap
+ * @author    Sybre Waaijer
+ * @copyright 2016 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * @license   GPL-3.0
+ * @link      https://theseoframework.com/extension-manager/
+ * @access    public
+ *
+ * @troy-repo
+ * Troy: repo.theseoframework.com
+ *
+ * @wordpress-plugin
  * Plugin Name: The SEO Framework - Extension Manager
  * Plugin URI: https://theseoframework.com/extension-manager/
  * Description: Add more powerful SEO features to The SEO Framework. Right from your WordPress dashboard.
- * Version: 2.7.1
+ * Version: 2.7.2
  * Author: The SEO Framework Team
  * Author URI: https://theseoframework.com/
  * License: GPLv3
  * Text Domain: the-seo-framework-extension-manager
  * Domain Path: /language
  * Requires at least: 5.9
+ * Tested up to: 6.9
  * Requires PHP: 7.4.0
- *
- * @package TSF_Extension_Manager\Bootstrap
  */
 
 defined( 'ABSPATH' ) or die;
 
 /**
  * The SEO Framework - Extension Manager plugin
- * Copyright (C) 2016 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2016 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -39,7 +51,7 @@ defined( 'ABSPATH' ) or die;
  *
  * @since 1.0.0
  */
-define( 'TSF_EXTENSION_MANAGER_VERSION', '2.7.1' );
+define( 'TSF_EXTENSION_MANAGER_VERSION', '2.7.2' );
 
 /**
  * The plugin's database version.

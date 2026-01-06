@@ -15,7 +15,7 @@ use function \TSF_Extension_Manager\Transition\{
 
 /**
  * The SEO Framework - Extension Manager plugin
- * Copyright (C) 2016 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2016 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -337,9 +337,11 @@ final class LoadAdmin extends AdminPages {
 
 		if ( $check_post ) {
 			// If this page doesn't parse the site options, there's no need to check them on each request.
-			if ( empty( $_POST ) // input var ok
-			|| ! isset( $_POST[ \TSF_EXTENSION_MANAGER_SITE_OPTIONS ] )
-			|| ! \is_array( $_POST[ \TSF_EXTENSION_MANAGER_SITE_OPTIONS ] ) )
+			if (
+				   empty( $_POST )
+				|| ! isset( $_POST[ \TSF_EXTENSION_MANAGER_SITE_OPTIONS ] )
+				|| ! \is_array( $_POST[ \TSF_EXTENSION_MANAGER_SITE_OPTIONS ] )
+			)
 				return $validated[ $key ] = false;
 		}
 

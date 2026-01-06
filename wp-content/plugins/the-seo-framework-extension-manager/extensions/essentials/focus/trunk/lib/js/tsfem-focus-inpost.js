@@ -9,7 +9,7 @@
 
 /**
  * Focus extension for The SEO Framework
- * Copyright (C) 2018 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2018 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -55,7 +55,7 @@ window.tsfem_e_focus_inpost = function ( $ ) {
 	/**
 	 * @since 1.5.4
 	 * @access private
-	 * @const {Integer} typingDelay The debouncing time to finalize a selection after typing.
+	 * @const {Integer} updateSelectorTime The debouncing time to finalize a selection after typing.
 	 */
 	const updateSelectorTime = 1500;
 

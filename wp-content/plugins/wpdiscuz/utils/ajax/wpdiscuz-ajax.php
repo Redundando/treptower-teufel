@@ -60,6 +60,8 @@ $allowedActions       = [
     "wmuDeleteAttachment"        => ["object" => $helperUpload, "callback" => "deleteAttachment", "for" => "all"],
 ];
 
+$allowedActions = apply_filters("wpdiscuz_custom_ajax_allowed_actions", $allowedActions);
+
 foreach ($allowedActions as $action => $data) {
     if ($data["for"] === "user") {
         add_action("wpdiscuz_" . $action, [$data["object"], $data["callback"]]);

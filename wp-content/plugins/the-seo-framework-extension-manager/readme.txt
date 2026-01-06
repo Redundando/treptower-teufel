@@ -2,7 +2,7 @@
 Contributors: Cybr
 Tags: seo, extensions, keyword, schema, honeypot
 Requires at least: 5.9
-Tested up to: 6.7
+Tested up to: 6.9
 Requires PHP: 7.4.0
 Requires TSF: 4.2.8
 Stable tag: 2.7.1
@@ -40,6 +40,19 @@ Learn [how to contribute](https://tsf.fyi/contributing).
 Please refer to [the installation instructions on our website](https://kb.theseoframework.com/kb/how-to-install-the-extension-manager/).
 
 == Changelog ==
+
+= 2.7.2 =
+
+**Release date:**
+
+* December 8th, 2025
+
+**Feature highlights:**
+
+* Minor improvements and bug fixes to keep things running smoothly.
+* Added support for our [new update infrastructure](https://deploytroy.org/blog/official-release/).
+	* Current users will stay with the old update system until we notify them about the switch.
+	* New users will automatically use the new update system.
 
 = 2.7.1 =
 

@@ -5,14 +5,12 @@ namespace wpdFormAttr\Field\DefaultField;
 use wpdFormAttr\FormConst\wpdFormConst;
 use wpdFormAttr\Field\Field;
 
-class Submit extends Field
-{
+class Submit extends Field {
 
     protected $name = wpdFormConst::WPDISCUZ_FORMS_SUBMIT_FIELD;
     protected $isDefault = true;
 
-    protected function dashboardForm()
-    {
+    protected function dashboardForm() {
         ?>
         <div class="wpd-field-body" style="display: <?php echo esc_attr($this->display); ?>">
             <div class="wpd-field-option wpdiscuz-item">
@@ -30,8 +28,7 @@ class Submit extends Field
         <?php
     }
 
-    public function frontFormHtml($name, $args, $options, $currentUser, $uniqueId, $isMainForm)
-    {
+    public function frontFormHtml($name, $args, $options, $currentUser, $uniqueId, $isMainForm) {
         global $post;
         do_action("wpdiscuz_submit_button_before", $currentUser, $uniqueId, $isMainForm);
         $wpdiscuz = wpDiscuz();
@@ -69,8 +66,7 @@ class Submit extends Field
                 <?php } ?>
                 <?php
             }
-            ?>
-            <?php if ($options->wp["threadComments"] || class_exists("Prompt_Comment_Form_Handling")) { ?>
+            if ($options->wp["threadComments"]) { ?>
                 <?php
                 $isShowSubscribeWrapper = false;
                 if ($options->subscription["showReplyCheckbox"]) {
@@ -83,43 +79,21 @@ class Submit extends Field
                 if ($isShowSubscribeWrapper) {
                     $isReplyDefaultChecked = $options->subscription["isReplyDefaultChecked"] ? "checked='checked'" : "";
                     ?>
-                    <?php
-                    if (class_exists("Prompt_Comment_Form_Handling") && $options->subscription["usePostmaticForCommentNotification"]) {
-                        ?>
-                        <label class="wpd_label"
-                               wpd-tooltip="<?php echo esc_attr($options->getPhrase("wc_postmatic_subscription_label")); ?>">
-                            <input id="wc_notification_new_comment-<?php echo esc_attr($uniqueId); ?>"
-                                   class="wc_notification_new_comment-<?php echo esc_attr($uniqueId); ?> wpd_label__checkbox"
-                                   value="post" type="checkbox"
-                                   name="wpdiscuz_notification_type" <?php echo $isReplyDefaultChecked; ?>/>
-                            <span class="wpd_label__text">
+                    <label class="wpd_label"
+                           wpd-tooltip="<?php echo esc_attr($options->getPhrase("wc_notify_on_new_reply", ["unique_id" => $uniqueId])); ?>">
+                        <input id="wc_notification_new_comment-<?php echo esc_attr($uniqueId); ?>"
+                               class="wc_notification_new_comment-<?php echo esc_attr($uniqueId); ?> wpd_label__checkbox"
+                               value="comment" type="checkbox"
+                               name="wpdiscuz_notification_type" <?php echo $isReplyDefaultChecked; ?>/>
+                        <span class="wpd_label__text">
                                 <span class="wpd_label__check">
                                     <i class="fas fa-bell wpdicon wpdicon-on"></i>
                                     <i class="fas fa-bell-slash wpdicon wpdicon-off"></i>
                                 </span>
                             </span>
-                        </label>
-                        <?php
-                    } else {
-                        ?>
-                        <label class="wpd_label"
-                               wpd-tooltip="<?php echo esc_attr($options->getPhrase("wc_notify_on_new_reply", ["unique_id" => $uniqueId])); ?>">
-                            <input id="wc_notification_new_comment-<?php echo esc_attr($uniqueId); ?>"
-                                   class="wc_notification_new_comment-<?php echo esc_attr($uniqueId); ?> wpd_label__checkbox"
-                                   value="comment" type="checkbox"
-                                   name="wpdiscuz_notification_type" <?php echo $isReplyDefaultChecked; ?>/>
-                            <span class="wpd_label__text">
-                                <span class="wpd_label__check">
-                                    <i class="fas fa-bell wpdicon wpdicon-on"></i>
-                                    <i class="fas fa-bell-slash wpdicon wpdicon-off"></i>
-                                </span>
-                            </span>
-                        </label>
-                        <?php
-                    }
-                    ?>
-                <?php } ?>
-            <?php } ?>
+                    </label>
+                <?php }
+            } ?>
             <input id="wpd-field-submit-<?php echo esc_attr($uniqueId); ?>"
                    class="wc_comm_submit wpd_not_clicked wpd-prim-button" type="submit"
                    name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($args["name"]); ?>"
@@ -128,37 +102,32 @@ class Submit extends Field
         <?php
     }
 
-    public function sanitizeFieldData($data)
-    {
-        $cleanData = [];
+    public function sanitizeFieldData($data) {
+        $cleanData         = [];
         $cleanData["type"] = sanitize_text_field($data["type"]);
         if (isset($data["name"])) {
-            $name = sanitize_text_field(trim(strip_tags($data["name"])));
+            $name              = sanitize_text_field(trim(strip_tags($data["name"])));
             $cleanData["name"] = $name ? $name : $this->fieldDefaultData["name"];
         }
 
         return wp_parse_args($cleanData, $this->fieldDefaultData);
     }
 
-    protected function initDefaultData()
-    {
+    protected function initDefaultData() {
         $this->fieldDefaultData = [
             "name" => esc_html__("Post Comment", "wpdiscuz"),
         ];
     }
 
-    public function frontHtml($value, $args)
-    {
+    public function frontHtml($value, $args) {
 
     }
 
-    public function validateFieldData($fieldName, $args, $options, $currentUser)
-    {
+    public function validateFieldData($fieldName, $args, $options, $currentUser) {
 
     }
 
-    public function editCommentHtml($key, $value, $data, $comment)
-    {
+    public function editCommentHtml($key, $value, $data, $comment) {
 
     }
 

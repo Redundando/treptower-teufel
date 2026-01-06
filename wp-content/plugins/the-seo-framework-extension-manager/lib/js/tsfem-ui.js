@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework - Extension Manager plugin
- * Copyright (C) 2018 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2018 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -678,7 +678,7 @@ window.tsfem_ui = function ( $ ) {
 				const id  = logger?.id || logger;
 				let log = animations[ id ].get( 'queuedlog' ) + logText;
 
-				// Trim 4k if exceeds 32k characters. Queue can otherwise grown indefinitely if user isn't focussing screen.
+				// Trim 8k if exceeds 32k characters. Queue can otherwise grown indefinitely if user isn't focussing screen.
 				if ( log.length > charLimit.trimAt ) {
 					const newLinePos = log.indexOf( '\n', charLimit.trimSize );
 					log = log.substring(
@@ -699,7 +699,7 @@ window.tsfem_ui = function ( $ ) {
 
 				if ( navigator.clipboard ) {
 					return navigator.clipboard.writeText( logEl.innerText );
-				} else {
+				} else if ( document.execCommand ) {
 					const text      = logEl.childNodes[0],
 						  range     = new Range(),
 						  selection = document.getSelection();

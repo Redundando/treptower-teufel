@@ -9,7 +9,7 @@
 
 /**
  * Import extension for The SEO Framework
- * copyright (C) 2022 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2022 - 2025 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -46,8 +46,9 @@ window.tsfem_e_import = function () {
 
 	const _enableButtons = disable => {
 		disable ||= false;
+
 		[
-			'importer-submit'
+			'importer-submit',
 		].forEach( buttonName => {
 			const button = document.getElementById( `tsfem-e-transport-${buttonName}` );
 			button.classList.toggle( 'tsfem-button-disabled', disable );

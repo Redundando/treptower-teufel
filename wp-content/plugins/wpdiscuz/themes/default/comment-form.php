@@ -41,7 +41,6 @@ if (!post_password_required($post->ID) && $load) {
     }
 
     $isShowSubscribeBar = $form->isShowSubscriptionBar() && WpdiscuzHelper::isUserCanFollowOrSubscribe($currentUserEmail);
-    $isPostmaticActive  = !class_exists("Prompt_Comment_Form_Handling") || (class_exists("Prompt_Comment_Form_Handling") && !$wpdiscuz->options->subscription["usePostmaticForCommentNotification"]);
 
     $wpdiscuz->helper->superSocializerFix();
     if ($commentsOpen) {
@@ -52,7 +51,7 @@ if (!post_password_required($post->ID) && $load) {
         do_action("comment_form_closed");
         do_action("wpdiscuz_comment_form_closed", $post, $currentUser, $commentsCount);
     }
-    do_action("wpdiscuz_comment_form_before");
+    do_action("wpdiscuz_comment_form_before", $post, $currentUser, $commentsCount);
     ?>
     <div id="wpdcom" class="<?php echo esc_attr($wpCommClasses); ?>">
         <?php
@@ -65,11 +64,11 @@ if (!post_password_required($post->ID) && $load) {
             <div class="wpd-form-wrap">
                 <div class="wpd-form-head">
                     <?php
-                    if ($isShowSubscribeBar && $isPostmaticActive) {
+                    if ($isShowSubscribeBar) {
                         ?>
                         <div class="wpd-sbs-toggle">
                             <i class="far fa-envelope"></i> <span
-                                    class="wpd-sbs-title"><?php esc_html_e($wpdiscuz->options->getPhrase("wc_subscribe_anchor")); ?></span>
+                                class="wpd-sbs-title"><?php esc_html_e($wpdiscuz->options->getPhrase("wc_subscribe_anchor")); ?></span>
                             <i class="fas fa-caret-down"></i>
                         </div>
                         <?php
@@ -110,7 +109,7 @@ if (!post_password_required($post->ID) && $load) {
                 </div>
                 <?php do_action("comment_main_form_after_head"); ?>
                 <?php
-                if ($isShowSubscribeBar && $isPostmaticActive) {
+                if ($isShowSubscribeBar) {
                     $wpdiscuz->subscriptionData = $wpdiscuz->dbManager->hasSubscription($post->ID, $currentUser->user_email);
                     $subscriptionType           = null;
                     if ($wpdiscuz->subscriptionData) {
@@ -141,7 +140,8 @@ if (!post_password_required($post->ID) && $load) {
                                         <?php
                                         if ($wpdiscuz->options->subscription["subscriptionType"] != 2) {
                                             ?>
-                                            <option value="<?php echo esc_attr(WpdiscuzCore::SUBSCRIPTION_ALL_COMMENT); ?>" <?php echo isset($unsubscribeLinkParams) || !$wpdiscuz->options->wp["threadComments"] ? "disabled" : ""; ?>><?php esc_html_e($wpdiscuz->options->getPhrase("wc_notify_on_all_new_reply")); ?></option>
+                                            <option
+                                                value="<?php echo esc_attr(WpdiscuzCore::SUBSCRIPTION_ALL_COMMENT); ?>" <?php echo isset($unsubscribeLinkParams) || !$wpdiscuz->options->wp["threadComments"] ? "disabled" : ""; ?>><?php esc_html_e($wpdiscuz->options->getPhrase("wc_notify_on_all_new_reply")); ?></option>
                                             <?php
                                         }
                                         ?>
@@ -324,7 +324,7 @@ if (!post_password_required($post->ID) && $load) {
                 </div>
                 <div class="wpd-comment-info-bar">
                     <div class="wpd-current-view"><i
-                                class="fas fa-quote-left"></i> <?php esc_html_e($wpdiscuz->options->getPhrase("wc_inline_feedbacks")); ?>
+                            class="fas fa-quote-left"></i> <?php esc_html_e($wpdiscuz->options->getPhrase("wc_inline_feedbacks")); ?>
                     </div>
                     <div class="wpd-filter-view-all"><?php esc_html_e($wpdiscuz->options->getPhrase("wc_inline_comments_view_all")); ?></div>
                 </div>

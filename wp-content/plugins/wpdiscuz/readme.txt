@@ -2,8 +2,8 @@
 Contributors: gVectors Team
 Tags: comment, comments, ajax comments, comment form, comment fields
 Requires at least: 5.0
-Tested up to: 6.8
-Stable tag: 7.6.30
+Tested up to: 6.9
+Stable tag: 7.6.42
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -51,7 +51,6 @@ wpDiscuz version 7 is a revolutionary perspective on the commenting world! This 
 * Multiple line-breaks (limited by Wordpress comment filter)
 * Comment author notification options with special checkboxes on comment form
 * Subscription activation via additional "Confirm Subscription" email
-* Integration with Postmatic for subscriptions and commenting by email
 * Ability to add comment system on attachment pages if it's allowed by Wordpress
 * Fast and easy comment form with ajax validation and data submitting
 * Fully integrated and compatible with Wordpress
@@ -59,7 +58,6 @@ wpDiscuz version 7 is a revolutionary perspective on the commenting world! This 
 * Secure and Anti-Spam features will not allow spammers to comment
 * Comment voting with positive and negative result
 * Smart voting system with tracking by logged-in user and cookies
-* Post sharing options: Facebook, Twitter and Google+
 * Quick Tags on comment form textarea
 * Custom Comment Forms with custom fields
 * Rating shortcode for posts via comment custom field [wpdrating] with a lot of attributes
@@ -189,61 +187,44 @@ Nothing will be lost!  **Comments - wpDiscuz** will show all old comments.
 
 Please don't forget delete all caches and purge CDN after the update.
 
-= Comments - wpDiscuz v7.6.30 - 10.05.2025 =
+= Comments - wpDiscuz v7.6.42 - 23.12.2025 =
 
-* Fixed: An issue with text domain loading
+* Fixed: An issue with inline commenting in Elementor
 
-= Comments - wpDiscuz v7.6.29 - 23.03.2025 =
+= Comments - wpDiscuz v7.6.41 - 22.12.2025 =
 
-* Added: New arguments for "wpdiscuz_comment_posted" JS event
-* Fixed: Error Class "WpdiscuzHelper" Not Found
-* Fixed: Issue with form options on switching blogs
+* Updated: Added gutenberg toolbar button for inline feedback shortcode generation
 
-= Comments - wpDiscuz v7.6.28 - 20.02.2025 =
+= Comments - wpDiscuz v7.6.40 - 09.12.2025 =
 
-* Added: A new option to check users last interaction with the website and optimize the live update requests
-* Added: A new JS event before comment post "wpdiscuz_new_comment"
-* Added: A new action before comment insertion "wpdiscuz_before_wp_new_comment"
-* Fixed: Issue with  subscriptions
-* Fixed: Issue with unsubscription links
-* Fixed: Issue with wpdiscuz-feedback shordcode's attributes
-* Changed: Uploading media files on comment post only
-* Changed: SVG icons for Social Login
+* Fixed: Disqus login vulnerability
 
-= Comments - wpDiscuz v7.6.27 - 14.10.2024 =
+= Comments - wpDiscuz v7.6.39 - 06.12.2025 =
 
-* Added: A new option for Social Login
-* Fixed: Undefined array key "is_rate_editable"
+* Added: Compatibility with WordPress 6.9
 
-= Comments - wpDiscuz v7.6.26 - 11.10.2024 =
+= Comments - wpDiscuz v7.6.38 - 24.11.2025 =
 
-* Fixed: wpDiscuz menu icons styling issues
-* Fixed: Undefined array key "is_rate_editable"
+* Fixed: Issues with PHP 8.x versions
 
-= Comments - wpDiscuz v7.6.25 - 07.10.2024 =
+= Comments - wpDiscuz v7.6.37 - 08.11.2025 =
 
-* Added: New function. isBanned() and checking if voter is banned or not
-* Added: New option to enable/disable rates editing
-* Added: New phrase for rate edit confirmation popup
-* Added: Rate edit functionality
-* Added: wpDiscuz icon on the backend and the admin bar menu items
-* Fixed: Vulnerability with WordPress social login
+* Fixed: Email notification issue for comments made by anonymous users.
 
-= Comments - wpDiscuz v7.6.24 - 31.08.2024 =
+= Comments - wpDiscuz v7.6.36 - 05.11.2025 =
 
-* Fixed: Hardcoded table prefix
+* Fixed: Vulnerability in voting actions
+* Fixed: Duplicated Gravatars for anonymous users.
 
-= Comments - wpDiscuz v7.6.23 - 24.08.2024 =
+= Comments - wpDiscuz v7.6.35 - 25.10.2025 =
 
-* Fixed: Issue with "bulk delete comments" via link in the email
+* Updated: Vk Login to Vk ID login
+* Removed: mail.ru and ok.ru social login
+* Removed: Zerospam and postmatic support
+* Removed: Anonymous comment author name and email auto generation
 
-= Comments - wpDiscuz v7.6.22 - 24.07.2024 =
+= Comments - wpDiscuz v7.6.34 - 19.09.2025 =
 
-* Added: A new hook "wpdiscuz_generate_thumbnails_check" to disable thumbnails generation cron
-* Added: A new JS event on comment post "wpdiscuz_comment_posted"
-* Fixed: Filtering buttons now visible if there is at least one comment
-* Fixed: Security issue, if reach editor and quick tags are disabled clean all HTML from comment content
-
-= Comments - wpDiscuz v7.6.21 - 06.07.2024 =
-
-* Fixed: Regenerate comment attachments metadata via WP Cron
+* Fixed: An issue during the plugin deactivation
+* Fixed: An issue with 'Enable subscription bar' option
+* Fixed: An issue with caching
