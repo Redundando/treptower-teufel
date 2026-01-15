@@ -1,76 +1,67 @@
 <?php
 
-/**
+// 1) Detect environment (based on absolute path)
+$root = realpath(__DIR__) ?: __DIR__;
 
- * The base configuration for WordPress
-
- *
-
- * The wp-config.php creation script uses this file during the
-
- * installation. You don't have to use the web site, you can
-
- * copy this file to "wp-config.php" and fill in the values.
-
- *
-
- * This file contains the following configurations:
-
- *
-
- * * MySQL settings
-
- * * Secret keys
-
- * * Database table prefix
-
- * * ABSPATH
-
- *
-
- * @link https://codex.wordpress.org/Editing_wp-config.php
-
- *
-
- * @package WordPress
-
- */
-
-// ** MySQL settings - You can get this info from your web host ** //
-
-
-$env = [];
-$envFile = __DIR__ . '/.wp-env.php';
-if (file_exists($envFile)) {
-	$env = require $envFile;
+$environment = 'local';
+if (str_contains($root, 'staging')) {
+	$environment = 'staging';
+} elseif (str_contains($root, 'prod')) {
+	$environment = 'production';
 }
 
+// 2) Load env array from file (file must "return [ ... ];")
+$env = [];
+
+$envFile = __DIR__ . '/.wp-env.' . $environment . '.php';
+
+if (is_readable($envFile)) {
+	$loaded = require $envFile;
+	if (is_array($loaded)) {
+		$env = $loaded;
+	}
+}
+
+// 3) Load passwords
+
+$secretsFile = __DIR__ . '/.wp-secrets.php';
+if (is_readable($secretsFile)) {
+	$secrets = require $secretsFile;
+	if (is_array($secrets)) {
+		$env = array_replace($env, $secrets); // secrets override env
+	}
+}
+
+// 4) Helper: env file values win, then real env vars, then default
 function envv(string $key, $default = null) {
 	global $env;
-	if (isset($env[$key])) return $env[$key];
+
+	if (is_array($env) && array_key_exists($key, $env)) {
+		return $env[$key];
+	}
+
 	$v = getenv($key);
 	return ($v !== false) ? $v : $default;
 }
 
-define('DB_NAME',     envv('DB_NAME'));
-define('DB_USER',     envv('DB_USER'));
-define('DB_PASSWORD', envv('DB_PASSWORD'));
+// 5) Define constants
+define('DB_NAME',     envv('DB_NAME', ''));
+define('DB_USER',     envv('DB_USER', ''));
+define('DB_PASSWORD', envv('DB_PASSWORD', ''));
 define('DB_HOST',     envv('DB_HOST', 'localhost'));
 
-define('WP_HOME',    envv('WP_HOME'));
-define('WP_SITEURL', envv('WP_SITEURL'));
+define('WP_HOME',    envv('WP_HOME', ''));
+define('WP_SITEURL', envv('WP_SITEURL', ''));
 
 define('WP_ENVIRONMENT_TYPE', envv('WP_ENVIRONMENT_TYPE', 'production')); // local|development|staging|production
 
-if (WP_ENVIRONMENT_TYPE !== 'production') {
-	define('WP_DEBUG', true);
-} else{
-	define('WP_DEBUG', false);
-}
-
+define('WP_DEBUG', WP_ENVIRONMENT_TYPE !== 'production');
 
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
+
+// ...
+
 
 
 /**#@+
