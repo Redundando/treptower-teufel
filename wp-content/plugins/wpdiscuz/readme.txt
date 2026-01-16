@@ -3,7 +3,7 @@ Contributors: gVectors Team
 Tags: comment, comments, ajax comments, comment form, comment fields
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 7.6.42
+Stable tag: 7.6.44
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -187,6 +187,21 @@ Nothing will be lost!  **Comments - wpDiscuz** will show all old comments.
 
 Please don't forget delete all caches and purge CDN after the update.
 
+= Comments - wpDiscuz v7.6.44 - 15.01.2026 =
+
+* Security: Fixed IDOR vulnerability in AJAX actions (CVE-2025-68997)
+* Security: Added post access authorization check to voteOnComment - uses $comment->comment_post_ID from database, not user-supplied postId (prevents parameter manipulation bypass)
+* Security: Added server-side rate limiting to AJAX actions (vote 20/min, rate 10/min, follow 15/min, subscribe 10/min)
+* Security: Rate limiting on voteOnComment, userRate, followUser, addSubscription
+* Security: Enhanced client fingerprinting (IP + User-Agent + Accept-Language)
+* Security: Rate limiting executes before nonce validation for maximum protection
+* Security: Object validation - verifies comment exists and is approved before processing
+* Security: Post status validation - blocks access to private/password-protected posts for unauthorized users
+
+= Comments - wpDiscuz v7.6.43 - 12.01.2026 =
+
+* Fixed: Insecure Direct Object References (IDOR) vulnerability
+
 = Comments - wpDiscuz v7.6.42 - 23.12.2025 =
 
 * Fixed: An issue with inline commenting in Elementor
@@ -198,33 +213,3 @@ Please don't forget delete all caches and purge CDN after the update.
 = Comments - wpDiscuz v7.6.40 - 09.12.2025 =
 
 * Fixed: Disqus login vulnerability
-
-= Comments - wpDiscuz v7.6.39 - 06.12.2025 =
-
-* Added: Compatibility with WordPress 6.9
-
-= Comments - wpDiscuz v7.6.38 - 24.11.2025 =
-
-* Fixed: Issues with PHP 8.x versions
-
-= Comments - wpDiscuz v7.6.37 - 08.11.2025 =
-
-* Fixed: Email notification issue for comments made by anonymous users.
-
-= Comments - wpDiscuz v7.6.36 - 05.11.2025 =
-
-* Fixed: Vulnerability in voting actions
-* Fixed: Duplicated Gravatars for anonymous users.
-
-= Comments - wpDiscuz v7.6.35 - 25.10.2025 =
-
-* Updated: Vk Login to Vk ID login
-* Removed: mail.ru and ok.ru social login
-* Removed: Zerospam and postmatic support
-* Removed: Anonymous comment author name and email auto generation
-
-= Comments - wpDiscuz v7.6.34 - 19.09.2025 =
-
-* Fixed: An issue during the plugin deactivation
-* Fixed: An issue with 'Enable subscription bar' option
-* Fixed: An issue with caching

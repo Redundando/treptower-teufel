@@ -71,6 +71,13 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         add_action("wp_ajax_searchOption", [&$this, "searchOption"]);
         add_action("wp_ajax_wpdResetPostRating", [&$this, "resetPostRating"]);
         add_action("wp_ajax_wpdResetFieldsRatings", [&$this, "resetFieldsRatings"]);
+        add_action("wp_ajax_wpdGetNonce", [&$this, "getNonce"]);
+        add_action("wp_ajax_nopriv_wpdGetNonce", [&$this, "getNonce"]);
+    }
+
+    public function getNonce() {
+        $this->helper->setNonceInCookies(2, false);
+        wp_send_json_success();
     }
 
     public function stickComment() {
@@ -78,6 +85,8 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         $postId    = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         $commentId = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($postId && $commentId) {
+            $post = get_post($postId);
+            WpdiscuzHelper::validatePostAccess($post);
             $comment             = get_comment($commentId);
             $userCanStickComment = current_user_can("moderate_comments");
             if (!$userCanStickComment) {
@@ -108,6 +117,8 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         $postId    = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         $commentId = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($postId && $commentId) {
+            $post = get_post($postId);
+            WpdiscuzHelper::validatePostAccess($post);
             $comment             = get_comment($commentId);
             $userCanCloseComment = current_user_can("moderate_comments");
             if (!$userCanCloseComment) {
@@ -264,6 +275,8 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         $commentId   = WpdiscuzHelper::sanitize(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT, 0);
         $currentUser = WpdiscuzHelper::getCurrentUser();
         if ($commentId && !empty($currentUser->ID) && $this->options->login["showActivityTab"] && ($comment = get_comment($commentId)) && intval($currentUser->ID) === intval($comment->user_id)) {
+            $post = get_post($comment->comment_post_ID);
+            WpdiscuzHelper::validatePostAccess($post);
             wp_delete_comment($commentId, true);
             $this->helper->getActivityPage();
         }
@@ -296,7 +309,8 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         $guestAction = WpdiscuzHelper::sanitize(INPUT_POST, "guestAction", "FILTER_SANITIZE_STRING");
         $postId      = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT);
         $post        = get_post($postId);
-        $response    = [
+        WpdiscuzHelper::validatePostAccess($post);
+        $response = [
             "code"    => 0,
             "message" => "<div class='wpd-guest-action-message wpd-guest-action-error'>" . esc_html($this->options->getPhrase("wc_user_settings_email_error")) . "</div>"
         ];
@@ -336,9 +350,27 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         wp_die(json_encode($response));
     }
 
+    /**
+     * Handle AJAX follow user action
+     *
+     * @security Rate limiting applied to prevent IDOR abuse (max 15 requests/minute)
+     * @security-fix CVE-2025-68997 - Added rate limiting before nonce validation
+     * @return void Sends JSON response
+     * @since 7.6.44
+     *
+     */
     public function followUser() {
+        // @security-fix CVE-2025-68997: Rate limiting FIRST - runs regardless of nonce filter settings
+        $rateLimitResult = $this->helper->checkRateLimit('follow', 15, MINUTE_IN_SECONDS);
+        if (is_wp_error($rateLimitResult)) {
+            wp_send_json_error($rateLimitResult->get_error_code());
+        }
+
         $this->helper->validateNonce();
-        $postId    = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
+
+        $postId = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
+        $post   = get_post($postId);
+        WpdiscuzHelper::validatePostAccess($post);
         $commentId = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($postId && $commentId) {
             $comment = get_comment($commentId);
@@ -414,6 +446,9 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     }
 
     public function regenerateVoteMetas() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error("wc_vote_regenerate_not_possible");
+        }
         $this->helper->validateNonce();
         $response           = ["progress" => 0];
         $voteRegenerateData = isset($_POST["voteRegenerateData"]) ? $_POST["voteRegenerateData"] : "";
@@ -447,6 +482,9 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     }
 
     public function regenerateClosedComments() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error("regenerate_closed_comments_error");
+        }
         $this->helper->validateNonce();
         $response             = ["progress" => 0];
         $closedRegenerateData = isset($_POST["closedRegenerateData"]) ? sanitize_textarea_field($_POST["closedRegenerateData"]) : "";
@@ -480,6 +518,9 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     }
 
     public function regenerateVoteData() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error("wc_vote_regenerate_not_possible");
+        }
         $response           = ["progress" => 0];
         $regenerateVoteData = isset($_POST["regenerateVoteData"]) ? sanitize_textarea_field($_POST["regenerateVoteData"]) : "";
         if ($regenerateVoteData) {
@@ -512,6 +553,9 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     }
 
     public function syncCommenterData() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error("sync_commenter_data_error");
+        }
         $this->helper->validateNonce();
         $syncCommenterData = !empty($_POST["syncCommenterData"]) ? sanitize_textarea_field($_POST["syncCommenterData"]) : "";
         if ($syncCommenterData) {
@@ -527,6 +571,9 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     }
 
     public function rebuildRatings() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error("rebuild_ratings_error");
+        }
         $this->helper->validateNonce();
         $response       = ["progress" => 0];
         $rebuildRatings = isset($_POST["rebuildRatings"]) ? sanitize_textarea_field($_POST["rebuildRatings"]) : "";
@@ -560,6 +607,9 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     }
 
     public function fixTables() {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error("fix_tables_error");
+        }
         $this->helper->validateNonce();
         $fixTables = isset($_POST["fixTables"]) ? sanitize_textarea_field($_POST["fixTables"]) : "";
         if ($fixTables) {
@@ -577,10 +627,16 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
      * loads the comment content on click via ajax
      */
     public function readMore() {
+        $this->helper->validateNonce();
         $commentId = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($commentId) {
             $comment = get_comment($commentId);
-            $form    = $this->wpdiscuzForm->getForm($comment->comment_post_ID);
+            if (!$comment || $comment->comment_approved != '1') {
+                wp_send_json_error("wc_msg_comment_not_found");
+            }
+            $post = get_post($comment->comment_post_ID);
+            WpdiscuzHelper::validatePostAccess($post);
+            $form = $this->wpdiscuzForm->getForm($comment->comment_post_ID);
             if ($form->isUserCanSeeComments(WpdiscuzHelper::getCurrentUser(), $comment->comment_post_ID)) {
                 $commentContent = $this->helper->filterCommentText($comment->comment_content);
                 if ($this->options->content["enableImageConversion"]) {
@@ -627,17 +683,42 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         }
     }
 
+    /**
+     * Handle AJAX vote on comment action
+     *
+     * @security Rate limiting applied to prevent IDOR abuse (max 20 requests/minute)
+     * @security-fix CVE-2025-68997 - Added rate limiting before nonce validation
+     * @security-fix CVE-2025-68997 - Added post access authorization check
+     * @return void Sends JSON response
+     * @since 7.6.44
+     *
+     */
     public function voteOnComment() {
+        // @security-fix CVE-2025-68997: Rate limiting FIRST - runs regardless of nonce filter settings
+        $rateLimitResult = $this->helper->checkRateLimit('vote', 20, MINUTE_IN_SECONDS);
+        if (is_wp_error($rateLimitResult)) {
+            wp_send_json_error($rateLimitResult->get_error_code());
+        }
+
         $this->helper->validateNonce();
         if ($this->helper->isBanned()) {
             wp_send_json_error("wc_banned_user");
         }
+
         $isUserLoggedIn = is_user_logged_in();
         if (!$this->options->thread_layouts["isGuestCanVote"] && !$isUserLoggedIn) {
             wp_send_json_error("wc_login_to_vote");
         }
 
-        $commentId        = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
+        $commentId = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
+        $comment   = get_comment($commentId);
+        if (!$comment || $comment->comment_approved != '1') {
+            wp_send_json_error("wc_msg_comment_not_found");
+        }
+
+        // @security-fix CVE-2025-68997: IDOR protection - verify user has access to the post
+        $post = get_post($comment->comment_post_ID);
+        WpdiscuzHelper::validatePostAccess($post);
         $voteType         = (int)WpdiscuzHelper::sanitize(INPUT_POST, "voteType", FILTER_SANITIZE_NUMBER_INT, 0);
         $allowedVoteTypes = [1];
 
@@ -652,7 +733,6 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
                 $userIdOrIp = md5($this->helper->getRealIPAddr());
             }
             $isUserVoted = $this->dbManager->isUserVoted($userIdOrIp, $commentId);
-            $comment     = get_comment($commentId);
             if (!$isUserLoggedIn && md5($comment->comment_author_IP) == $userIdOrIp) {
                 wp_send_json_error("wc_deny_voting_from_same_ip");
             }
@@ -747,6 +827,8 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     public function getInlineCommentForm() {
         $post_id = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($post_id && apply_filters("wpdiscuz_enable_feedback_shortcode_button", true) && $this->dbManager->postHasFeedbackForms($post_id)) {
+            $post = get_post($post_id);
+            WpdiscuzHelper::validatePostAccess($post);
             $currentUser = WpdiscuzHelper::getCurrentUser();
             $form        = $this->wpdiscuzForm->getForm($post_id);
             if ($form->isUserCanComment($currentUser, $post_id)) {
@@ -773,6 +855,8 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     public function getLastInlineComments() {
         $inline_form_id = WpdiscuzHelper::sanitize(INPUT_POST, "inline_form_id", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($inline_form_id && apply_filters("wpdiscuz_enable_feedback_shortcode_button", true) && ($inline_form = $this->dbManager->getFeedbackForm($inline_form_id))) {
+            $post = get_post($inline_form->post_id);
+            WpdiscuzHelper::validatePostAccess($post);
             $args     = [
                 "orderby"    => $this->options->thread_display["orderCommentsBy"],
                 "order"      => "DESC",
@@ -825,8 +909,13 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         $commentId = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($commentId) {
             $comment = get_comment($commentId);
-            $postID  = $comment->comment_post_ID;
-            $form    = $this->wpdiscuzForm->getForm($postID);
+            if (!$comment) {
+                wp_send_json_error("wc_comment_edit_not_possible");
+            }
+            $postID = $comment->comment_post_ID;
+            $post   = get_post($postID);
+            WpdiscuzHelper::validatePostAccess($post);
+            $form = $this->wpdiscuzForm->getForm($postID);
             $form->initFormFields();
             $currentUser          = WpdiscuzHelper::getCurrentUser();
             $highLevelUser        = current_user_can("moderate_comments");
@@ -841,10 +930,28 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
         }
     }
 
+    /**
+     * Handle AJAX user rate post action
+     *
+     * @security Rate limiting applied to prevent IDOR abuse (max 10 requests/minute)
+     * @security-fix CVE-2025-68997 - Added rate limiting before nonce validation
+     * @return void Sends JSON response
+     * @since 7.6.44
+     *
+     */
     public function userRate() {
+        // @security-fix CVE-2025-68997: Rate limiting FIRST - runs regardless of nonce filter settings
+        $rateLimitResult = $this->helper->checkRateLimit('rate', 10, MINUTE_IN_SECONDS);
+        if (is_wp_error($rateLimitResult)) {
+            wp_send_json_error($rateLimitResult->get_error_code());
+        }
+
         $this->helper->validateNonce();
+
         $rating  = WpdiscuzHelper::sanitize(INPUT_POST, "rating", FILTER_SANITIZE_NUMBER_INT, 0);
         $post_id = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
+        $post    = get_post($post_id);
+        WpdiscuzHelper::validatePostAccess($post);
         /**
          * @var $form \wpdFormAttr\Form
          */
@@ -1068,6 +1175,9 @@ class WpdiscuzHelperAjax implements WpDiscuzConstants {
     }
 
     public function searchOption() {
+        if (!current_user_can("manage_options")) {
+            wp_send_json_error("Permission denied");
+        }
         $search = WpdiscuzHelper::sanitize(INPUT_POST, "s", "FILTER_SANITIZE_STRING");
         if ($search) {
             $optionsObject = $this->options;

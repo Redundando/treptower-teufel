@@ -447,6 +447,7 @@ class WpdiscuzOptions implements WpDiscuzConstants {
             "wc_vote_only_one_time"                             => esc_html__("You've already voted for this comment", "wpdiscuz"),
             "wc_voting_error"                                   => esc_html__("Voting Error", "wpdiscuz"),
             "wc_banned_user"                                    => esc_html__("You are banned", "wpdiscuz"),
+            "wc_rate_limit_exceeded"                            => esc_html__("Too many requests. Please slow down.", "wpdiscuz"),
             "wc_login_to_vote"                                  => esc_html__("You Must Be Logged In To Vote", "wpdiscuz"),
             "wc_self_vote"                                      => esc_html__("You cannot vote for your comment", "wpdiscuz"),
             "wc_deny_voting_from_same_ip"                       => esc_html__("You are not allowed to vote for this comment", "wpdiscuz"),
@@ -1155,6 +1156,7 @@ class WpdiscuzOptions implements WpDiscuzConstants {
         $jsArgs["wc_vote_only_one_time"]        = esc_html($this->phrases["wc_vote_only_one_time"]);
         $jsArgs["wc_voting_error"]              = esc_html($this->phrases["wc_voting_error"]);
         $jsArgs["wc_banned_user"]               = isset($this->phrases["wc_banned_user"]) ? esc_html($this->phrases["wc_banned_user"]) : esc_html__("You are banned", "wpdiscuz");
+        $jsArgs["wc_rate_limit_exceeded"]       = isset($this->phrases["wc_rate_limit_exceeded"]) ? esc_html($this->phrases["wc_rate_limit_exceeded"]) : esc_html__("Too many requests. Please slow down.", "wpdiscuz");
         $jsArgs["wc_comment_edit_not_possible"] = esc_html($this->phrases["wc_comment_edit_not_possible"]);
         $jsArgs["wc_comment_not_updated"]       = esc_html($this->phrases["wc_comment_not_updated"]);
         $jsArgs["wc_comment_not_edited"]        = esc_html($this->phrases["wc_comment_not_edited"]);

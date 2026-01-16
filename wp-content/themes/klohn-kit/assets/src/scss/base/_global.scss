@@ -1,0 +1,92 @@
+// assets/src/scss/base/_global.scss
+@use "../utils/layout" as l;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: Arial, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  font-optical-sizing: auto;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-link-hover);
+  }
+}
+
+.container {
+  max-width: l.$layout-container-max;
+  margin: 0 auto;
+  padding: 0 l.$layout-container-padding-x;
+}
+
+.site-main {
+  padding: l.$main-padding-y 0;
+}
+
+.site-main > .content,
+.site-main > article,
+.site-main > section {
+  @extend .container;
+}
+
+.entry-title {
+  margin: 0 0 12px;
+  line-height: 1.15;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+}
+
+.entry-content {
+  > * {
+    margin: 0 0 14px;
+  }
+
+  // readable line length for prose without breaking wide blocks/images
+  > p,
+  > ul,
+  > ol,
+  > blockquote {
+    max-width: l.$prose-max;
+  }
+}
+
+.pagination {
+  margin-top: 20px;
+}

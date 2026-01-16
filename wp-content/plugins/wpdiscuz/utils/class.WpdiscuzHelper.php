@@ -184,14 +184,13 @@ class WpdiscuzHelper implements WpDiscuzConstants {
     }
 
     public function validateNonce() {
-        if (is_user_logged_in() || apply_filters('wpdiscuz_validate_nonce_for_guests', false)) {
+        if (is_user_logged_in() || apply_filters('wpdiscuz_validate_nonce_for_guests', true)) {
             $nonce         = !empty($_COOKIE[self::GLOBAL_NONCE_NAME . '_' . COOKIEHASH]) ? sanitize_text_field($_COOKIE[self::GLOBAL_NONCE_NAME . '_' . COOKIEHASH]) : "";
             $timeDependent = wp_verify_nonce($nonce, $this->generateNonceKey());
             if (!$timeDependent) {
                 wp_die(__("Nonce is invalid.", "wpdiscuz"));
             }
 
-//            unset($_COOKIE[self::GLOBAL_NONCE_NAME . '_' . COOKIEHASH]);
             $this->setNonceInCookies($timeDependent, false);
         }
     }
@@ -201,7 +200,7 @@ class WpdiscuzHelper implements WpDiscuzConstants {
             return;
         }
 
-        $validateNonceForGuests = apply_filters('wpdiscuz_validate_nonce_for_guests', false);
+        $validateNonceForGuests = apply_filters('wpdiscuz_validate_nonce_for_guests', true);
 
         if (!$validateNonceForGuests && !is_user_logged_in()) {
             return;
@@ -230,6 +229,82 @@ class WpdiscuzHelper implements WpDiscuzConstants {
         } else {
             setcookie(self::GLOBAL_NONCE_NAME . '_' . COOKIEHASH, $nonce, $expires, '/', "", false, true);
         }
+    }
+
+
+    /**
+     * Check rate limit for an action to prevent abuse
+     *
+     * @security This method mitigates IDOR (Insecure Direct Object Reference) vulnerabilities
+     *           by implementing server-side rate limiting on sensitive AJAX actions.
+     * @security-fix CVE-2025-68997 - Rate limiting to prevent mass voting/rating abuse
+     * @param string $action Action identifier (e.g., 'vote', 'rate', 'subscribe')
+     * @param int $maxAttempts Maximum attempts allowed within the time window
+     * @param int $timeWindow Time window in seconds (default: 60 seconds)
+     * @return true|WP_Error Returns true if within limit, WP_Error if exceeded
+     * @since 7.6.44
+     *
+     */
+    public function checkRateLimit($action, $maxAttempts = 20, $timeWindow = 60) {
+        $identifier   = $this->getClientFingerprint();
+        $rateLimitKey = 'wpd_rate_' . $action . '_' . $identifier;
+
+        $attempts = get_transient($rateLimitKey);
+
+        if ($attempts !== false && $attempts >= $maxAttempts) {
+            return new WP_Error('wc_rate_limit_exceeded', __('Too many requests. Please slow down.', 'wpdiscuz'));
+        }
+
+        set_transient($rateLimitKey, ($attempts ? $attempts + 1 : 1), $timeWindow);
+
+        return true;
+    }
+
+    public static function validatePostAccess($post) {
+        if (!self::canCurrentUserAccessPost($post)) {
+            wp_send_json_error("wc_msg_post_not_found");
+        }
+    }
+
+    public static function canCurrentUserAccessPost($post) {
+        if (!$post) {
+            return false;
+        }
+
+        if (post_password_required($post)) {
+            return false;
+        }
+
+        if ('publish' === $post->post_status) {
+            return true;
+        }
+
+        return is_user_logged_in() && current_user_can('read_post', $post->ID);
+    }
+
+    /**
+     * Get a fingerprint for the current client for rate limiting purposes
+     * Uses multiple factors to create a more robust identifier than IP alone
+     *
+     * @security Enhanced fingerprinting prevents bypass via IP rotation/proxies
+     * @security-fix CVE-2025-68997 - Improved client identification
+     * @return string MD5 hash of client fingerprint
+     * @since 7.6.44
+     *
+     */
+    public function getClientFingerprint() {
+        if (is_user_logged_in()) {
+            return 'user_' . get_current_user_id();
+        }
+
+        // For guests, combine multiple factors for better fingerprinting
+        $factors = [
+            $this->getRealIPAddr(),
+            isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+            isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '',
+        ];
+
+        return md5(implode('|', $factors));
     }
 
     //==========================================================================

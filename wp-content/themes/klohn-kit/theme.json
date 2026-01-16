@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "settings": {
+    "color": {
+      "custom": false,
+      "customGradient": false,
+      "gradients": [],
+      "defaultPalette": false,
+      "defaultGradients": false,
+      "duotone": [],
+      "palette": [
+        { "slug": "white", "name": "White", "color": "#ffffff" },
+        { "slug": "black", "name": "Black", "color": "#000000" },
+
+        { "slug": "primary-lightest", "name": "Primary lightest", "color": "#F3F3F3" },
+        { "slug": "primary-light", "name": "Primary light", "color": "#BEBEBE" },
+        { "slug": "primary-middle", "name": "Primary middle", "color": "#888888" },
+        { "slug": "primary-dark", "name": "Primary dark", "color": "#4B4B4B" },
+        { "slug": "primary-darkest", "name": "Primary darkest", "color": "#0E0E0E" },
+
+        { "slug": "secondary-lightest", "name": "Secondary lightest", "color": "#fbb0b9" },
+        { "slug": "secondary-light", "name": "Secondary light", "color": "#f88492" },
+        { "slug": "secondary-middle", "name": "Secondary middle", "color": "#f25f70" },
+        { "slug": "secondary-dark", "name": "Secondary dark", "color": "#d83a4d" },
+        { "slug": "secondary-darkest", "name": "Secondary darkest", "color": "#b51a2c" },
+
+        { "slug": "tertiary-lightest", "name": "Tertiary lightest", "color": "#F1FEEF" },
+        { "slug": "tertiary-light", "name": "Tertiary light", "color": "#B0F8A7" },
+        { "slug": "tertiary-middle", "name": "Tertiary middle", "color": "#70f25f" },
+        { "slug": "tertiary-dark", "name": "Tertiary dark", "color": "#4EA943" },
+        { "slug": "tertiary-darkest", "name": "Tertiary darkest", "color": "#2D6126" }
+      ]
+    }
+  }
+}

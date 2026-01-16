@@ -1,0 +1,42 @@
+/* Color tokens.
+   Keep in sync with theme.json palette. */
+:root {
+  --c-white: #fff;
+  --c-black: #000;
+
+  --c-p050: #F3F3F3;
+  --c-p200: #BEBEBE;
+  --c-p500: #888888;
+  --c-p800: #4B4B4B;
+  --c-p950: #0E0E0E;
+
+  --c-s050: #fbb0b9;
+  --c-s200: #f88492;
+  --c-s500: #f25f70;
+  --c-s800: #d83a4d;
+  --c-s950: #b51a2c;
+
+  --c-t050: #F1FEEF;
+  --c-t200: #B0F8A7;
+  --c-t500: #70f25f;
+  --c-t800: #4EA943;
+  --c-t950: #2D6126;
+
+  /* semantic */
+  --color-surface: var(--c-white);
+  --color-text: var(--c-p950);
+  --color-muted: var(--c-p500);
+  --color-border: var(--c-p200);
+
+  --color-focus: var(--c-s200);
+
+  /* header/nav theme */
+  --color-header-bg: var(--c-s950);
+  --color-nav-bg: var(--c-s950);
+  --color-nav-hover: var(--c-s800);
+  --color-header-border: var(--c-s800);
+
+  /* links in content */
+  --color-link: var(--c-s950);
+  --color-link-hover: var(--c-s800);
+}

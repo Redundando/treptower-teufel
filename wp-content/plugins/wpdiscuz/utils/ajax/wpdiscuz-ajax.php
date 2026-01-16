@@ -52,6 +52,7 @@ $allowedActions       = [
     "wpdGetInlineCommentForm"    => ["object" => $helperAjax, "callback" => "getInlineCommentForm", "for" => "all"],
     "wpdUnsubscribe"             => ["object" => $helperAjax, "callback" => "unsubscribe", "for" => "all"],
     "wpdUserRate"                => ["object" => $helperAjax, "callback" => "userRate", "for" => "all"],
+    "wpdGetNonce"                => ["object" => $helperAjax, "callback" => "getNonce", "for" => "all"],
     "wpdEmailDeleteLinks"        => ["object" => $helperEmail, "callback" => "emailDeleteLinksAction", "for" => "user"],
     "wpdAddSubscription"         => ["object" => $helperEmail, "callback" => "addSubscription", "for" => "all"],
     "wpdCheckNotificationType"   => ["object" => $helperEmail, "callback" => "checkNotificationType", "for" => "all"],

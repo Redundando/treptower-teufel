@@ -1,0 +1,196 @@
+/* ---------- Desktop dropdown nav (>= 961px) ---------- */
+
+/* reset list spacing */
+.sitenavigation ul {
+    margin: 0;
+    padding: 0;
+}
+
+/* top-level menu layout */
+.sitenavigation > ul {
+    display: flex;
+    align-items: center;
+    gap: 0; /* adjust if you want spacing */
+}
+
+/* top-level items */
+.sitenavigation > ul > li {
+    position: relative;           /* anchor for dropdown */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;               /* no inline-block hacks */
+}
+
+/* links */
+.sitenavigation a {
+    color: var(--white-color);
+    text-decoration: none;
+    display: block;
+    padding: 11px 14px;
+    border-bottom: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* hover states (top level) */
+.sitenavigation > ul > li:hover > a,
+.sitenavigation > ul > li:focus-within > a {
+    background-color: var(--primary-light-color);
+    color: var(--primary-darkest-color);
+}
+
+/* dropdown base */
+.sitenavigation ul ul {
+    display: none;
+    position: absolute;
+    top: 100%;                    /* directly under parent */
+    left: 0;
+    min-width: 220px;
+    max-width: 320px;
+    padding: 6px 0;
+    margin: 0;
+    z-index: 9999;
+}
+
+/* show dropdown */
+.sitenavigation li:hover > ul,
+.sitenavigation li:focus-within > ul {
+    display: block;
+}
+
+/* dropdown items */
+.sitenavigation ul ul li {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+/* dropdown link styling */
+.sitenavigation ul ul a {
+    background-color: var(--secondary-dark-color);
+    opacity: 0.97;
+    padding: 10px 14px;
+    white-space: nowrap;
+}
+
+/* dropdown hover */
+.sitenavigation ul ul li:hover > a,
+.sitenavigation ul ul li:focus-within > a {
+    background-color: var(--primary-lightest-color);
+    color: var(--black-color);
+}
+
+/* 3rd level flyout */
+.sitenavigation ul ul ul {
+    top: 0;
+    left: 100%;
+    margin-top: 0;                /* avoid the -40px jump */
+}
+
+/* language item on the right (if you keep it) */
+.sitenavigation .lang-item {
+    margin-left: auto;
+}
+
+/* keep your "selected" styles working */
+.sitenavigation li a.nav-selected {
+    background-color: var(--secondary-middle-color);
+    color: var(--secondary-darkest-color);
+}
+
+
+/* hamburger button (hidden on desktop) */
+.menu-toggle{
+    display:none;
+    background:none;
+    border:0;
+    padding:12px;
+    cursor:pointer;
+}
+
+.menu-toggle span{
+    display:block;
+    width:28px;
+    height:3px;
+    margin:6px 0;
+    background: var(--secondary-lightest-color);
+    border-radius: 2px;
+}
+
+/* mobile */
+@media (max-width: 960px) {
+    .menu-toggle { display:block; }
+    .navbar { display:block; }
+
+    .sitenavigation > ul{
+        display:none;
+        flex-direction:column;
+        width:100%;
+        margin: 8px 0 0;
+        padding: 6px 0;
+        background-image: linear-gradient(to right,var(--secondary-dark-color),var(--secondary-darkest-color));
+        opacity:0.98;
+        box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    }
+    .nav-open .sitenavigation > ul{ display:flex; }
+
+    /* each top-level item is a 2-column grid */
+    .sitenavigation > ul > li{
+        display:grid;
+        grid-template-columns: 1fr 56px; /* right column = chevron space */
+        align-items: stretch;
+        border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .sitenavigation > ul > li:last-child{ border-bottom:0; }
+
+    /* link takes the left column */
+    .sitenavigation > ul > li > a{
+        grid-column: 1;
+        padding: 14px 16px;
+        font-size: 1.05rem;
+        line-height: 1.2;
+    }
+
+    /* chevron cell (only exists for parents) */
+    .submenu-toggle{
+        grid-column: 2;
+        width: 100%;
+        border: 0;
+        background: rgba(255,255,255,.06);
+        cursor: pointer;
+    }
+
+    .submenu-toggle::before{
+        content:"";
+        display:inline-block;
+        width: 9px;
+        height: 9px;
+        border-right: 2px solid var(--secondary-lightest-color);
+        border-bottom: 2px solid var(--secondary-lightest-color);
+        transform: rotate(45deg);
+    }
+
+    .sitenavigation li.sub-open > .submenu-toggle::before{
+        transform: rotate(-135deg);
+    }
+
+    /* submenus span full width under the row */
+    .sitenavigation ul ul{
+        grid-column: 1 / -1;
+        position: static;
+        display: none;
+        padding: 6px 0 10px;
+        background: rgba(0,0,0,.10);
+    }
+    .sitenavigation li.sub-open > ul{ display:block; }
+
+    .sitenavigation ul ul li a{
+        padding: 12px 16px 12px 28px;
+        white-space: normal;
+        background: transparent;
+        opacity: 1;
+    }
+    .sitenavigation ul ul ul li a{
+        padding-left: 40px;
+    }
+}

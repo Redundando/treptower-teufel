@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WordPress - 6.9.x - Development - Administration package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-12-22 10:39:25+0000\n"
+"PO-Revision-Date: 2026-01-15 02:39:48+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -240,7 +240,7 @@ msgstr "Während des Upload-Prozesses ist ein Fehler aufgetreten."
 #. 3: The PHP extension name needed.
 #: wp-admin/install.php:304
 msgid "You cannot install because <a href=\"%1$s\">WordPress %2$s</a> requires the %3$s PHP extension."
-msgstr "Du kannst es nicht installieren, da <a href=\"%1$s\">WordPress %2$s</a> die PHP-Erweiterung %3$s erfordert."
+msgstr "Die Installation ist nicht möglich, da <a href=\"%1$s\">WordPress %2$s</a> die PHP-Erweiterung %3$s erfordert."
 
 #: wp-admin/includes/template.php:738
 msgid "Add Custom Field:"
@@ -903,7 +903,7 @@ msgstr "Erkläre in wenigen Worten, worum es auf dieser Website geht. Beispiel: 
 
 #: wp-admin/install.php:195
 msgid "Note: Discouraging search engines does not block access to your site &mdash; it is up to search engines to honor your request."
-msgstr "Hinweis: Suchmaschinen von der Website auszuschließen bedeutet nicht, dass der Zugriff auf deine Website blockiert wird &ndash; es liegt an den Suchmaschinen, deine Anfrage zu berücksichtigen."
+msgstr "Hinweis: Suchmaschinen von der Website auszuschließen bedeutet nicht, dass der Zugriff auf deine Website blockiert wird – es liegt an den Suchmaschinen, deine Anfrage zu berücksichtigen."
 
 #: wp-admin/includes/template.php:762
 msgid "New custom field name"
@@ -2521,7 +2521,7 @@ msgstr "https://make.wordpress.org/community/organize-event-landing-page/"
 #. translators: %s: Localized meetup organization documentation URL.
 #: wp-admin/includes/dashboard.php:1486
 msgid "Want more events? <a href=\"%s\">Help organize the next one</a>!"
-msgstr "Du möchtest mehr Events? <a href=\"%s\">Hilf bei der Organisation der Nächsten</a>!"
+msgstr "Du möchtest mehr Events? <a href=\"%s\">Hilf bei der Organisation der nächsten</a>!"
 
 #. translators: %s: User's display name.
 #: wp-admin/includes/ajax-actions.php:5633
@@ -3142,7 +3142,7 @@ msgstr "Die Funktion %s wurde deaktiviert, daher sind einige Medien-Einstellunge
 #. translators: 1: file_uploads, 2: php.ini
 #: wp-admin/includes/class-wp-site-health.php:2269
 msgid "The %1$s directive in %2$s determines if uploading files is allowed on your site."
-msgstr "Die Anweisung %1$s in der %2$s legt fest, ob das Hochladen von Dateien auf deiner Website erlaubt ist."
+msgstr "Die Direktive %1$s in der %2$s legt fest, ob das Hochladen von Dateien auf deiner Website erlaubt ist."
 
 #: wp-admin/includes/class-wp-site-health.php:2259
 msgid "Files can be uploaded"
@@ -3815,7 +3815,7 @@ msgstr "Du solltest jetzt deine %s-Datei aktualisieren."
 
 #: wp-admin/update-core.php:183
 msgid "This localized version contains both the translation and various other localization fixes."
-msgstr "Diese lokalisierte Version beinhaltet sowohl die Übersetzung als auch verschiedene Fehlerbehebungen in der Lokalisierung."
+msgstr "Diese lokalisierte Version beinhaltet sowohl die Übersetzung als auch diverse andere Lokalisierungsanpassungen."
 
 #. translators: 1: Number of issues. 2: URL to Site Health screen.
 #: wp-admin/includes/dashboard.php:2030
@@ -3848,7 +3848,7 @@ msgstr "Noch keine Information &hellip;"
 #. translators: 1: upload_max_filesize, 2: php.ini
 #: wp-admin/includes/file.php:892
 msgid "The uploaded file exceeds the %1$s directive in %2$s."
-msgstr "Die hochgeladene Datei übersteigt die Anweisung %1$s in der %2$s."
+msgstr "Die hochgeladene Datei überschreitet die Direktive %1$s in der %2$s."
 
 #: wp-admin/includes/class-wp-comments-list-table.php:227
 msgid "No comments found in Trash."
@@ -4268,9 +4268,9 @@ msgid ""
 "dynamically generated, and should only be modified via WordPress filters.\n"
 "Any changes to the directives between these markers will be overwritten."
 msgstr ""
-"Die Anweisungen (Zeilen) zwischen „BEGIN %1$s“ und „END %1$s“ sind\n"
+"Die Direktiven (Zeilen) zwischen „BEGIN %1$s“ und „END %1$s“ sind\n"
 "dynamisch generiert und sollten nur über WordPress-Filter geändert werden.\n"
-"Alle Änderungen an den Anweisungen zwischen diesen Markierungen werden überschrieben."
+"Alle Änderungen an den Direktiven zwischen diesen Markierungen werden überschrieben."
 
 #: wp-admin/includes/class-wp-site-health-auto-updates.php:158
 msgid "All automatic updates are disabled."
@@ -9352,9 +9352,7 @@ msgstr "Der Übersetzungstyp ist ungültig."
 
 #: wp-admin/install.php:385
 msgid "Welcome to the famous five-minute WordPress installation process! Just fill in the information below and you&#8217;ll be on your way to using the most extendable and powerful personal publishing platform in the world."
-msgstr ""
-"Willkommen bei der berühmten 5-Minuten-Installation von WordPress! \n"
-"Gib unten einfach die benötigten Informationen ein und schon kannst du starten mit der am besten erweiterbaren und leistungsstarken persönlichen Veröffentlichungsplattform der Welt."
+msgstr "Willkommen bei der berühmten 5-Minuten-Installation von WordPress. Fülle einfach die folgenden Informationen aus und schon kannst du mit der weltweit leistungsfähigsten und am besten erweiterbaren persönlichen Publikationsplattform starten."
 
 #: wp-admin/includes/class-wp-plugin-install-list-table.php:738
 msgid "<strong>Compatible</strong> with your version of WordPress"
@@ -11325,7 +11323,7 @@ msgstr "Unten solltest du die Details deiner Datenbank-Verbindung eintragen. Wen
 
 #: wp-admin/setup-config.php:207
 msgid "Let&#8217;s go!"
-msgstr "Los geht's!"
+msgstr "Fortfahren"
 
 #: wp-admin/setup-config.php:176
 msgid "Table prefix (if you want to run more than one WordPress in a single database)"
@@ -12202,7 +12200,7 @@ msgstr "Falls du weitere Plugins installieren möchtest, kannst du auf den Butto
 #. translators: %s: MAX_FILE_SIZE
 #: wp-admin/includes/file.php:898
 msgid "The uploaded file exceeds the %s directive that was specified in the HTML form."
-msgstr "Die hochgeladene Datei überschreitet die maximale Größe von %s, die im HTML-Formular angegeben ist."
+msgstr "Die hochgeladene Datei überschreitet die in dem HTML-Formular angegebene Direktive %s."
 
 #: wp-admin/credits.php:160
 msgid "External Libraries"
@@ -14561,7 +14559,7 @@ msgstr "Deine E-Mail-Adresse"
 
 #: wp-admin/install.php:121
 msgid "User(s) already exists."
-msgstr "Benutzer existiert (existieren) bereits."
+msgstr "Benutzer existiert bereits."
 
 #: wp-admin/install.php:72
 msgid "WordPress &rsaquo; Installation"

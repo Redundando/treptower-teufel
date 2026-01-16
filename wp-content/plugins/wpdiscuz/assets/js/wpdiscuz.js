@@ -123,6 +123,12 @@ jQuery(document).ready(function ($) {
     var wpdiscuzLoadCount = 1;
     var userInteractedAt = 0;
 
+    if (!isUserLoggedIn && !Cookies.get('wpdiscuz_nonce_' + wpdiscuzCookiehash)) {
+        var data = new FormData();
+        data.append('action', 'wpdGetNonce');
+        getAjaxObj(isNativeAjaxEnabled, false, data);
+    }
+
     var htmlScrollBehavior = $('html').css('scroll-behavior');
     var bodyScrollBehavior = $('body').css('scroll-behavior');
 

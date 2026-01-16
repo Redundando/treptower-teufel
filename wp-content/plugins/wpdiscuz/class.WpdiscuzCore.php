@@ -2,7 +2,7 @@
 /*
  * Plugin Name: wpDiscuz
  * Description: #1 WordPress Comment Plugin. Innovative, modern and feature-rich comment system to supercharge your website comment section.
- * Version: 7.6.42
+ * Version: 7.6.44
  * Author: gVectors Team
  * Author URI: https://gvectors.com/
  * Plugin URI: https://wpdiscuz.com/
@@ -295,9 +295,12 @@ class WpdiscuzCore implements WpDiscuzConstants {
     }
 
     public function updateAutomatically() {
+        $this->helper->validateNonce();
         $postId            = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         $loadLastCommentId = WpdiscuzHelper::sanitize(INPUT_POST, "loadLastCommentId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($postId) {
+            $post = get_post($postId);
+            WpdiscuzHelper::validatePostAccess($post);
             $this->isWpdiscuzLoaded = true;
             $visibleCommentIds      = rtrim(WpdiscuzHelper::sanitize(INPUT_POST, "visibleCommentIds", "FILTER_SANITIZE_STRING"), ",");
             $this->commentsArgs     = $this->getDefaultCommentsArgs($postId);
@@ -338,10 +341,14 @@ class WpdiscuzCore implements WpDiscuzConstants {
     }
 
     public function bubbleUpdate() {
+        $this->helper->validateNonce();
         $postId        = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         $newCommentIds = WpdiscuzHelper::sanitize(INPUT_POST, "newCommentIds", "FILTER_SANITIZE_STRING");
         if ($postId && $newCommentIds) {
+            $post = get_post($postId);
+            WpdiscuzHelper::validatePostAccess($post);
             $this->isWpdiscuzLoaded = true;
+            $this->form             = $this->wpdiscuzForm->getForm($postId);
             $commentListArgs        = $this->getCommentListArgs($postId);
             if ($this->form->isUserCanSeeComments($commentListArgs["current_user"], $postId)) {
                 $newCommentIds                       = explode(",", trim($newCommentIds, ","));
@@ -377,7 +384,8 @@ class WpdiscuzCore implements WpDiscuzConstants {
             $this->form->initFormFields();
             $currentUser = WpdiscuzHelper::getCurrentUser();
             if ($this->form->isUserCanSeeComments($currentUser, $postId) && $this->form->isUserCanComment($currentUser, $postId)) {
-                $post           = get_post($postId);
+                $post = get_post($postId);
+                WpdiscuzHelper::validatePostAccess($post);
                 $uid_data       = $this->helper->getUIDData($uniqueId);
                 $comment_parent = intval($uid_data[0]);
                 $result         = $this->helper->handleCommentSubmission($post, $comment_parent);
@@ -550,7 +558,8 @@ class WpdiscuzCore implements WpDiscuzConstants {
             if (!$comment) {
                 wp_send_json_error("wc_comment_edit_not_possible");
             }
-
+            $commentPost = get_post($comment->comment_post_ID);
+            WpdiscuzHelper::validatePostAccess($commentPost);
             $result = $this->helper->handleCommentSubmission($comment->comment_post_ID, $comment->comment_parent, false);
 
             if (is_wp_error($result)) {
@@ -710,10 +719,13 @@ class WpdiscuzCore implements WpDiscuzConstants {
      * Gets single comment with its full thread and displays in comment list
      */
     public function getSingleComment() {
+        $this->helper->validateNonce();
         $commentId = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
         $comment   = get_comment($commentId);
         $postId    = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($commentId && $postId && $comment && $comment->comment_post_ID == $postId) {
+            $post = get_post($comment->comment_post_ID);
+            WpdiscuzHelper::validatePostAccess($post);
             $commentListArgs    = $this->getCommentListArgs($postId);
             $this->commentsArgs = $this->getDefaultCommentsArgs($postId);
             if ($this->form->isUserCanSeeComments($commentListArgs["current_user"], $postId)) {
@@ -779,9 +791,12 @@ class WpdiscuzCore implements WpDiscuzConstants {
     }
 
     public function loadMoreComments() {
+        $this->helper->validateNonce();
         $postId       = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         $lastParentId = WpdiscuzHelper::sanitize(INPUT_POST, "lastParentId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($lastParentId >= 0 && $postId) {
+            $post = get_post($postId);
+            WpdiscuzHelper::validatePostAccess($post);
             $this->form = $this->wpdiscuzForm->getForm($postId);
             if ($this->form->isUserCanSeeComments(WpdiscuzHelper::getCurrentUser(), $postId)) {
                 $this->isWpdiscuzLoaded = true;
@@ -822,9 +837,12 @@ class WpdiscuzCore implements WpDiscuzConstants {
     }
 
     public function sorting() {
+        $this->helper->validateNonce();
         $postId  = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         $sorting = WpdiscuzHelper::sanitize(INPUT_POST, "sorting", "FILTER_SANITIZE_STRING");
         if ($postId && $sorting) {
+            $post = get_post($postId);
+            WpdiscuzHelper::validatePostAccess($post);
             $this->form = $this->wpdiscuzForm->getForm($postId);
             if ($this->form->isUserCanSeeComments(WpdiscuzHelper::getCurrentUser(), $postId)) {
                 $this->isWpdiscuzLoaded = true;
@@ -1929,6 +1947,9 @@ class WpdiscuzCore implements WpDiscuzConstants {
         $postId    = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         $commentId = WpdiscuzHelper::sanitize(INPUT_POST, "commentId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($postId) {
+            $comment = get_comment($commentId);
+            $post    = get_post($comment->comment_post_ID);
+            WpdiscuzHelper::validatePostAccess($post);
             $this->isWpdiscuzLoaded = true;
             $this->commentsArgs     = $this->getDefaultCommentsArgs($postId);
             $commentListArgs        = $this->getCommentListArgs($postId);
@@ -1974,6 +1995,8 @@ class WpdiscuzCore implements WpDiscuzConstants {
     public function mostReactedComment() {
         $postId = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($postId) {
+            $post = get_post($postId);
+            WpdiscuzHelper::validatePostAccess($post);
             $this->isWpdiscuzLoaded = true;
             $commentListArgs        = $this->getCommentListArgs($postId);
             if ($this->form->isUserCanSeeComments($commentListArgs["current_user"], $postId)) {
@@ -2023,6 +2046,8 @@ class WpdiscuzCore implements WpDiscuzConstants {
     public function hottestThread() {
         $postId = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT, 0);
         if ($postId) {
+            $post = get_post($postId);
+            WpdiscuzHelper::validatePostAccess($post);
             $this->isWpdiscuzLoaded = true;
             $commentListArgs        = $this->getCommentListArgs($postId);
             if ($this->form->isUserCanSeeComments($commentListArgs["current_user"], $postId)) {
@@ -2389,6 +2414,8 @@ class WpdiscuzCore implements WpDiscuzConstants {
                 $this->isWpdiscuzLoaded = true;
                 $currentUser            = WpdiscuzHelper::getCurrentUser();
                 $this->form             = $this->wpdiscuzForm->getForm($inline_form->post_id);
+                $inlineFormPost         = get_post($inline_form->post_id);
+                WpdiscuzHelper::validatePostAccess($inlineFormPost);
                 if ($this->form->isUserCanSeeComments($currentUser, $inline_form->post_id)) {
                     $isAnonymous = false;
                     if (!empty($currentUser->ID)) {

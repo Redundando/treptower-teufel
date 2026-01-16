@@ -236,12 +236,31 @@ class WpdiscuzHelperEmail implements WpDiscuzConstants {
         return $hashedEmail;
     }
 
+    /**
+     * Handle AJAX add subscription action
+     *
+     * @security Rate limiting applied to prevent IDOR abuse (max 10 requests/minute)
+     * @security-fix CVE-2025-68997 - Added rate limiting before nonce validation
+     * @return void Sends JSON response
+     * @since 7.6.44
+     *
+     */
     public function addSubscription() {
-        $success                      = 0;
-        $currentUser                  = WpdiscuzHelper::getCurrentUser();
-        $subscribeFormNonce           = WpdiscuzHelper::sanitize(INPUT_POST, "wpdiscuz_subscribe_form_nonce", "FILTER_SANITIZE_STRING");
-        $subscriptionType             = WpdiscuzHelper::sanitize(INPUT_POST, "wpdiscuzSubscriptionType", "FILTER_SANITIZE_STRING");
-        $postId                       = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT);
+        // @security-fix CVE-2025-68997: Rate limiting FIRST - runs regardless of nonce filter settings
+        $rateLimitResult = $this->helper->checkRateLimit('subscribe', 10, MINUTE_IN_SECONDS);
+        if (is_wp_error($rateLimitResult)) {
+            wp_send_json_error($rateLimitResult->get_error_code());
+        }
+
+        $this->helper->validateNonce();
+
+        $success            = 0;
+        $currentUser        = WpdiscuzHelper::getCurrentUser();
+        $subscribeFormNonce = WpdiscuzHelper::sanitize(INPUT_POST, "wpdiscuz_subscribe_form_nonce", "FILTER_SANITIZE_STRING");
+        $subscriptionType   = WpdiscuzHelper::sanitize(INPUT_POST, "wpdiscuzSubscriptionType", "FILTER_SANITIZE_STRING");
+        $postId             = WpdiscuzHelper::sanitize(INPUT_POST, "postId", FILTER_SANITIZE_NUMBER_INT);
+        $post               = get_post($postId);
+        WpdiscuzHelper::validatePostAccess($post);
         $showSubscriptionBarAgreement = WpdiscuzHelper::sanitize(INPUT_POST, "show_subscription_agreement", FILTER_SANITIZE_NUMBER_INT);
         $form                         = wpDiscuz()->wpdiscuzForm->getForm($postId);
         if ($currentUser && $currentUser->ID) {
@@ -443,6 +462,8 @@ class WpdiscuzHelperEmail implements WpDiscuzConstants {
             $email = $currentUser->user_email;
         }
         if ($commentId && $postId && ($comment = get_comment($commentId))) {
+            $post = get_post($comment->comment_post_ID);
+            WpdiscuzHelper::validatePostAccess($post);
             if (apply_filters("wpdiscuz_enable_user_mentioning", $this->options->subscription["enableUserMentioning"]) && $this->options->subscription["sendMailToMentionedUsers"] && ($mentionedUsers = $this->helper->getMentionedUsers($comment->comment_content))) {
                 $this->sendMailToMentionedUsers($mentionedUsers, $comment);
             }
