@@ -33,19 +33,25 @@ video {
 
 a {
   color: var(--color-link);
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 2px;
 
   &:hover,
   &:focus-visible {
     color: var(--color-link-hover);
+    text-decoration: underline;
   }
 }
 
-.container {
+/* Container helper as a placeholder so we don't @extend a real class */
+%container {
   max-width: l.$layout-container-max;
   margin: 0 auto;
   padding: 0 l.$layout-container-padding-x;
+}
+
+.container {
+  @extend %container;
 }
 
 .site-main {
@@ -55,38 +61,32 @@ a {
 .site-main > .content,
 .site-main > article,
 .site-main > section {
-  @extend .container;
+  @extend %container;
 }
 
-.entry-title {
-  margin: 0 0 12px;
-  line-height: 1.15;
-
-  a {
-    color: inherit;
-    text-decoration: none;
-
-    &:hover,
-    &:focus-visible {
-      text-decoration: underline;
-    }
-  }
+/* Typography scale (fluid) */
+:root {
+  /* H1 tops out at 27px */
+  --fs-h1: clamp(1.45rem, 1.15rem + 0.9vw, 1.6875rem); // ~23.2px -> 27px
+  --fs-h2: clamp(1.25rem, 1.1rem + 0.7vw, 1.55rem);    // ~20px -> 24.8px
+  --fs-h3: clamp(1.125rem, 1.02rem + 0.45vw, 1.3rem);  // ~18px -> 20.8px
+  --fs-h4: 1.1rem;  // ~17.6px
+  --fs-h5: 1rem;    // 16px
+  --fs-h6: 0.9rem;  // 14.4px
 }
 
-.entry-content {
-  > * {
-    margin: 0 0 14px;
-  }
-
-  // readable line length for prose without breaking wide blocks/images
-  > p,
-  > ul,
-  > ol,
-  > blockquote {
-    max-width: l.$prose-max;
-  }
+h1, h2, h3, h4, h5, h6 {
+  margin: 12px 0 16px 0;
+  line-height: 1.2;
+  color: var(--color-headlines);
+  font: inherit;
 }
 
-.pagination {
-  margin-top: 20px;
-}
+
+h1 { font-size: var(--fs-h1); line-height: 1.15; }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+h4 { font-size: var(--fs-h4); }
+h5 { font-size: var(--fs-h5); }
+h6 { font-size: var(--fs-h6); }
+

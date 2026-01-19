@@ -1,0 +1,196 @@
+// assets/src/scss/components/_calendar.scss
+@use "../utils/layout" as l;
+
+.entry-content .kk-calendar {
+  max-width: l.$prose-width;
+  margin-left: auto;
+  margin-right: auto;
+  container-type: inline-size;
+  container-name: kk-calendar;
+
+  // local tokens
+  --kk-cal-radius: 14px;
+  --kk-cal-pad-y: 12px;
+  --kk-cal-pad-x: 14px;
+  --kk-cal-accent: var(--color-link);
+  --kk-cal-when-bg: var(--c-p050);
+}
+
+/* Month headline */
+.entry-content .kk-calendar__month {
+  margin: 28px 0 12px;
+  padding: 0 0 10px;
+  letter-spacing: 0.01em;
+
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.entry-content .kk-calendar__month:first-child {
+  margin-top: 0;
+}
+
+/* Accent underline (small) */
+.entry-content .kk-calendar__month::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 3px;
+  width: 72px;
+  background: var(--kk-cal-accent);
+  border-radius: 3px;
+}
+
+/* Entry layout: left = when, right = content */
+.entry-content .kk-calendar__entry {
+  margin: 0 0 12px;
+  padding: var(--kk-cal-pad-y) var(--kk-cal-pad-x);
+
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--kk-cal-accent);
+  border-radius: var(--kk-cal-radius);
+  background: var(--color-surface);
+
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  column-gap: 16px;
+  row-gap: 6px;
+  align-items: start;
+
+
+}
+
+/* Left column: date/time */
+.entry-content .kk-calendar__when {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: start;
+
+  color: var(--color-text);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+
+  display: inline-block;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--kk-cal-when-bg);
+}
+
+.kk-calendar__when .kk-when__line,
+.kk-calendar__when .kk-when__sep {
+  display: block;
+}
+
+.kk-calendar__when .kk-when__sep {
+  line-height: 1;
+  opacity: 0.7;
+}
+
+
+/* Right column: title */
+.entry-content .kk-calendar__title {
+  grid-column: 2;
+  grid-row: 1;
+
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Right column: description */
+.entry-content .kk-calendar__desc {
+  grid-column: 2;
+  grid-row: 2;
+
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+
+  // Normalize any stray markup
+  p { margin: 0; }
+}
+
+/* Details link as a pill/button */
+.entry-content .kk-calendar__desc a {
+  display: inline-flex;
+  align-items: center;
+
+  margin-top: 8px;
+  padding: 6px 10px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+
+  text-decoration: none;
+}
+
+.entry-content .kk-calendar__desc a:hover,
+.entry-content .kk-calendar__desc a:focus-visible {
+  background: var(--c-p050);
+  text-decoration: none;
+}
+
+/* ---------------------------------------
+   Container-query "mobile" layout
+   (based on calendar/container width)
+---------------------------------------- */
+
+/* When the calendar area gets narrow, stack the entry */
+@container kk-calendar (max-width: 640px) {
+  .entry-content .kk-calendar__entry {
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+  }
+
+  .entry-content .kk-calendar__when {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    width: 100%;
+  }
+
+  .kk-calendar__when .kk-when__line,
+  .kk-calendar__when .kk-when__sep {
+    display: inline;
+  }
+  .kk-calendar__when .kk-when__line + .kk-when__line::before {
+    content: " ";
+  }
+  .kk-calendar__when .kk-when__sep {
+    margin: 0 0.35em;
+  }
+
+
+  .entry-content .kk-calendar__title {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .entry-content .kk-calendar__desc {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}
+
+/* Even tighter: slightly reduce spacing/padding */
+@container kk-calendar (max-width: 420px) {
+  .entry-content .kk-calendar__month {
+    margin: 22px 0 10px;
+    padding-bottom: 8px;
+  }
+
+  .entry-content .kk-calendar__entry {
+    padding: 10px 12px;
+  }
+
+  .entry-content .kk-calendar__when {
+    padding: 7px 9px;
+    font-size: 0.9rem;
+
+  }
+}

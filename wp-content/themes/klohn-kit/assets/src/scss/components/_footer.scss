@@ -1,0 +1,99 @@
+@use "../utils/layout" as l;
+
+.site-footer {
+  margin-top: 40px;
+}
+
+/* Widgets area (bright primary) */
+.site-footer__widgets {
+  background: var(--color-footer-widgets-bg);
+  padding: 24px 0;
+
+  // If multiple widgets (e.g. Polylang per-language blocks), space them nicely
+  > .container {
+    display: grid;
+    gap: 16px;
+  }
+
+  .widget {
+    margin: 0;
+  }
+
+  .widget-title {
+    margin: 0 0 10px;
+    line-height: 1.2;
+  }
+
+  // Keep Gutenberg blocks from adding weird bottom margins
+  .wp-block:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Footer menu area (primary darkest) */
+.site-footer__nav {
+  background: var(--color-footer-nav-bg);
+  color: var(--color-footer-nav-text);
+  padding: 18px 0 22px;
+}
+
+.footer-menu,
+.footer-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Top level becomes columns spanning left->right */
+.footer-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 18px 26px;
+  align-items: start;
+}
+
+.footer-menu > li > a {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-weight: 300;
+  text-decoration: none;
+  color: var(--color-footer-nav-text);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-footer-nav-hover);
+  }
+}
+
+/* Submenus: always visible under each main entry */
+.footer-menu > li > ul {
+  margin-top: 10px;
+  display: block;
+}
+
+.footer-menu ul a {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--color-footer-nav-text);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-footer-nav-hover);
+  }
+}
+
+/* Optional: 3rd level indentation */
+.footer-menu ul ul {
+  margin-top: 6px;
+  padding-left: 12px;
+  border-left: 1px solid var(--color-footer-nav-hover);
+}
+
+.site-footer__meta {
+  margin: 18px 0 0;
+  font-size: 14px;
+  color: var(--color-footer-meta-text);
+}

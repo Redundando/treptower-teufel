@@ -1,12 +1,6 @@
 @use "../utils/layout" as l;
 
 .site-header {
-  .container {
-    max-width: l.$layout-container-max;
-    margin: 0 auto;
-    padding: 0 l.$layout-container-padding-x;
-  }
-
   .header-row {
     border-bottom: 1px solid var(--color-header-border);
   }
@@ -40,10 +34,13 @@
       display: inline-block;
       color: var(--c-white);
       text-decoration: none;
-      font-weight: 700;
-      font-size: 30px;
+      font-size: var(--fs-h1);
       line-height: 1.1;
       max-width: 60vw;
+    }
+
+    .site-title-wrap {
+      margin: 0;
     }
 
     .site-tagline {
@@ -227,7 +224,7 @@
 
       /* MAIN MENU: animate open/close */
       .primary-nav {
-        display: block;              // important: don't use display toggles if we want transitions
+        display: block;
         width: 100%;
         margin-top: 8px;
 
@@ -269,7 +266,7 @@
       /* SUBMENUS: animate open/close (and neutralize :focus-within behavior) */
       .primary-menu li ul {
         position: static;
-        display: block;              // keep in flow, animate via max-height
+        display: block;
         width: 100%;
         background: transparent;
         border: 0;
@@ -283,7 +280,7 @@
       }
 
       .primary-menu li.submenu-open > ul {
-        max-height: 600px;           // "big enough" for most submenus
+        max-height: 600px;
         opacity: 1;
         background: var(--color-nav-hover);
       }
@@ -330,6 +327,4 @@
       transition: none !important;
     }
   }
-
-
 }

@@ -1,0 +1,164 @@
+// assets/src/scss/base/_entry.scss
+@use "../utils/layout" as l;
+
+// Keep title aligned with text column
+.entry-title {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Helper: inner container width (container max minus padding on both sides)
+$container-inner-max: l.$layout-container-max - (l.$layout-container-padding-x * 2);
+
+.entry-content {
+  // default spacing between blocks
+  > * {
+    margin: 0 0 14px;
+
+  }
+
+  // 1) Text blocks: limit to prose width and center
+  :where(
+    p, h1, h2, h3, h4, h5, h6,
+    ul, ol, dl,
+    blockquote, pre,
+    table
+  ) {
+    max-width: l.$prose-width;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  // 2) Media blocks: stay full width (within the site container)
+  :where(
+    figure,
+    .wp-block-image,
+    .wp-block-gallery,
+    .wp-block-video,
+    .wp-block-embed,
+    .wp-block-cover,
+    .gallery,
+    .tiled-gallery
+  ) {
+    max-width: none;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  // 3) Classic-editor images often come as <p><img></p> — make those break out to full width
+  p > img[class*="wp-image-"]:not(.alignleft):not(.alignright),
+  p > a > img[class*="wp-image-"]:not(.alignleft):not(.alignright) {
+    display: block;
+    max-width: none;
+
+    // make the image span the full content width, even though the <p> is only prose width
+    width: min(
+            calc(100vw - #{l.$layout-container-padding-x * 2}),
+            #{$container-inner-max}
+    );
+
+    margin-left: 50%;
+    transform: translateX(-50%);
+
+  }
+
+  // Background Group blocks: make them tight
+  .wp-block-group.has-background {
+    padding: 4px 4px;
+  }
+
+  // Ensure non-background groups don't add padding either (usually already 0)
+  .wp-block-group:not(.has-background) {
+    padding: 0;
+  }
+
+  // Remove the “fake padding” caused by default margins of first/last child inside groups
+  .wp-block-group.has-background > :first-child,
+  .wp-block-group.has-background > .wp-block-group__inner-container > :first-child {
+    margin-top: 0;
+  }
+
+  .wp-block-group.has-background > :last-child,
+  .wp-block-group.has-background > .wp-block-group__inner-container > :last-child {
+    margin-bottom: 0;
+  }
+
+
+  // 4) Floats (no width limiting for now, as requested)
+  .alignleft,
+  img.alignleft,
+  figure.alignleft {
+    float: left;
+    width: auto;
+    margin: 0 18px 14px 0;
+    max-width: none;
+    transform: none;
+  }
+
+  .alignright,
+  img.alignright,
+  figure.alignright {
+    float: right;
+    width: auto;
+    margin: 0 0 14px 18px;
+    max-width: none;
+    transform: none;
+  }
+
+  // Clear floats at the end of the content
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}
+
+/* Latest posts block should not be constrained */
+.entry-content :where(ul, ol).wp-block-latest-posts,
+.entry-content .wp-block-latest-posts__list {
+  max-width: none;
+}
+
+.entry-meta {
+  max-width: l.$prose-width;
+  margin: 0 auto 18px;
+  padding: 10px 0;
+
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.4;
+
+  border-top: 1px dotted var(--color-border);
+  border-bottom: 1px dotted var(--color-border);
+}
+
+.entry-meta__sep {
+  margin: 0 8px;
+}
+
+.entry-meta a {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+.entry-title {
+  font-size: var(--fs-h1);
+  line-height: 1.1;
+  margin: 16px auto;
+  text-align: center;
+}
+
+.entry-content > :where(h2, h3, h4, h5, h6) {
+}
+
+.entry-content > :where(h2, h3, h4, h5, h6):first-child {
+  margin-top: 0;
+}

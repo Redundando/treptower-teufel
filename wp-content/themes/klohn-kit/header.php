@@ -10,9 +10,20 @@
                 <?php endif; ?>
 
                 <div class="site-identity">
-                    <a class="site-title" href="<?php echo esc_url(home_url('/')); ?>">
-                        <?php bloginfo('name'); ?>
-                    </a>
+
+                    <?php if ( is_front_page() ) : ?>
+                        <h1 class="site-title-wrap">
+                            <a class="site-title" href="<?php echo esc_url( home_url('/') ); ?>">
+                                <?php echo esc_html( get_bloginfo('name') ); ?>
+                            </a>
+                        </h1>
+                    <?php else : ?>
+                        <p class="site-title-wrap">
+                            <a class="site-title" href="<?php echo esc_url( home_url('/') ); ?>">
+                                <?php echo esc_html( get_bloginfo('name') ); ?>
+                            </a>
+                        </p>
+                    <?php endif; ?>
 
                     <?php if (get_bloginfo('description')) : ?>
                         <p class="site-tagline"><?php bloginfo('description'); ?></p>

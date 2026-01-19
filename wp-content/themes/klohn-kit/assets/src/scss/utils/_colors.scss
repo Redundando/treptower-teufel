@@ -36,6 +36,17 @@
   --color-nav-hover: var(--c-s800);
   --color-header-border: var(--c-s800);
 
+  /* headlines */
+  --color-headlines: var(--c-s950);
+
+  /* footer */
+  --color-footer-widgets-bg: var(--c-p050);  // bright primary
+  --color-footer-nav-bg: var(--c-p950);      // primary darkest
+  --color-footer-nav-hover: var(--c-p800);
+  --color-footer-nav-text: var(--c-white);
+  --color-footer-meta-text: var(--c-p200);
+
+
   /* links in content */
   --color-link: var(--c-s950);
   --color-link-hover: var(--c-s800);
