@@ -3,7 +3,7 @@ Contributors: gVectors Team
 Tags: comment, comments, ajax comments, comment form, comment fields
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 7.6.44
+Stable tag: 7.6.45
 Requires PHP: 5.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -186,6 +186,10 @@ Nothing will be lost!  **Comments - wpDiscuz** will show all old comments.
 **IMPORTANT!**
 
 Please don't forget delete all caches and purge CDN after the update.
+
+= Comments - wpDiscuz v7.6.45 - 19.01.2026 =
+
+* Added: A new filter hook "wpdiscuz_validate_nonce_for_guests" to control wpdGetNonce ajax requests for guest users
 
 = Comments - wpDiscuz v7.6.44 - 15.01.2026 =
 
