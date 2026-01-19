@@ -27,12 +27,8 @@
 
         <div class="top-header">
 
-            <a href="<?php echo pll_home_url() ?>"><img class="site-logo"
-                                                        src="https://www.treptower-teufel.de/wp-content/uploads/2018/02/csm_logo_498da7ba5c.png"
-                                                        alt="Logo Treptower Teufel"/></a>
             <div class="top-header-right">
 			<span class="site-title">
-				<a href="<?php echo pll_home_url() ?>"><?php bloginfo( 'name' ); ?></a>
                 <div class="social-icons">
                     <a href="https://www.facebook.com/TreptowerTeufelTC" class="facebook-icon same-window"></a>
                 </div>
