@@ -1,0 +1,127 @@
+/* assets/src/scss/components/_rss.scss
+   Gutenberg RSS block styled like kk-news panels, using _tokens.scss.
+*/
+
+.wp-block-rss.kk-rss {
+  list-style: none;
+  margin: 0 0 var(--space-m) 0;
+  padding: 0;
+
+  display: grid;
+  gap: var(--space-s);
+}
+
+.wp-block-rss.kk-rss .wp-block-rss__item {
+  background: var(--panel-bg);
+  border: var(--panel-border);
+  border-radius: var(--panel-radius);
+  overflow: hidden;
+
+  padding: var(--panel-pad);
+
+  /* meta row + content rows */
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: var(--space-xs);
+  row-gap: var(--space-xs);
+
+  container-type: inline-size;
+  container-name: kk-rss-item;
+}
+
+/* META (single line) */
+.wp-block-rss.kk-rss .wp-block-rss__item-publish-date {
+  grid-row: 1;
+  grid-column: 1;
+
+  margin: 0;
+  padding: 0;
+
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+
+}
+
+/* optional author (WP may output this) */
+.wp-block-rss.kk-rss .wp-block-rss__item-author {
+  grid-row: 1;
+  grid-column: 2;
+
+  margin: 0;
+  padding: var(--space-xs) 0;
+
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+  color: var(--color-muted);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+
+/* TITLE */
+.wp-block-rss.kk-rss .wp-block-rss__item-title {
+  grid-row: 2;
+  grid-column: 1 / -1;
+
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: 1.2;
+  border-top: var(--border-meta);
+  padding-top: var(--space-s);
+}
+
+.wp-block-rss.kk-rss .wp-block-rss__item-title a {
+  color: var(--color-headlines);
+  text-decoration: none;
+
+}
+
+.wp-block-rss.kk-rss .wp-block-rss__item-title a:hover,
+.wp-block-rss.kk-rss .wp-block-rss__item-title a:focus-visible {
+  text-decoration: underline;
+}
+
+/* EXCERPT */
+.wp-block-rss.kk-rss .wp-block-rss__item-excerpt {
+  grid-row: 3;
+  grid-column: 1 / -1;
+
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Responsive density */
+@container kk-rss-item (max-width: 40rem) {
+  .wp-block-rss.kk-rss .wp-block-rss__item {
+    padding: var(--space-s);
+    row-gap: var(--space-xs);
+  }
+
+  .wp-block-rss.kk-rss .wp-block-rss__item-title {
+    font-size: var(--fs-body);
+  }
+
+  .wp-block-rss.kk-rss .wp-block-rss__item-excerpt {
+    font-size: var(--fs-body-s);
+    -webkit-line-clamp: 3;
+  }
+}
+
+@container kk-rss-item (max-width: 26rem) {
+  .wp-block-rss.kk-rss .wp-block-rss__item-excerpt {
+    display: none;
+  }
+}

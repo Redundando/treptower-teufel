@@ -1,196 +1,179 @@
 // assets/src/scss/components/_calendar.scss
 @use "../utils/layout" as l;
 
+/* Base calendar wrapper (usable anywhere) */
+.kk-calendar {
+  container-type: inline-size;
+  container-name: kk-calendar;
+
+  /* component aliases (map to global tokens) */
+  --cal-radius: var(--panel-radius);
+  --cal-border: var(--panel-border);
+  --cal-bg: var(--panel-bg);
+
+  --cal-gap: var(--space-m);
+  --cal-pad-y: var(--space-s);
+  --cal-pad-x: var(--space-m);
+}
+
+/* When inserted into post/page content: keep prose width */
 .entry-content .kk-calendar {
   max-width: l.$prose-width;
   margin-left: auto;
   margin-right: auto;
-  container-type: inline-size;
-  container-name: kk-calendar;
-
-  // local tokens
-  --kk-cal-radius: 14px;
-  --kk-cal-pad-y: 12px;
-  --kk-cal-pad-x: 14px;
-  --kk-cal-accent: var(--color-link);
-  --kk-cal-when-bg: var(--c-p050);
+  margin-bottom: var(--space-m);
 }
 
-/* Month headline */
-.entry-content .kk-calendar__month {
-  margin: 28px 0 12px;
-  padding: 0 0 10px;
-  letter-spacing: 0.01em;
+/* ---------------------------
+   Month heading
+--------------------------- */
 
-  border-bottom: 1px solid var(--color-border);
-  position: relative;
+.kk-calendar__month {
+  margin: var(--space-xl) 0 var(--space-s);
+  padding: 0 0 var(--space-s);
 }
 
-.entry-content .kk-calendar__month:first-child {
+.kk-calendar__month:first-child {
   margin-top: 0;
 }
 
-/* Accent underline (small) */
-.entry-content .kk-calendar__month::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  height: 3px;
-  width: 72px;
-  background: var(--kk-cal-accent);
-  border-radius: 3px;
-}
+/* ---------------------------
+   Entry (panel/card)
+--------------------------- */
 
-/* Entry layout: left = when, right = content */
-.entry-content .kk-calendar__entry {
-  margin: 0 0 12px;
-  padding: var(--kk-cal-pad-y) var(--kk-cal-pad-x);
+.kk-calendar__entry {
+  margin: 0 0 var(--cal-gap);
+  padding: var(--cal-pad-y) var(--cal-pad-x);
 
-  border: 1px solid var(--color-border);
-  border-left: 4px solid var(--kk-cal-accent);
-  border-radius: var(--kk-cal-radius);
-  background: var(--color-surface);
+  background: var(--cal-bg);
+  border: var(--cal-border);
+  border-radius: var(--cal-radius);
 
   display: grid;
-  grid-template-columns: 190px 1fr;
-  column-gap: 16px;
-  row-gap: 6px;
+  grid-template-columns: 1fr;
+  row-gap: var(--space-xs);
   align-items: start;
-
-
 }
 
-/* Left column: date/time */
-.entry-content .kk-calendar__when {
-  grid-column: 1;
-  grid-row: 1 / span 2;
-  align-self: start;
+.kk-calendar__entry:last-child {
+  margin-bottom: 0;
+}
 
-  color: var(--color-text);
-  font-size: 0.92rem;
-  line-height: 1.5;
+/* ---------------------------
+   Meta line (date/time) — matches news density
+--------------------------- */
+
+.kk-calendar__when {
+  margin: 0;
+
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+  color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 
-  display: inline-block;
-  padding: 8px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  background: var(--kk-cal-when-bg);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-s);
+
+  /* keep it visually compact */
+  padding: 0;
 }
 
+/* default: make the “when” parts sit on one line where possible */
 .kk-calendar__when .kk-when__line,
 .kk-calendar__when .kk-when__sep {
-  display: block;
+  display: inline;
 }
 
 .kk-calendar__when .kk-when__sep {
-  line-height: 1;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
+/* ---------------------------
+   Title — dotted divider like news
+--------------------------- */
 
-/* Right column: title */
-.entry-content .kk-calendar__title {
-  grid-column: 2;
-  grid-row: 1;
-
+.kk-calendar__title {
   margin: 0;
+
+  font-size: var(--fs-h3);
+  line-height: 1.2;
   font-weight: 600;
-  line-height: 1.25;
+
+  border-top: var(--border-meta);
+  padding: var(--space-xs) 0 var(--space-xs);
 }
 
-/* Right column: description */
-.entry-content .kk-calendar__desc {
-  grid-column: 2;
-  grid-row: 2;
+/* ---------------------------
+   Description
+--------------------------- */
 
+.kk-calendar__desc {
   margin: 0;
-  color: var(--color-muted);
-  font-size: 0.95rem;
+
+  color: var(--text-secondary);
+  font-size: var(--fs-body);
   line-height: 1.55;
 
-  // Normalize any stray markup
+  /* normalize any stray markup */
   p { margin: 0; }
 }
 
-/* Details link as a pill/button */
-.entry-content .kk-calendar__desc a {
-  display: inline-flex;
-  align-items: center;
+/* Details link (lightweight text action, not a pill/button) */
+.kk-calendar__desc a {
+  display: block;
+  margin-top: var(--space-xs);
 
-  margin-top: 8px;
-  padding: 6px 10px;
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
 
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-surface);
-
+  color: var(--color-link);
   text-decoration: none;
 }
 
-.entry-content .kk-calendar__desc a:hover,
-.entry-content .kk-calendar__desc a:focus-visible {
-  background: var(--c-p050);
-  text-decoration: none;
+.kk-calendar__desc a:hover,
+.kk-calendar__desc a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-/* ---------------------------------------
-   Container-query "mobile" layout
-   (based on calendar/container width)
----------------------------------------- */
+/* ---------------------------
+   Container queries
+--------------------------- */
 
-/* When the calendar area gets narrow, stack the entry */
-@container kk-calendar (max-width: 640px) {
-  .entry-content .kk-calendar__entry {
-    grid-template-columns: 1fr;
-    row-gap: 8px;
+/* Narrow: allow the “when” info to stack cleanly */
+@container kk-calendar (max-width: 40rem) {
+  .kk-calendar__entry {
+    padding: var(--space-s);
   }
 
-  .entry-content .kk-calendar__when {
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: start;
-    width: 100%;
+  .kk-calendar__when {
+    gap: var(--space-xs);
   }
 
-  .kk-calendar__when .kk-when__line,
+  .kk-calendar__when .kk-when__line {
+    display: block;
+  }
+
   .kk-calendar__when .kk-when__sep {
-    display: inline;
-  }
-  .kk-calendar__when .kk-when__line + .kk-when__line::before {
-    content: " ";
-  }
-  .kk-calendar__when .kk-when__sep {
-    margin: 0 0.35em;
+    display: none;
   }
 
-
-  .entry-content .kk-calendar__title {
-    grid-column: 1;
-    grid-row: 2;
+  .kk-calendar__title {
+    font-size: var(--fs-body);
+    padding-top: var(--space-s);
   }
 
-  .entry-content .kk-calendar__desc {
-    grid-column: 1;
-    grid-row: 3;
+  .kk-calendar__desc {
+    font-size: var(--fs-body-s);
   }
 }
 
-/* Even tighter: slightly reduce spacing/padding */
-@container kk-calendar (max-width: 420px) {
-  .entry-content .kk-calendar__month {
-    margin: 22px 0 10px;
-    padding-bottom: 8px;
-  }
-
-  .entry-content .kk-calendar__entry {
-    padding: 10px 12px;
-  }
-
-  .entry-content .kk-calendar__when {
-    padding: 7px 9px;
-    font-size: 0.9rem;
-
+/* Very narrow: slightly tighter month spacing */
+@container kk-calendar (max-width: 26rem) {
+  .kk-calendar__month {
+    margin: var(--space-l) 0 var(--space-s);
+    padding-bottom: var(--space-s);
   }
 }

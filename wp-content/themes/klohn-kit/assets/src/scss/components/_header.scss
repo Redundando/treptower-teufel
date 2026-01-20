@@ -13,7 +13,6 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: l.$header-brand-padding-y 0;
     }
 
     .brand-left {
@@ -25,7 +24,7 @@
 
     .site-logo img {
       display: block;
-      max-height: l.$header-logo-max-height;
+      max-height: 80px;
       width: auto;
       height: auto;
     }
