@@ -1,6 +1,3 @@
-#This Apache config file was created by Duplicator Installer on 2021-03-13 14:59:17.
-#The original can be found in archived file with the name .htaccess__[HASH]
-
 # BEGIN WordPress
 # The directives (lines) between "BEGIN WordPress" and "END WordPress" are
 # dynamically generated, and should only be modified via WordPress filters.
@@ -32,6 +29,28 @@ RewriteRule . /treptower-teufel/index.php [L]
 </Files>
 
 # END Wordfence WAF
+
+# Browser Cache
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png  "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(?:css|js|jpg|jpeg|png|gif|webp|avif|svg|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# END Browser Cache
 
 # Redirects
 

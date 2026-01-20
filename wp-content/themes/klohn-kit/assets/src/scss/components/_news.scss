@@ -1,0 +1,328 @@
+// assets/src/scss/components/_news.scss
+
+.kk-news .wp-block-post{
+    container-type: inline-size;
+    container-name: kk-news-item;
+}
+
+.kk-news {
+    container-type: inline-size;
+    container-name: kk-news;
+
+    --kk-news-radius: 16px;
+    --kk-news-pad: 16px;
+    --kk-news-gap: 8px;
+    --kk-news-thumb: 150px;
+}
+
+/* grid of items */
+.kk-news .wp-block-post-template {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    display: grid;
+    gap: var(--kk-news-gap);
+}
+
+/* each post = card */
+.kk-news .wp-block-post {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--kk-news-radius);
+    overflow: hidden;
+}
+
+/* flatten the internal columns so we can place inner blocks via grid */
+.kk-news .wp-block-post .wp-block-columns {
+    margin: 0;
+    padding: var(--kk-news-pad);
+    width: 100%;
+    display: grid;
+    gap: 10px 14px;
+
+    /* rows: meta, title, excerpt(+thumb), read-more */
+    grid-template-rows: auto auto auto auto;
+}
+
+.kk-news .wp-block-post .wp-block-column {
+    display: contents;
+}
+
+/* with thumbnail: date | content | thumb */
+.kk-news .wp-block-post.has-post-thumbnail .wp-block-columns {
+    grid-template-columns: auto 1fr var(--kk-news-thumb);
+}
+
+/* without thumbnail: date | content */
+.kk-news .wp-block-post:not(.has-post-thumbnail) .wp-block-columns {
+    grid-template-columns: auto 1fr;
+}
+
+/* --- META (row 1) --- */
+.kk-news .wp-block-post-date {
+    grid-row: 1;
+    grid-column: 1;
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    align-self: center;
+}
+
+/* wrapper around author block in your markup */
+.kk-news .wp-block-group.is-nowrap {
+    grid-row: 1;
+    grid-column: 2;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+}
+
+/* author */
+.kk-news .wp-block-post-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    min-width: 0;
+}
+
+.kk-news .wp-block-post-author__avatar img {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: block;
+}
+
+.kk-news .wp-block-post-author__name {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 0.92rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- TITLE (row 2) --- */
+.kk-news .wp-block-post-title {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    margin: 0;
+    line-height: 1.15;
+}
+
+.kk-news .wp-block-post-title a {
+    color: var(--color-headlines);
+    text-decoration: none;
+}
+
+/* no hover effects for title links */
+.kk-news .wp-block-post-title a:hover,
+.kk-news .wp-block-post-title a:focus-visible {
+    color: var(--color-headlines);
+    text-decoration: none;
+}
+
+/* --- EXCERPT (row 3) --- */
+.kk-news .wp-block-post-excerpt {
+    grid-row: 3;
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 0.98rem;
+    line-height: 1.55;
+}
+
+/* with thumbnail, excerpt should not run underneath it */
+.kk-news .wp-block-post.has-post-thumbnail .wp-block-post-excerpt {
+    grid-column: 1 / 3; /* date + content */
+}
+
+.kk-news .wp-block-post:not(.has-post-thumbnail) .wp-block-post-excerpt {
+    grid-column: 1 / -1;
+}
+
+.kk-news .wp-block-post-excerpt__excerpt {
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- READ MORE (row 4) --- */
+.kk-news .wp-block-read-more {
+    grid-row: 4;
+    margin: 0;
+    justify-self: start;
+    text-decoration: none;
+    color: var(--color-link);
+    font-weight: 200;
+}
+
+.kk-news .wp-block-post.has-post-thumbnail .wp-block-read-more {
+    grid-column: 1 / 3;
+}
+
+.kk-news .wp-block-post:not(.has-post-thumbnail) .wp-block-read-more {
+    grid-column: 1 / -1;
+}
+
+.kk-news .wp-block-read-more:hover,
+.kk-news .wp-block-read-more:focus-visible {
+    text-decoration: none;
+    color: var(--color-link);
+}
+
+/* --- THUMBNAIL (row 3-4, right) --- */
+.kk-news .wp-block-post-featured-image {
+    margin: 0;
+}
+
+.kk-news .wp-block-post.has-post-thumbnail .wp-block-post-featured-image {
+    grid-row: 3 / 5; /* excerpt + read-more */
+    grid-column: 3;
+    align-self: start;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--c-p050);
+}
+
+.kk-news .wp-block-post-featured-image a {
+    display: block;
+}
+
+.kk-news .wp-block-post-featured-image img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+/* --- PAGINATION --- */
+.kk-news .wp-block-query-pagination {
+    margin: 22px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.kk-news .wp-block-query-pagination-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* numbers */
+.kk-news .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.kk-news .page-numbers.current {
+    border-color: var(--c-s800);
+    background: var(--c-s950);
+    color: var(--c-white);
+}
+
+/* arrows (prev/next) */
+.kk-news .wp-block-query-pagination-previous,
+.kk-news .wp-block-query-pagination-next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+/* keep dots visually lighter */
+.kk-news .page-numbers.dots {
+    border: 0;
+    background: transparent;
+    min-width: auto;
+    padding: 0 4px;
+    color: var(--color-muted);
+}
+
+/* no hover effects */
+.kk-news .page-numbers:hover,
+.kk-news .page-numbers:focus-visible,
+.kk-news .wp-block-query-pagination-previous:hover,
+.kk-news .wp-block-query-pagination-previous:focus-visible,
+.kk-news .wp-block-query-pagination-next:hover,
+.kk-news .wp-block-query-pagination-next:focus-visible {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+@container kk-news (max-width: 700px) {
+
+    .kk-news .wp-block-post{
+        margin: 0;
+    }
+
+}
+
+@container kk-news-item (max-width: 700px) {
+    /* hide thumbnail */
+    .kk-news .wp-block-post-featured-image {
+        display: none;
+    }
+
+    /* remove the thumbnail column so layout doesn't reserve space */
+    .kk-news .wp-block-post.has-post-thumbnail .wp-block-columns {
+        grid-template-columns: auto 1fr;
+    }
+
+    /* ensure excerpt + read-more span full width (safe) */
+    .kk-news .wp-block-post.has-post-thumbnail .wp-block-post-excerpt,
+    .kk-news .wp-block-post.has-post-thumbnail .wp-block-read-more {
+        grid-column: 1 / -1;
+    }
+
+    .kk-news .wp-block-post-title {
+        font-size: 1em;
+    }
+
+}
+
+@container kk-news-item (max-width: 500px) {
+
+
+    .kk-news .wp-block-post-author {
+        display: none;
+    }
+
+    .kk-news .wp-block-post-date {
+        display: none;
+    }
+
+    .kk-news .wp-block-read-more {
+        display: none;
+    }
+
+    .kk-news .wp-block-post-excerpt{
+        font-size: 0.9em;
+    }
+}
