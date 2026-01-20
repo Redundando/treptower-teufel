@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<styleSystem project="treptower-teufel.de" version="1.1" language="en">
+
+    <!-- =========================================================
+         0) INTENT (what the site should feel like)
+         ========================================================= -->
+    <intent>
+        <feel>Classic, practical, “old-site” in the good sense: direct, readable, structured, not decorative.</feel>
+        <density>Information-dense, but always scannable via consistent hierarchy (headings, lists, predictable actions).</density>
+        <decorations>Flat by default: borders + subtle tints. No “modern card UI” aesthetics.</decorations>
+    </intent>
+
+    <!-- =========================================================
+         1) NON-NEGOTIABLE PRINCIPLES
+         ========================================================= -->
+    <principles>
+        <principle>Content and functionality first. Styling must increase clarity or speed of navigation.</principle>
+        <principle>Whitespace must justify itself (grouping, readability). Avoid empty bands.</principle>
+        <principle>Same thing must look the same everywhere (buttons, cards, lists, headings).</principle>
+        <principle>Color communicates meaning; avoid decorative color noise.</principle>
+        <principle>Shadows are basically off (only allowed if they communicate layering, e.g., dropdown over page).</principle>
+    </principles>
+
+    <!-- =========================================================
+         2) GLOBAL VISUAL TOKENS (exact look rules)
+         Use these everywhere; do not invent per-component values.
+         ========================================================= -->
+    <tokens>
+
+        <typography>
+            <fontFamily>Arial with system sans-serif fallback.</fontFamily>
+
+            <bodyText>
+                <size>16px</size>
+                <lineHeight>1.6</lineHeight>
+                <weight>Normal (not bold).</weight>
+            </bodyText>
+
+            <headlines>
+                <h1>
+                    <sizeRange>23–27px</sizeRange>
+                    <lineHeight>1.15</lineHeight>
+                    <weight>Bold-ish (600–700). Must clearly read as a heading.</weight>
+                </h1>
+                <h2>
+                    <sizeRange>20–25px</sizeRange>
+                    <lineHeight>1.2</lineHeight>
+                    <weight>600–700</weight>
+                </h2>
+                <h3>
+                    <sizeRange>18–21px</sizeRange>
+                    <lineHeight>1.25</lineHeight>
+                    <weight>600</weight>
+                </h3>
+                <h4toH6>
+                    <rule>Only for structure. Do not create special “styles” for small headings.</rule>
+                </h4toH6>
+                <headlineColor>Use the “headlines” token (dark, not red).</headlineColor>
+            </headlines>
+
+            <metaText>
+                <size>14px</size>
+                <lineHeight>1.4</lineHeight>
+                <color>Use “muted” token.</color>
+            </metaText>
+
+            <linkText>
+                <default>Looks like a link immediately (link color).</default>
+                <hover>Underline is mandatory on hover/focus.</hover>
+                <underlineOffset>~2px</underlineOffset>
+            </linkText>
+        </typography>
+
+        <spacing>
+            <rule>Use a small fixed rhythm; avoid random one-off spacing.</rule>
+
+            <unitXS>4px</unitXS>
+            <unitS>8px</unitS>
+            <unitM>14px (default vertical rhythm between blocks)</unitM>
+            <unitL>18px</unitL>
+            <unitXL>24–28px (between major sections)</unitXL>
+
+            <headlinesMargins>
+                <top>12px</top>
+                <bottom>16px</bottom>
+            </headlinesMargins>
+
+            <contentDefaultBlockGap>14px</contentDefaultBlockGap>
+        </spacing>
+
+        <borders>
+            <defaultBorder>1px solid using the “border” token color.</defaultBorder>
+            <divider>Same as default border (do not vary thickness per component).</divider>
+            <metaBorder>1px dotted using the “border” token color (only for meta bars).</metaBorder>
+        </borders>
+
+        <corners>
+            <rule>Either none or minimal. Pick one and apply everywhere.</rule>
+            <recommended>Minimal rounding: 3px (use consistently for panels, cards, inputs, buttons).</recommended>
+        </corners>
+
+        <shadows>
+            <default>None.</default>
+            <exception>Only for layered UI (e.g., dropdown over page). If used: extremely subtle, same everywhere.</exception>
+        </shadows>
+
+        <colors>
+            <rule>Use roles, not ad-hoc colors. Red is not a text paint; it’s an interaction/brand accent.</rule>
+
+            <roles>
+                <surface>Page background.</surface>
+                <text>Default text.</text>
+                <headlines>Headings.</headlines>
+                <muted>Meta / secondary info.</muted>
+                <border>All borders and dividers.</border>
+                <link>All links.</link>
+                <linkHover>Link hover state.</linkHover>
+                <brandRed>Header/nav + primary actions only.</brandRed>
+            </roles>
+
+            <redUsageRules>
+                <rule>Never use brand red for long body text.</rule>
+                <rule>Headlines are not red (unless it is a clickable headline link, and even then keep it restrained).</rule>
+                <rule>Red is primarily for navigation and actions.</rule>
+            </redUsageRules>
+        </colors>
+
+        <layout>
+            <container>
+                <desktopMaxWidth>~1280px target feel.</desktopMaxWidth>
+                <sidePadding>Small but present (enough to avoid edge collisions on mobile).</sidePadding>
+                <rule>All major sections align to the same container edges.</rule>
+            </container>
+
+            <proseWidth>
+                <target>Comfortable reading width (roughly 45–60 characters per line).</target>
+                <rule>Text content is centered within prose width. Media may extend to container width.</rule>
+            </proseWidth>
+        </layout>
+
+    </tokens>
+
+    <!-- =========================================================
+         3) REUSABLE COMPONENT RECIPES (exact “what it looks like”)
+         These are your enforced patterns.
+         ========================================================= -->
+    <recipes>
+
+        <recipe id="sectionHeading">
+            <looksLike>
+                <rule>All major homepage sections use the same H2 style.</rule>
+                <rule>Heading text is dark (headlines token), not red.</rule>
+                <rule>Spacing above a section heading is XL; below is L.</rule>
+                <rule>No decorative ornaments unless applied to every section heading (site-wide rule).</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="panel">
+            <looksLike>
+                <rule>Flat box: 1px solid border, surface background.</rule>
+                <rule>Padding: L inside (dense but readable).</rule>
+                <rule>Radius: minimal and consistent (recommended 3px) or none everywhere.</rule>
+                <rule>No shadow.</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="card">
+            <structureOrder>meta → title → excerpt/descriptor → action</structureOrder>
+            <looksLike>
+                <rule>Same as panel, but used in lists/grids.</rule>
+                <rule>Padding: L (or M for very dense widgets), consistent across all cards.</rule>
+                <rule>Title uses H3 sizing/weight rules.</rule>
+                <rule>Excerpt uses body text rules; keep visually consistent length in grids (line-clamp is allowed later).</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="metaBar">
+            <looksLike>
+                <rule>Muted text (14px, line-height 1.4).</rule>
+                <rule>Top and bottom dotted lines (meta border style).</rule>
+                <rule>Padding top/bottom: about 10px; overall compact, not airy.</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="list">
+            <looksLike>
+                <rule>Always reads as a list (not a paragraph of links).</rule>
+                <rule>Each item has a consistent internal layout (title + optional meta + optional short line + action).</rule>
+                <rule>Use thin dividers between items when there are multiple items.</rule>
+                <rule>Item vertical spacing uses S or M; never random per list.</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="textAction">
+            <looksLike>
+                <rule>Looks like an action but stays lightweight (it is not a big button).</rule>
+                <rule>Uses link color; underline on hover/focus is mandatory.</rule>
+                <rule>Placement is consistent within cards/lists (typically bottom-left of the item).</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="buttonPrimary">
+            <looksLike>
+                <rule>Filled using brandRed, readable text contrast.</rule>
+                <rule>Height feels compact (roughly 36–40px).</rule>
+                <rule>Horizontal padding feels deliberate (roughly 12–14px).</rule>
+                <rule>Radius matches global corners rule.</rule>
+                <rule>Used sparingly (usually one primary per section).</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="buttonSecondary">
+            <looksLike>
+                <rule>Outline style: border + transparent/neutral background.</rule>
+                <rule>Same height and padding as primary.</rule>
+                <rule>Must not compete with primary; it is clearly the secondary choice.</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="forms">
+            <looksLike>
+                <rule>Inputs are flat: border + surface background, minimal rounding.</rule>
+                <rule>Comfortable input height similar to buttons (36–40px).</rule>
+                <rule>Labels are clear and close to inputs (tight, structured, no large gaps).</rule>
+                <rule>Errors are explicit text + (optional) border change; do not rely on color alone.</rule>
+            </looksLike>
+        </recipe>
+
+        <recipe id="mediaFrame">
+            <looksLike>
+                <rule>Maps/embeds/images that need framing use the same border and radius as panels.</rule>
+                <rule>No special “photo frame” styling. Keep it utilitarian.</rule>
+            </looksLike>
+        </recipe>
+
+    </recipes>
+
+    <!-- =========================================================
+         4) AREA-SPECIFIC APPLICATION (homepage + common templates)
+         ========================================================= -->
+    <applicationRules>
+
+        <headerNav>
+            <rule>Header is compact: reduce vertical padding until it stops feeling “tall”.</rule>
+            <rule>Active/current nav item is obvious (one consistent treatment everywhere).</rule>
+            <rule>Nav links have enough horizontal padding to avoid misclicks.</rule>
+            <rule>Header uses brandRed; the rest of the page stays mostly neutral.</rule>
+        </headerNav>
+
+        <homepageNews>
+            <rule>Every post preview uses the Card recipe.</rule>
+            <rule>Post title is dark; action (“Weiterlesen”) is the colored interactive element.</rule>
+            <rule>Meta (date/author) uses MetaBar or at least meta text rules consistently.</rule>
+        </homepageNews>
+
+        <eventsAndFeeds>
+            <rule>Events and external feeds are lists using the List recipe.</rule>
+            <rule>Each item: meta first, then title, then optional descriptor, then a text action.</rule>
+        </eventsAndFeeds>
+
+        <footer>
+            <rule>Dense is allowed, but must be structured into clear blocks with consistent labels.</rule>
+            <rule>Footer links still look like links (same link rules).</rule>
+        </footer>
+
+    </applicationRules>
+
+    <!-- =========================================================
+         5) DEFINITION OF DONE (practical checks)
+         ========================================================= -->
+    <definitionOfDone>
+        <check>Do all panels/cards share the exact same border, radius, and padding logic?</check>
+        <check>Are headings consistently dark, with red mainly reserved for nav/actions?</check>
+        <check>Does every list read as a list (not a wall of links/text)?</check>
+        <check>Is spacing following the rhythm (4 / 8 / 14 / 18 / 24–28), not random?</check>
+        <check>Are hover/focus states obvious and consistent for links/buttons?</check>
+    </definitionOfDone>
+
+</styleSystem>

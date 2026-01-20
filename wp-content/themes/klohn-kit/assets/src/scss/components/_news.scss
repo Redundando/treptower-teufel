@@ -1,193 +1,231 @@
-// assets/src/scss/components/_news.scss
-
-.kk-news .wp-block-post{
-    container-type: inline-size;
-    container-name: kk-news-item;
-}
+/* assets/src/scss/components/_news.scss
+   Requires global tokens (e.g. :root in _tokens.scss):
+   --space-*, --radius-s, --border-1, --border-meta, --panel-*, --surface-tint,
+   --fs-meta, --lh-meta, --fs-body, --fs-body-s, --text-secondary, --thumb-w, etc.
+*/
 
 .kk-news {
     container-type: inline-size;
     container-name: kk-news;
 
-    --kk-news-radius: 16px;
-    --kk-news-pad: 16px;
-    --kk-news-gap: 8px;
-    --kk-news-thumb: 150px;
+    /* component aliases (map to global tokens) */
+    --news-radius: var(--panel-radius);
+    --news-pad: var(--panel-pad);
+    --news-gap: var(--space-m);
+    --news-thumb: var(--thumb-w);
 }
 
-/* grid of items */
+/* List grid */
 .kk-news .wp-block-post-template {
     list-style: none;
-    margin: 0 auto;
+    margin: auto;
     padding: 0;
+
     display: grid;
-    gap: var(--kk-news-gap);
+    gap: var(--news-gap);
 }
 
-/* each post = card */
+/* Each post = flat panel */
 .kk-news .wp-block-post {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--kk-news-radius);
+    background: var(--panel-bg);
+    border: var(--panel-border);
+    border-radius: var(--news-radius);
     overflow: hidden;
+
+    container-type: inline-size;
+    container-name: kk-news-item;
 }
 
-/* flatten the internal columns so we can place inner blocks via grid */
+/* Inner layout: keep markup, place via grid */
 .kk-news .wp-block-post .wp-block-columns {
     margin: 0;
-    padding: var(--kk-news-pad);
+    padding: var(--space-s) var(--space-m);
     width: 100%;
-    display: grid;
-    gap: 10px 14px;
 
-    /* rows: meta, title, excerpt(+thumb), read-more */
+    display: grid;
+    row-gap: var(--space-xs);
+    column-gap: var(--space-s);
+
+    /* rows: meta, title, excerpt, action */
     grid-template-rows: auto auto auto auto;
 }
 
+/* Flatten inner columns so blocks can be positioned directly */
 .kk-news .wp-block-post .wp-block-column {
     display: contents;
 }
 
-/* with thumbnail: date | content | thumb */
+/* With thumbnail: date | author ... | thumb */
 .kk-news .wp-block-post.has-post-thumbnail .wp-block-columns {
-    grid-template-columns: auto 1fr var(--kk-news-thumb);
+    grid-template-columns: auto 1fr var(--news-thumb);
 }
 
-/* without thumbnail: date | content */
+/* Without thumbnail: date | author ... */
 .kk-news .wp-block-post:not(.has-post-thumbnail) .wp-block-columns {
     grid-template-columns: auto 1fr;
 }
 
-/* --- META (row 1) --- */
+/* ---------------------------
+   META (single line): date + avatar + name
+--------------------------- */
+
 .kk-news .wp-block-post-date {
     grid-row: 1;
     grid-column: 1;
+
     margin: 0;
-    font-size: 0.9rem;
+    padding: var(--space-s) 0;
+
+    font-size: var(--fs-meta);
+    line-height: var(--lh-meta);
     color: var(--color-muted);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
-    align-self: center;
+
 }
 
-/* wrapper around author block in your markup */
 .kk-news .wp-block-group.is-nowrap {
     grid-row: 1;
     grid-column: 2;
+
     margin: 0;
+    padding: 0;
+
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    gap: var(--space-s);
     min-width: 0;
 }
 
-/* author */
+/* Author */
 .kk-news .wp-block-post-author {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-s);
     margin: 0;
     min-width: 0;
 }
 
-.kk-news .wp-block-post-author__avatar img {
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
+.kk-news .wp-block-post-author__avatar {
     display: block;
+    width: var(--space-xl);
+    height: var(--space-xl);
+    flex: 0 0 var(--space-xl);
+}
+
+.kk-news .wp-block-post-author__avatar img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 999px;
 }
 
 .kk-news .wp-block-post-author__name {
     margin: 0;
+
+    font-size: var(--fs-meta);
+    line-height: var(--lh-meta);
     color: var(--color-muted);
-    font-size: 0.92rem;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* --- TITLE (row 2) --- */
+/* ---------------------------
+   TITLE
+--------------------------- */
+
 .kk-news .wp-block-post-title {
     grid-row: 2;
     grid-column: 1 / -1;
+
     margin: 0;
-    line-height: 1.15;
+    line-height: 1.2;
+    font-size: var(--fs-h3);
+    border-top: var(--border-meta);
+    padding: var(--space-m) 0 var(--space-xs) 0;
+}
+
+.kk-news .wp-block-post.has-post-thumbnail .wp-block-post-title {
+    grid-column: 1 / 4; /* exclude thumb */
 }
 
 .kk-news .wp-block-post-title a {
     color: var(--color-headlines);
     text-decoration: none;
-}
+    }
 
-/* no hover effects for title links */
 .kk-news .wp-block-post-title a:hover,
 .kk-news .wp-block-post-title a:focus-visible {
-    color: var(--color-headlines);
-    text-decoration: none;
+    text-decoration: underline;
 }
 
-/* --- EXCERPT (row 3) --- */
+/* ---------------------------
+   EXCERPT
+--------------------------- */
+
 .kk-news .wp-block-post-excerpt {
     grid-row: 3;
+    grid-column: 1 / -1;
+
     margin: 0;
-    color: var(--color-muted);
-    font-size: 0.98rem;
+    color: var(--text-secondary);
+    font-size: var(--fs-body);
     line-height: 1.55;
 }
 
-/* with thumbnail, excerpt should not run underneath it */
 .kk-news .wp-block-post.has-post-thumbnail .wp-block-post-excerpt {
-    grid-column: 1 / 3; /* date + content */
-}
-
-.kk-news .wp-block-post:not(.has-post-thumbnail) .wp-block-post-excerpt {
-    grid-column: 1 / -1;
+    grid-column: 1 / 3;
 }
 
 .kk-news .wp-block-post-excerpt__excerpt {
     margin: 0;
+
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* --- READ MORE (row 4) --- */
+/* ---------------------------
+   ACTION (read more)
+--------------------------- */
+
 .kk-news .wp-block-read-more {
     grid-row: 4;
-    margin: 0;
+    grid-column: 1 / -1;
+
+    margin: var(--space-xs) 0 0 0;
     justify-self: start;
-    text-decoration: none;
-    color: var(--color-link);
-    font-weight: 200;
+
+    font-size: var(--fs-meta);
+    line-height: var(--lh-meta);
+    font-weight: 400;
 }
 
 .kk-news .wp-block-post.has-post-thumbnail .wp-block-read-more {
     grid-column: 1 / 3;
 }
 
-.kk-news .wp-block-post:not(.has-post-thumbnail) .wp-block-read-more {
-    grid-column: 1 / -1;
-}
+/* ---------------------------
+   THUMBNAIL
+--------------------------- */
 
-.kk-news .wp-block-read-more:hover,
-.kk-news .wp-block-read-more:focus-visible {
-    text-decoration: none;
-    color: var(--color-link);
-}
-
-/* --- THUMBNAIL (row 3-4, right) --- */
 .kk-news .wp-block-post-featured-image {
     margin: 0;
 }
 
 .kk-news .wp-block-post.has-post-thumbnail .wp-block-post-featured-image {
-    grid-row: 3 / 5; /* excerpt + read-more */
+    grid-row: 3 / 5; /* title + excerpt + action */
     grid-column: 3;
+
     align-self: start;
-    border-radius: 12px;
+
+    border: var(--border-1);
+    border-radius: var(--panel-radius);
     overflow: hidden;
-    background: var(--c-p050);
+    background: var(--surface-tint);
 }
 
 .kk-news .wp-block-post-featured-image a {
@@ -201,128 +239,112 @@
     object-fit: cover;
 }
 
-/* --- PAGINATION --- */
+/* ---------------------------
+   PAGINATION (flat, consistent)
+--------------------------- */
+
 .kk-news .wp-block-query-pagination {
-    margin: 22px 0 0;
+    margin: var(--space-l) 0 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: var(--space-s);
 }
 
 .kk-news .wp-block-query-pagination-numbers {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--space-s);
     align-items: center;
     justify-content: center;
 }
 
-/* numbers */
-.kk-news .page-numbers {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    padding: 0 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background: var(--color-surface);
-    color: var(--color-text);
-    text-decoration: none;
-}
-
-.kk-news .page-numbers.current {
-    border-color: var(--c-s800);
-    background: var(--c-s950);
-    color: var(--c-white);
-}
-
-/* arrows (prev/next) */
+.kk-news .page-numbers,
 .kk-news .wp-block-query-pagination-previous,
 .kk-news .wp-block-query-pagination-next {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 42px;
-    height: 36px;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background: var(--color-surface);
+
+    height: var(--control-h);
+    min-width: var(--control-min-w);
+    padding: 0 var(--control-pad-x);
+
+    border: var(--border-1);
+    border-radius: var(--radius-s);
+    background: var(--panel-bg);
     color: var(--color-text);
     text-decoration: none;
 }
 
-/* keep dots visually lighter */
+.kk-news .page-numbers.current {
+    border-color: var(--color-text);
+    background: var(--surface-tint);
+    font-weight: 700;
+}
+
 .kk-news .page-numbers.dots {
     border: 0;
     background: transparent;
     min-width: auto;
-    padding: 0 4px;
+    padding: 0 var(--space-xs);
     color: var(--color-muted);
 }
 
-/* no hover effects */
 .kk-news .page-numbers:hover,
 .kk-news .page-numbers:focus-visible,
 .kk-news .wp-block-query-pagination-previous:hover,
 .kk-news .wp-block-query-pagination-previous:focus-visible,
 .kk-news .wp-block-query-pagination-next:hover,
 .kk-news .wp-block-query-pagination-next:focus-visible {
-    background: var(--color-surface);
-    border-color: var(--color-border);
-    color: var(--color-text);
-    text-decoration: none;
+    background: var(--surface-tint);
+    border-color: var(--color-text);
+    text-decoration: underline;
 }
 
-@container kk-news (max-width: 700px) {
-
-    .kk-news .wp-block-post{
-        margin: 0;
-    }
-
-}
+/* ---------------------------
+   RESPONSIVE (container queries)
+--------------------------- */
 
 @container kk-news-item (max-width: 700px) {
-    /* hide thumbnail */
     .kk-news .wp-block-post-featured-image {
         display: none;
     }
 
-    /* remove the thumbnail column so layout doesn't reserve space */
     .kk-news .wp-block-post.has-post-thumbnail .wp-block-columns {
         grid-template-columns: auto 1fr;
     }
 
-    /* ensure excerpt + read-more span full width (safe) */
+    .kk-news .wp-block-post.has-post-thumbnail .wp-block-post-title,
     .kk-news .wp-block-post.has-post-thumbnail .wp-block-post-excerpt,
     .kk-news .wp-block-post.has-post-thumbnail .wp-block-read-more {
         grid-column: 1 / -1;
     }
 
-    .kk-news .wp-block-post-title {
-        font-size: 1em;
+    .kk-news .wp-block-post-author__avatar {
+        display: none;
     }
+
+    .kk-news .wp-block-post-title {
+        font-size: var(--fs-h4);
+    }
+
 
 }
 
 @container kk-news-item (max-width: 500px) {
-
-
-    .kk-news .wp-block-post-author {
-        display: none;
-    }
-
-    .kk-news .wp-block-post-date {
-        display: none;
-    }
-
+    .kk-news .wp-block-post-date,
+    .kk-news .wp-block-group.is-nowrap,
     .kk-news .wp-block-read-more {
         display: none;
     }
 
-    .kk-news .wp-block-post-excerpt{
-        font-size: 0.9em;
+    .kk-news .wp-block-post-title {
+        font-size: var(--fs-h4);
+    }
+
+    .kk-news .wp-block-post-excerpt {
+        font-size: var(--fs-body-s);
     }
 }
