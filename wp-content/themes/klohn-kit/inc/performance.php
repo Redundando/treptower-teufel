@@ -5,20 +5,19 @@ namespace KlohnKit\Performance;
 
 defined('ABSPATH') || exit;
 
-function register(): void
-{
+function register(): void {
 	// Head cleanup.
-	add_action('init', __NAMESPACE__ . '\cleanup_head');
+	add_action( 'init', __NAMESPACE__ . '\cleanup_head' );
 
 	// Front-end CSS bloat.
-	add_action('wp_enqueue_scripts', __NAMESPACE__ . '\dequeue_frontend_styles', 100);
+	#add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\dequeue_frontend_styles', 100 );
 
 	// Block CSS strategy (reduce inline tags).
-	add_filter('should_load_separate_core_block_assets', '__return_false');
-	add_filter('should_load_block_assets_on_demand', '__return_false');
+	add_filter( 'should_load_separate_core_block_assets', '__return_false' );
+	add_filter( 'should_load_block_assets_on_demand', '__return_false' );
 
 	// Strip WP core default presets from global styles.
-	add_filter('wp_theme_json_data_default', __NAMESPACE__ . '\strip_core_theme_json_defaults', 10, 1);
+	add_filter( 'wp_theme_json_data_default', __NAMESPACE__ . '\strip_core_theme_json_defaults', 10, 1 );
 }
 
 function cleanup_head(): void
