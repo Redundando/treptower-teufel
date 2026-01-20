@@ -1,36 +1,100 @@
 // assets/src/scss/base/_entry.scss
-@use "../utils/layout" as l;
 
-// Keep title aligned with text column
+/* ---------------------------
+   Title + Meta (dense, old-site, dotted separators)
+--------------------------- */
+
 .entry-title {
+  font-size: var(--fs-h1);
+  line-height: 1.1;
+  margin: var(--space-l) auto var(--space-m);
+  text-align: center;
+
   max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-// Helper: inner container width (container max minus padding on both sides)
-$container-inner-max: l.$layout-container-max - (l.$layout-container-padding-x * 2);
+.entry-meta {
+  max-width: var(--prose-width);
+  margin: 0 auto var(--space-l);
+  padding: var(--space-s) 0;
+
+  color: var(--color-muted);
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+
+  border-top: var(--border-meta);
+  border-bottom: var(--border-meta);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.entry-meta__sep {
+  margin: 0 var(--space-s);
+  opacity: 0.9;
+}
+
+.entry-meta__author {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-s);
+  min-width: 0;
+}
+
+.entry-meta__avatar {
+  width: var(--space-xl);
+  height: var(--space-xl);
+  border-radius: 999px;
+  display: block;
+}
+
+.entry-meta__author-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.entry-meta a {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+/* ---------------------------
+   Entry content layout rules
+   - Text stays in prose column
+   - Media can use full container width
+--------------------------- */
 
 .entry-content {
-  // default spacing between blocks
+  /* consistent vertical rhythm */
   > * {
-    margin: 0 0 14px;
-
+    margin: 0 0 var(--space-m);
   }
 
-  // 1) Text blocks: limit to prose width and center
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  /* 1) Text blocks: limit to prose width and center */
   :where(
     p, h1, h2, h3, h4, h5, h6,
     ul, ol, dl,
     blockquote, pre,
     table
   ) {
-    max-width: l.$prose-width;
+    max-width: var(--prose-width);
     margin-left: auto;
     margin-right: auto;
   }
 
-  // 2) Media blocks: stay full width (within the site container)
+  /* 2) Media blocks: stay full width (within the site container) */
   :where(
     figure,
     .wp-block-image,
@@ -47,34 +111,31 @@ $container-inner-max: l.$layout-container-max - (l.$layout-container-padding-x *
     margin-right: auto;
   }
 
-  // 3) Classic-editor images often come as <p><img></p> — make those break out to full width
+  /* 3) Classic-editor images often come as <p><img></p> — make those break out */
   p > img[class*="wp-image-"]:not(.alignleft):not(.alignright),
   p > a > img[class*="wp-image-"]:not(.alignleft):not(.alignright) {
     display: block;
     max-width: none;
 
-    // make the image span the full content width, even though the <p> is only prose width
+    /* span full “container inner width” without relying on SCSS math */
     width: min(
-            calc(100vw - #{l.$layout-container-padding-x * 2}),
-            #{$container-inner-max}
+            calc(100vw - var(--container-pad-x) - var(--container-pad-x)),
+            calc(var(--container-max) - var(--container-pad-x) - var(--container-pad-x))
     );
 
     margin-left: 50%;
     transform: translateX(-50%);
-
   }
 
-  // Background Group blocks: make them tight
+  /* 4) Groups: keep padding tight */
   .wp-block-group.has-background {
-    padding: 4px 4px;
+    padding: var(--space-xs);
   }
 
-  // Ensure non-background groups don't add padding either (usually already 0)
   .wp-block-group:not(.has-background) {
     padding: 0;
   }
 
-  // Remove the “fake padding” caused by default margins of first/last child inside groups
   .wp-block-group.has-background > :first-child,
   .wp-block-group.has-background > .wp-block-group__inner-container > :first-child {
     margin-top: 0;
@@ -85,16 +146,15 @@ $container-inner-max: l.$layout-container-max - (l.$layout-container-padding-x *
     margin-bottom: 0;
   }
 
-
-  // 4) Floats (no width limiting for now, as requested)
+  /* 5) Floats (keep current behavior) */
   .alignleft,
   img.alignleft,
   figure.alignleft {
     float: left;
     width: auto;
-    margin: 0 18px 14px 0;
     max-width: none;
     transform: none;
+    margin: 0 var(--space-l) var(--space-m) 0;
   }
 
   .alignright,
@@ -102,12 +162,12 @@ $container-inner-max: l.$layout-container-max - (l.$layout-container-padding-x *
   figure.alignright {
     float: right;
     width: auto;
-    margin: 0 0 14px 18px;
     max-width: none;
     transform: none;
+    margin: 0 0 var(--space-m) var(--space-l);
   }
 
-  // Clear floats at the end of the content
+  /* Clear floats at the end of content */
   &::after {
     content: "";
     display: block;
@@ -119,46 +179,4 @@ $container-inner-max: l.$layout-container-max - (l.$layout-container-padding-x *
 .entry-content :where(ul, ol).wp-block-latest-posts,
 .entry-content .wp-block-latest-posts__list {
   max-width: none;
-}
-
-.entry-meta {
-  max-width: l.$prose-width;
-  margin: 0 auto 18px;
-  padding: 10px 0;
-
-  color: var(--color-muted);
-  font-size: 14px;
-  line-height: 1.4;
-
-  border-top: 1px dotted var(--color-border);
-  border-bottom: 1px dotted var(--color-border);
-}
-
-.entry-meta__sep {
-  margin: 0 8px;
-}
-
-.entry-meta a {
-  color: inherit;
-  text-decoration: none;
-
-  &:hover,
-  &:focus-visible {
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-}
-
-.entry-title {
-  font-size: var(--fs-h1);
-  line-height: 1.1;
-  margin: 16px auto;
-  text-align: center;
-}
-
-.entry-content > :where(h2, h3, h4, h5, h6) {
-}
-
-.entry-content > :where(h2, h3, h4, h5, h6):first-child {
-  margin-top: 0;
 }
