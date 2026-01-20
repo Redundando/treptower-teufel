@@ -1,10 +1,38 @@
 @use "../utils/layout" as l;
 
 .site-header {
+  /* local aliases (map to global tokens) */
+  --header-border: 1px solid var(--color-header-border);
+  --header-radius: var(--radius-s);
+
+  --header-gap: var(--space-l);
+  --header-gap-tight: var(--space-m);
+
+  --header-pad-y: var(--space-s);
+  --header-pad-x: var(--space-s);
+
+  --nav-item-pad-y: var(--space-s);
+  --nav-item-pad-x: var(--space-s);
+
+  --control-h: var(--control-h);
+
+  /* icon micro-tokens (centralized, not sprinkled) */
+  --icon-burger-w: 22px;
+  --icon-stroke: 2px;
+  --icon-burger-gap: 6px;
+
+  --icon-chev-size: 10px;
+  --icon-chev-stroke: 2px;
+}
+
+.site-header {
   .header-row {
-    border-bottom: 1px solid var(--color-header-border);
+    border-bottom: var(--header-border);
   }
 
+  /* ---------------------------
+     BRAND ROW
+  --------------------------- */
   .header-row--brand {
     background: var(--color-header-bg);
 
@@ -12,21 +40,26 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: var(--header-gap);
     }
 
     .brand-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--header-gap-tight);
       min-width: 0;
     }
 
     .site-logo img {
       display: block;
-      max-height: 80px;
+      max-height: 80px; /* keep existing */
       width: auto;
       height: auto;
+    }
+
+    .site-title-wrap {
+      margin: 0;
+      min-width: 0;
     }
 
     .site-title {
@@ -38,17 +71,17 @@
       max-width: 60vw;
     }
 
-    .site-title-wrap {
-      margin: 0;
-    }
-
     .site-tagline {
-      margin: 2px 0 0;
-      font-size: 0.9rem;
+      margin: var(--space-xs) 0 0;
+      font-size: 0.95rem;
       color: var(--c-white);
+      opacity: 0.9;
     }
   }
 
+  /* ---------------------------
+     NAV ROW
+  --------------------------- */
   .header-row--nav {
     background: var(--color-nav-bg);
 
@@ -56,17 +89,22 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      padding: l.$header-nav-padding-y 0;
+      padding: var(--header-pad-y) 0;
     }
 
+    /* Hamburger button */
     .nav-toggle {
       display: none;
       appearance: none;
-      border: 1px solid var(--color-header-border);
+
+      border: var(--header-border);
       background: transparent;
       color: var(--c-white);
-      padding: 8px 10px;
-      border-radius: 6px;
+
+      height: var(--control-h);
+      padding: var(--header-pad-y) var(--header-pad-x);
+      border-radius: var(--header-radius);
+
       cursor: pointer;
       line-height: 1;
 
@@ -76,12 +114,14 @@
       }
     }
 
-    // Hamburger (3 stripes)
+    /* Hamburger icon (3 stripes) */
     .nav-toggle__icon {
       position: relative;
       display: block;
-      width: 22px;
-      height: 2px;
+
+      width: var(--icon-burger-w);
+      height: var(--icon-stroke);
+
       background: currentColor;
       border-radius: 999px;
       transition: background 160ms ease;
@@ -92,33 +132,37 @@
         position: absolute;
         left: 0;
         width: 100%;
-        height: 2px;
+        height: var(--icon-stroke);
         background: currentColor;
         border-radius: 999px;
         transition: transform 160ms ease, top 160ms ease;
       }
 
-      &::before { top: -6px; }
-      &::after { top: 6px; }
+      &::before { top: calc(var(--icon-burger-gap) * -1); }
+      &::after  { top: var(--icon-burger-gap); }
     }
 
-    // Optional: animate to “X” when open
+    /* animate to “X” when open */
     .site-header.nav-open & .nav-toggle__icon {
       background: transparent;
 
       &::before { top: 0; transform: rotate(45deg); }
-      &::after { top: 0; transform: rotate(-45deg); }
+      &::after  { top: 0; transform: rotate(-45deg); }
     }
 
-    // Submenu toggle button (hidden on desktop)
+    /* Submenu toggle (hidden on desktop) */
     .submenu-toggle {
       display: none;
       appearance: none;
-      border: 1px solid var(--color-header-border);
+
+      border: var(--header-border);
       background: transparent;
       color: var(--c-white);
-      padding: 8px 10px;
-      border-radius: 6px;
+
+      height: var(--control-h);
+      padding: var(--header-pad-y) var(--header-pad-x);
+      border-radius: var(--header-radius);
+
       cursor: pointer;
 
       &:focus-visible {
@@ -129,11 +173,12 @@
 
     .submenu-toggle__icon {
       display: block;
-      width: 10px;
-      height: 10px;
-      padding: 5px;
-      border-right: 2px solid currentColor;
-      border-bottom: 2px solid currentColor;
+      width: var(--icon-chev-size);
+      height: var(--icon-chev-size);
+
+      border-right: var(--icon-chev-stroke) solid currentColor;
+      border-bottom: var(--icon-chev-stroke) solid currentColor;
+
       transform: rotate(45deg);
       transition: transform 160ms ease;
     }
@@ -149,7 +194,7 @@
 
     .primary-menu {
       display: flex;
-      gap: 10px;
+      gap: var(--space-s);
       justify-content: flex-start;
       align-items: center;
       flex-wrap: wrap;
@@ -161,8 +206,9 @@
       display: inline-block;
       color: var(--c-white);
       text-decoration: none;
-      padding: 8px 10px;
-      border-radius: 6px;
+
+      padding: var(--nav-item-pad-y) var(--nav-item-pad-x);
+      border-radius: var(--header-radius);
 
       &:hover,
       &:focus-visible {
@@ -170,15 +216,19 @@
       }
     }
 
+    /* Desktop dropdowns */
     .primary-menu li ul {
       position: absolute;
       left: 0;
       top: 100%;
-      min-width: 220px;
-      background: var(--c-white);
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      padding: 6px;
+
+      min-width: 14rem;
+
+      background: var(--panel-bg);
+      border: var(--border-1);
+      border-radius: var(--panel-radius);
+      padding: var(--space-s);
+
       display: none;
       z-index: 1000;
     }
@@ -186,11 +236,12 @@
     .primary-menu li ul a {
       color: var(--color-text);
       width: 100%;
-      padding: 8px 10px;
+
+      padding: var(--nav-item-pad-y) var(--nav-item-pad-x);
 
       &:hover,
       &:focus-visible {
-        background: var(--c-p050);
+        background: var(--surface-tint);
       }
     }
 
@@ -200,32 +251,33 @@
     }
   }
 
+  /* ---------------------------
+     MOBILE NAV
+  --------------------------- */
   @media (max-width: l.$bp-nav-to-mobile) {
     .header-row--nav {
       .nav-toggle {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin: 5px;
+
+        margin: var(--space-xs);
         gap: 0;
+        height: var(--space-2xl);
       }
 
-      // Keep hamburger in place: stack menu below the button
+      /* stack menu below toggle */
       .header-nav {
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-start;
       }
 
-      .nav-toggle {
-        height: 40px;
-      }
-
       /* MAIN MENU: animate open/close */
       .primary-nav {
         display: block;
         width: 100%;
-        margin-top: 8px;
+        margin-top: var(--space-s);
 
         max-height: 0;
         opacity: 0;
@@ -238,7 +290,8 @@
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 4px;
+
+        gap: var(--space-xs);
       }
 
       /* Submenu toggle button */
@@ -246,9 +299,10 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+
         align-self: center;
-        margin-left: 6px;
-        margin-right: 15px;
+        margin-left: var(--space-xs);
+        margin-right: var(--space-m);
       }
 
       .primary-menu li.menu-item-has-children {
@@ -267,9 +321,10 @@
         position: static;
         display: block;
         width: 100%;
+
         background: transparent;
         border: 0;
-        padding: 0 0 0 12px;
+        padding: 0 0 0 var(--space-m);
 
         max-height: 0;
         opacity: 0;
@@ -282,13 +337,15 @@
         max-height: 600px;
         opacity: 1;
         background: var(--color-nav-hover);
+        border-radius: var(--panel-radius);
+        padding: var(--space-xs) 0 var(--space-xs) var(--space-m);
       }
 
       .primary-menu li.submenu-open > .submenu-toggle .submenu-toggle__icon {
         transform: rotate(-135deg);
       }
 
-      // Ensure hover/focus rules from desktop don't force anything open on mobile
+      /* keep desktop hover/focus from forcing open on mobile */
       .primary-menu li:hover > ul,
       .primary-menu li:focus-within > ul {
         max-height: 0;
@@ -319,7 +376,7 @@
     }
   }
 
-  /* Optional: respect reduced motion */
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .site-header .header-row--nav .primary-nav,
     .site-header .header-row--nav .primary-menu li ul {

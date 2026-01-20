@@ -13,15 +13,17 @@
                     <span class="entry-meta__sep">·</span>
 
                     <span class="entry-meta__author">
-						<?php echo esc_html( get_the_author() ); ?>
-					</span>
+                      <?php
+                      $author_id = get_the_author_meta( 'ID' );
+
+                      echo get_avatar( $author_id, 24, '', esc_attr( get_the_author() ), [ 'class' => 'entry-meta__avatar' ] );
+
+                      echo '<span class="entry-meta__author-name">' . esc_html( get_the_author() ) . '</span>';
+                      ?>
+                    </span>
 
                     <?php
-                    edit_post_link(
-                            esc_html__( 'Edit', 'klohn-kit' ),
-                            ' <span class="entry-meta__sep">·</span><span class="entry-meta__edit">',
-                            '</span>'
-                    );
+                    edit_post_link( esc_html__( 'Edit', 'klohn-kit' ), ' <span class="entry-meta__sep">·</span><span class="entry-meta__edit">', '</span>' );
                     ?>
                 </div>
 

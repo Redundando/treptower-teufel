@@ -1,9 +1,10 @@
 /* assets/src/scss/utils/_tokens.scss
-   Global design tokens (spacing, borders, radius, common component defaults).
-   Use these everywhere; avoid ad-hoc px values in components. */
+   Global tokens: use everywhere; avoid ad-hoc px values in components. */
 
 :root {
-    /* Spacing rhythm (per style-guidelines.xml) */
+    /* ------------------------------------------------------------
+       Spacing scale (core rhythm)
+    ------------------------------------------------------------ */
     --space-xs: 4px;
     --space-s: 8px;
     --space-m: 14px;
@@ -11,34 +12,62 @@
     --space-xl: 24px;
     --space-2xl: 28px;
 
-    /* Corners */
+    /* ------------------------------------------------------------
+       Shape + dividers
+    ------------------------------------------------------------ */
     --radius-s: 3px;
 
-    /* Borders */
     --border-1: 1px solid var(--color-border);
     --border-meta: 1px dotted var(--color-border);
 
-    /* Text sizing helpers */
+    /* ------------------------------------------------------------
+       Typography helpers (component-level)
+    ------------------------------------------------------------ */
     --fs-body: 16px;
     --fs-body-s: 15px;
     --fs-meta: 14px;
     --lh-meta: 1.4;
 
-    /* Surfaces */
-    --surface-tint: var(--c-p050);
-    --text-secondary: var(--c-p800); /* for excerpts (less muted than meta) */
+    /* ------------------------------------------------------------
+       Layout primitives
+    ------------------------------------------------------------ */
+    --container-max: 1200px;
+    --container-pad-x: var(--space-l);
+    --main-pad-y: var(--space-2xl);
 
-    /* Reusable “panel/card” defaults */
+    --prose-max: 75ch;
+    --prose-width: 800px;
+
+    /* ------------------------------------------------------------
+       Surfaces + emphasis
+    ------------------------------------------------------------ */
+    --surface-tint: var(--c-p050);
+    --text-secondary: var(--c-p800);
+
+    /* ------------------------------------------------------------
+       Reusable “panel” defaults (news, calendar, rss, etc.)
+    ------------------------------------------------------------ */
     --panel-bg: var(--color-surface);
     --panel-border: var(--border-1);
     --panel-radius: var(--radius-s);
     --panel-pad: var(--space-s);
 
-    /* Controls (pagination, small UI) */
+    /* ------------------------------------------------------------
+       Controls (pagination, small UI elements)
+    ------------------------------------------------------------ */
     --control-h: 36px;
     --control-min-w: 36px;
     --control-pad-x: var(--space-s);
 
-    /* Media */
+    /* ------------------------------------------------------------
+       Header sizing
+    ------------------------------------------------------------ */
+    --header-logo-max-h: 100px;
+    --header-brand-pad-y: var(--space-s);
+    --header-nav-pad-y: var(--space-s);
+
+    /* ------------------------------------------------------------
+       Media sizing
+    ------------------------------------------------------------ */
     --thumb-w: 150px;
 }
