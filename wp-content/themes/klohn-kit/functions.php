@@ -9,9 +9,13 @@ require_once __DIR__ . '/inc/widgets.php';
 require_once __DIR__ . '/inc/editor.php';
 require_once __DIR__ . '/inc/calendar-shortcode.php';
 require_once __DIR__ . '/inc/blocks.php';
+require_once __DIR__ . '/inc/performance.php';
+
 
 KlohnKit\Setup\register();
 KlohnKit\Assets\register();
 KlohnKit\Widgets\register();
 KlohnKit\Editor\register();
 KlohnKit\Blocks\register();
+KlohnKit\Performance\register();
+

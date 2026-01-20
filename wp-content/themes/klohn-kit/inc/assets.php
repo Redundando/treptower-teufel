@@ -15,9 +15,6 @@ function enqueue(): void
 	$theme   = wp_get_theme();
 	$version = (string) ($theme->get('Version') ?: '0.1.0');
 
-	// style.css
-	wp_enqueue_style('klohn-kit', get_stylesheet_uri(), [], $version);
-
 	// assets/dist/css/base.css (only if present)
 	$css_rel  = '/assets/dist/css/base.css';
 	$css_path = get_stylesheet_directory() . $css_rel;

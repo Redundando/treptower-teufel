@@ -7,6 +7,7 @@
       "gradients": [],
       "defaultPalette": false,
       "defaultGradients": false,
+      "defaultDuotone": false,
       "duotone": [],
       "palette": [
         { "slug": "white", "name": "White", "color": "#ffffff" },
@@ -30,6 +31,12 @@
         { "slug": "tertiary-dark", "name": "Tertiary dark", "color": "#4EA943" },
         { "slug": "tertiary-darkest", "name": "Tertiary darkest", "color": "#2D6126" }
       ]
+    },
+    "typography": {
+      "defaultFontSizes": false
+    },
+    "spacing": {
+      "defaultSpacingSizes": false
     }
   }
 }
