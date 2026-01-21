@@ -90,3 +90,18 @@ h4 { font-size: var(--fs-h4); }
 h5 { font-size: var(--fs-h5); }
 h6 { font-size: var(--fs-h6); }
 
+/* Lists: tighter indent in content (keep nav/menu defaults untouched) */
+.site-main :where(.content, article, section) :where(ul, ol) {
+  padding-left: 1.2em; /* tighter than UA default (~40px) */
+  margin: 0 0 1em 0;
+}
+
+.site-main :where(.content, article, section) :where(li) {
+  margin: 0.25em 0;
+}
+
+/* nested lists: a bit tighter */
+.site-main :where(.content, article, section) :where(ul ul, ol ol, ul ol, ol ul) {
+  margin: 0.35em 0 0.35em 0;
+  padding-left: 1.1em;
+}
