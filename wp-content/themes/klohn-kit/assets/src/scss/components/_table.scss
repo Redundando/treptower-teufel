@@ -17,7 +17,7 @@ figure.wp-block-table.is-style-compact {
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-
+  max-width: var(--prose-width);
   /* optional: if you want tighter than other panels, keep this off */
   /* padding: var(--panel-pad); */
 
