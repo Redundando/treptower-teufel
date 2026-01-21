@@ -1,26 +1,5 @@
-// assets/src/scss/utils/_layout.scss
-
 // Max width for page content container.
 $layout-container-max: 1200px;
 
-// Horizontal padding inside container.
-$layout-container-padding-x: 16px;
-
 // Navigation breakpoint: below this width we switch to hamburger.
 $bp-nav-to-mobile: 900px;
-
-// Main content vertical padding.
-$main-padding-y: 28px;
-
-// Max readable line length for text blocks.
-$prose-max: 75ch;
-
-// Logo sizing in header (Row 1).
-$header-logo-max-height: 100px;
-
-// Header vertical padding (Row 1 brand bar / Row 2 nav bar).
-$header-brand-padding-y: 8px;
-$header-nav-padding-y: 6px;
-
-// Max readable line length for post text blocks.
-$prose-width: 800px;

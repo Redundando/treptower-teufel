@@ -37,6 +37,12 @@
     },
     "spacing": {
       "defaultSpacingSizes": false
+    },
+    "border": {
+      "color": true,
+      "style": true,
+      "width": true,
+      "radius": true
     }
   }
 }

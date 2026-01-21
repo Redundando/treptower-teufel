@@ -1,0 +1,15 @@
+/* Background/border can remain wide; only content is constrained */
+.wp-block-group.is-style-prose-content > .wp-block-group__inner-container {
+  max-width: var(--prose-width);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+/* Entire group is constrained (incl. background/border) */
+.wp-block-group.is-style-prose-box {
+  max-width: var(--prose-width);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}

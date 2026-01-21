@@ -47,7 +47,7 @@ a {
 %container {
   max-width: l.$layout-container-max;
   margin: 0 auto;
-  padding: 0 l.$layout-container-padding-x;
+  padding: 0 var(--container-pad-x);
 }
 
 .container {
@@ -55,7 +55,7 @@ a {
 }
 
 .site-main {
-  padding: l.$main-padding-y 0;
+  padding: var(--main-pad-y) 0;
 }
 
 .site-main > .content,

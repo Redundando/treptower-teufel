@@ -18,7 +18,7 @@
 
 /* When inserted into post/page content: keep prose width */
 .entry-content .kk-calendar {
-  max-width: l.$prose-width;
+  max-width: var(--prose-width);
   margin-left: auto;
   margin-right: auto;
   margin-bottom: var(--space-m);
