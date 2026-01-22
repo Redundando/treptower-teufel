@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ttPageDesignGuide site="treptower-teufel.de" version="1.0" lang="en">
+
+    <!--
+      Purpose:
+      - A reusable “recipe” for information pages like Membership/Fees/Rules.
+      - Describes which WP blocks to use for which UI element + exact design settings to apply.
+    -->
+
+    <foundation>
+        <useExistingTokens>
+            <radius>3px everywhere (panels, buttons, framed media)</radius>
+            <border>
+                <default>1px solid (primary-light)</default>
+                <meta>1px dotted (primary-light) – only for separators/meta bars</meta>
+            </border>
+            <spacingRhythm>4 / 8 / 14 / 18 / 24–28 px (XS/S/M/L/XL)</spacingRhythm>
+            <proseWidth>Use prose width for text-heavy content; allow media to go wider when helpful.</proseWidth>
+            <shadows>Off (never for “card look”)</shadows>
+        </useExistingTokens>
+
+        <colorRoles>
+            <surface default="white" tint="primary-lightest" />
+            <text default="primary-darkest" muted="primary-middle" />
+            <border default="primary-light" />
+            <link default="secondary-darkest" hover="secondary-dark" />
+            <actions primaryBg="secondary-darkest" primaryText="white" />
+            <callouts>
+                <warning bg="secondary-lightest" border="secondary-darkest" text="primary-darkest" />
+                <positive bg="tertiary-lightest" border="tertiary-darkest" text="primary-darkest" />
+            </callouts>
+        </colorRoles>
+
+        <customBlockStyles>
+            <!-- registered in block-styles.php -->
+            <groupStyle name="prose-content" class="is-style-prose-content" usage="Limit only inner text width; no box framing." />
+            <groupStyle name="prose-box" class="is-style-prose-box" usage="Box/panel constrained to prose width (framed panel)." />
+            <tableStyle name="compact" class="is-style-compact" usage="Dense, framed table with compact padding." />
+        </customBlockStyles>
+    </foundation>
+
+    <components>
+
+        <!-- 1) HERO / INTRO PANEL (top of page) -->
+        <component id="hero.introPanel">
+            <whenToUse>First element on info pages. Summarize the page + one primary action.</whenToUse>
+            <blocks>
+
+                <block type="core/group" role="container">
+                    <layout type="constrained" />
+                    <style>
+                        <backgroundColor>primary-lightest</backgroundColor>
+                        <border color="primary-light" style="solid" width="1px" radius="3px" />
+                        <padding top="8px" right="14px" bottom="8px" left="14px" />
+                    </style>
+                </block>
+
+                <block type="core/paragraph" role="kicker">
+                    <contentStyle italic="true" />
+                    <align>center</align>
+                    <spacing bottom="8px" />
+                </block>
+
+                <block type="core/image" role="badgeImage" optional="true">
+                    <align>right</align>
+                    <sizeSlug>thumbnail</sizeSlug>
+                    <rule>Only if it adds meaning/recognition. Avoid decorative images.</rule>
+                </block>
+
+                <block type="core/paragraph" role="introText">
+                    <rule>1 short paragraph. Keep scannable.</rule>
+                </block>
+
+                <block type="core/paragraph" role="leadQuestion">
+                    <emphasis strong="true" />
+                    <rule>Use as a “section opener” inside the panel, not as a heading.</rule>
+                </block>
+
+                <block type="core/list" role="benefitBullets">
+                    <listType>unordered</listType>
+                    <rule>4–6 bullets max; short phrasing; no sub-bullets here.</rule>
+                </block>
+
+                <block type="core/paragraph" role="alertCallout" optional="true">
+                    <useFor>Warnings / capacity stops / important constraints.</useFor>
+                    <style>
+                        <backgroundColor>secondary-lightest</backgroundColor>
+                        <textColor>primary-darkest</textColor>
+                        <border color="secondary-darkest" style="solid" width="1px" radius="3px" />
+                        <linkColor>primary-darkest</linkColor>
+                        <padding top="8px" right="14px" bottom="8px" left="14px" />
+                    </style>
+                    <rule>Start with a bold keyword (“Achtung:”). Keep to 2–4 lines.</rule>
+                </block>
+
+                <block type="core/spacer" role="microGap" optional="true">
+                    <height>10px</height>
+                    <rule>Use only to separate callout and CTA when needed.</rule>
+                </block>
+
+                <block type="core/buttons" role="primaryCTA">
+                    <layout type="flex" justifyContent="center" />
+                </block>
+
+                <block type="core/button" role="primaryCTA.button">
+                    <className>is-style-fill</className>
+                    <style>
+                        <backgroundColor>secondary-darkest</backgroundColor>
+                        <textColor>white</textColor>
+                        <border radius="3px" />
+                    </style>
+                    <typography size="medium" />
+                    <rule>Exactly one primary button in this hero panel.</rule>
+                </block>
+
+                <block type="core/spacer" role="panelBottomGap" optional="true">
+                    <height>12px</height>
+                </block>
+
+            </blocks>
+        </component>
+
+
+        <!-- 2) IN-PAGE NAV (“Auf dieser Seite”) -->
+        <component id="nav.onThisPage">
+            <whenToUse>Immediately after hero panel on long pages (4+ sections).</whenToUse>
+            <blocks>
+
+                <block type="core/group" role="container">
+                    <layout type="constrained" />
+                    <style>
+                        <padding top="0" right="0" bottom="0" left="0" />
+                    </style>
+                    <rule>No background box here (keeps page dense and flat).</rule>
+                </block>
+
+                <block type="core/paragraph" role="title">
+                    <align>center</align>
+                    <emphasis strong="true" />
+                    <rule>Single short line (“Auf dieser Seite”).</rule>
+                </block>
+
+                <block type="core/buttons" role="jumpButtons">
+                    <layout type="flex" justifyContent="center" flexWrap="wrap" />
+                    <rule>Buttons link to section anchors (IDs on H2).</rule>
+                </block>
+
+                <block type="core/button" role="jumpButtons.button">
+                    <className>is-style-outline</className>
+                    <typography size="small" />
+                    <style>
+                        <border width="1px" radius="3px" />
+                        <backgroundColor optional="true">white</backgroundColor>
+                    </style>
+                    <rule>Outline always. No filled buttons in the TOC.</rule>
+                </block>
+
+            </blocks>
+        </component>
+
+
+        <!-- 3) SECTION DIVIDER -->
+        <component id="divider.dotted">
+            <whenToUse>Between nav and first section; optionally between major sections.</whenToUse>
+            <blocks>
+                <block type="core/separator" role="divider">
+                    <className>is-style-dots</className>
+                    <style>
+                        <color>primary-light</color>
+                    </style>
+                    <rule>Use dotted style only. Keep it neutral.</rule>
+                </block>
+            </blocks>
+        </component>
+
+
+        <!-- 4) STANDARD SECTION HEADING (H2 + optional lead line) -->
+        <component id="section.standard">
+            <whenToUse>Every major section.</whenToUse>
+            <blocks>
+
+                <block type="core/heading" role="h2">
+                    <level>2</level>
+                    <textAlign>left</textAlign>
+                    <rule>
+                        Add an ID matching the TOC button target (e.g. id="Mitglied", "Beiträge", "Inklusive", "Regeln", "Gast").
+                    </rule>
+                </block>
+
+                <block type="core/paragraph" role="lead" optional="true">
+                    <rule>1–2 short lines max. Use bold only for the key phrase.</rule>
+                </block>
+
+            </blocks>
+        </component>
+
+
+        <!-- 5) PROCESS STEPS (H3 + ordered list) -->
+        <component id="content.steps">
+            <whenToUse>Procedures (how to join, how to book, etc.).</whenToUse>
+            <blocks>
+                <block type="core/heading" role="h3">
+                    <level>3</level>
+                </block>
+                <block type="core/list" role="steps">
+                    <listType>ordered</listType>
+                    <rule>6–10 steps max; each step starts with a bold verb phrase if possible.</rule>
+                </block>
+            </blocks>
+        </component>
+
+
+        <!-- 6) NOTE / INFO PANEL (prose-box) -->
+        <component id="panel.note">
+            <whenToUse>Dense “read this” information that should not break the flow.</whenToUse>
+            <blocks>
+
+                <block type="core/group" role="panel">
+                    <className>is-style-prose-box</className>
+                    <layout type="constrained" />
+                    <style>
+                        <backgroundColor>primary-lightest</backgroundColor>
+                        <border color="primary-light" style="solid" width="1px" radius="3px" />
+                        <padding top="8px" right="14px" bottom="8px" left="14px" />
+                    </style>
+                </block>
+
+                <block type="core/paragraph" role="noteText">
+                    <rule>
+                        Keep it scannable: short paragraphs, bold only for terms (“Arbeitsstunden”, “Kündigungsbedingungen”, etc.).
+                    </rule>
+                </block>
+
+                <block type="core/columns" role="iconRow" optional="true">
+                    <typography size="small" />
+                    <rule>
+                        Use only for 2–4 compact icon facts. Icons are functional, not decorative.
+                    </rule>
+                </block>
+
+                <block type="core/image" role="iconRow.icon">
+                    <align>center</align>
+                    <rule>Small (e.g. ~50px). No captions under 2 lines.</rule>
+                </block>
+
+                <block type="core/paragraph" role="iconRow.caption">
+                    <align>center</align>
+                    <typography size="custom" customSize="12px" />
+                </block>
+
+            </blocks>
+        </component>
+
+
+        <!-- 7) DOWNLOAD ACTION PANEL (two equal buttons) -->
+        <component id="panel.downloads">
+            <whenToUse>Offering 1–3 key files (forms, PDFs).</whenToUse>
+            <blocks>
+
+                <block type="core/group" role="container">
+                    <className>is-style-prose-box</className>
+                    <layout type="constrained" />
+                    <style>
+                        <padding top="0" right="0" bottom="0" left="0" />
+                    </style>
+                    <rule>Keep it lean; the buttons carry the affordance.</rule>
+                </block>
+
+                <block type="core/buttons" role="downloadButtons">
+                    <layout type="flex" justifyContent="center" flexWrap="wrap" />
+                    <rule>Typically 2 buttons at 50% width each on desktop; wrap on mobile.</rule>
+                </block>
+
+                <block type="core/button" role="downloadButtons.button">
+                    <className>is-style-outline</className>
+                    <typography size="small" />
+                    <style>
+                        <backgroundColor>white</backgroundColor>
+                        <textColor>secondary-darkest</textColor>
+                        <border width="1px" radius="3px" />
+                    </style>
+                    <rule>
+                        Outline download buttons always look like “documents”, not like the primary CTA.
+                    </rule>
+                </block>
+
+            </blocks>
+        </component>
+
+
+        <!-- 8) FEES TABLES (compact style) -->
+        <component id="data.feesTable">
+            <whenToUse>Fees, prices, schedules. Anything tabular.</whenToUse>
+            <blocks>
+                <block type="core/table" role="table">
+                    <className>is-style-compact</className>
+                    <rule>
+                        No custom cell colors. Let the compact style handle framing and density.
+                    </rule>
+                </block>
+                <block type="core/paragraph" role="afterTableNote" optional="true">
+                    <rule>Short “See also” line with link to the canonical page/document.</rule>
+                </block>
+            </blocks>
+        </component>
+
+
+        <!-- 9) INCLUDED / NOT INCLUDED LISTS -->
+        <component id="content.prosConsLists">
+            <whenToUse>Benefits + exclusions.</whenToUse>
+            <blocks>
+                <block type="core/list" role="pros">
+                    <listType>unordered</listType>
+                    <rule>Lead each bullet with a bold label, then a short explanation.</rule>
+                </block>
+                <block type="core/heading" role="h3.exclusions">
+                    <level>3</level>
+                    <rule>Heading text: “Was ist nicht enthalten”.</rule>
+                </block>
+                <block type="core/list" role="cons">
+                    <listType>unordered</listType>
+                </block>
+            </blocks>
+        </component>
+
+
+        <!-- 10) “RULES AT A GLANCE” LIST -->
+        <component id="content.rulesAtAGlance">
+            <whenToUse>Short policy list. Must be scannable.</whenToUse>
+            <blocks>
+                <block type="core/paragraph" role="intro">
+                    <rule>One line explaining what follows.</rule>
+                </block>
+                <block type="core/list" role="rules">
+                    <listType>unordered</listType>
+                    <rule>
+                        Each bullet starts with a bold label (“Arbeitsstunden:”, “Kündigung:”, etc.).
+                        Keep numbers and dates bold for scanning.
+                    </rule>
+                </block>
+            </blocks>
+        </component>
+
+    </components>
+
+
+    <pageLayouts>
+
+        <layout id="membership.infoPage" name="Membership / Fees / Rules page">
+            <order>
+                <use component="hero.introPanel" />
+                <use component="nav.onThisPage" />
+                <use component="divider.dotted" />
+
+                <section>
+                    <use component="section.standard" />
+                    <use component="content.steps" />
+                    <use component="panel.note" />
+                    <use component="panel.downloads" />
+                </section>
+
+                <section>
+                    <use component="section.standard" />
+                    <use component="data.feesTable" />
+                    <use component="data.feesTable" />
+                </section>
+
+                <section>
+                    <use component="section.standard" />
+                    <use component="content.prosConsLists" />
+                </section>
+
+                <section>
+                    <use component="section.standard" />
+                    <use component="content.rulesAtAGlance" />
+                </section>
+
+                <section>
+                    <use component="section.standard" />
+                    <rule>End with 1–2 paragraphs: short answer first (“Kurz: …”), then a practical tip.</rule>
+                </section>
+            </order>
+
+            <hardRules>
+                <rule>Only one “primary CTA” per page section (usually only in the hero).</rule>
+                <rule>Red (secondary-*) is for actions/warnings; never as a “theme color” for body text.</rule>
+                <rule>Panels are border + subtle tint; no shadows; no decorative icons.</rule>
+                <rule>Text stays prose width by default; only widen when it increases clarity (tables/media).</rule>
+            </hardRules>
+        </layout>
+
+    </pageLayouts>
+
+</ttPageDesignGuide>

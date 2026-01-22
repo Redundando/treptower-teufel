@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tt_setup xmlns="https://treptower-teufel.de/schema/setup/v1" version="1.0">
+
+    <project>
+        <name>Treptower Teufel Website</name>
+        <domain>treptower-teufel.de</domain>
+        <purpose>
+            Maintain and improve the WordPress website with a clean local → staging → production workflow on Hetzner,
+            with DNS (and mail) managed at 1blu.
+        </purpose>
+    </project>
+
+    <tech_baseline>
+        <application>WordPress</application>
+        <php version="8.3" scope="local,staging,production" />
+        <local_dev>
+            <os>Windows</os>
+            <stack>XAMPP</stack>
+            <ide>PhpStorm</ide>
+        </local_dev>
+        <version_control>
+            <provider>GitHub</provider>
+        </version_control>
+    </tech_baseline>
+
+    <environments>
+
+        <environment id="local" name="Local (XAMPP)">
+            <paths>
+                <project_root>C:\xampp\htdocs\treptower-teufel</project_root>
+            </paths>
+            <urls>
+                <site pattern="http://localhost/treptower-teufel" />
+            </urls>
+            <database>
+                <engine>MySQL/MariaDB</engine>
+                <host>localhost</host>
+                <credentials note="Typically root / empty password; do not store secrets in repo." />
+            </database>
+        </environment>
+
+        <environment id="staging" name="Hetzner Staging">
+            <urls>
+                <site>https://staging.treptower-teufel.de</site>
+            </urls>
+            <paths>
+                <docroot>~/public_html/staging/</docroot>
+                <web_root_base>~/public_html/</web_root_base>
+            </paths>
+            <runtime>
+                <php version="8.3" rationale="Avoid plugin deprecations on newer PHP versions." />
+            </runtime>
+            <database>
+                <host example="k8m0.your-database.de" />
+                <credentials note="Stored outside Git (password manager / server secrets file)." />
+            </database>
+        </environment>
+
+        <environment id="production" name="Hetzner Production">
+            <urls>
+                <site>https://treptower-teufel.de</site>
+            </urls>
+            <paths>
+                <docroot>~/public_html/prod/</docroot>
+                <web_root_base>~/public_html/</web_root_base>
+            </paths>
+            <runtime>
+                <php version="8.3" />
+            </runtime>
+            <database>
+                <host note="Hetzner production database; credentials stored outside Git." />
+            </database>
+        </environment>
+
+    </environments>
+
+    <dns_and_mail>
+        <provider>1blu</provider>
+        <rules>
+            <rule id="dns-owner">DNS is handled at 1blu.</rule>
+            <rule id="web-records">Website A/AAAA records point to Hetzner.</rule>
+            <rule id="mail-stays">Mail stays at 1blu as long as MX (and mail-related TXT records) are not changed.</rule>
+        </rules>
+    </dns_and_mail>
+
+    <access>
+        <secrets_policy>
+            <rule>Do not store passwords/keys in repo or docs.</rule>
+            <rule>Store credentials in a password manager.</rule>
+        </secrets_policy>
+
+        <hetzner_webhosting type="konsoleH">
+            <ssh_sftp>
+                <host example="dedivirt3710.your-server.de" />
+                <port>222</port>
+                <user>teufel</user>
+                <ssh_command>ssh teufel@dedivirt3710.your-server.de -p 222</ssh_command>
+            </ssh_sftp>
+
+            <filesystem>
+                <web_root_base>~/public_html/</web_root_base>
+                <staging_docroot>~/public_html/staging/</staging_docroot>
+                <production_docroot>~/public_html/prod/</production_docroot>
+            </filesystem>
+
+            <logs>
+                <php_log typical_path="~/php.log" />
+                <server_path_examples>/usr/www/users/teufel/...</server_path_examples>
+            </logs>
+        </hetzner_webhosting>
+    </access>
+
+    <git_policy>
+        <included_in_repo>
+            <item>Theme / child theme code</item>
+            <item>Plugins (as committed)</item>
+            <item>General WP codebase (as decided)</item>
+        </included_in_repo>
+
+        <excluded_from_repo>
+            <item path="wp-content/uploads/">Uploads</item>
+            <item>Database dumps</item>
+            <item path=".wp-secrets.php">Secrets file</item>
+            <item path=".htaccess" recommendation="Exclude; keep templates if env differences are needed." />
+        </excluded_from_repo>
+
+        <gitignore_required>
+            <pattern>/wp-content/uploads/</pattern>
+            <pattern>/.htaccess</pattern>
+            <pattern>/.wp-secrets.php</pattern>
+        </gitignore_required>
+    </git_policy>
+
+    <configuration>
+        <goal>
+            Keep environment settings in env files and keep passwords/other sensitive values in a separate untracked file.
+        </goal>
+
+        <files>
+            <env_files>
+                <file>.wp-env.local.php</file>
+                <file>.wp-env.staging.php</file>
+                <file>.wp-env.production.php</file>
+                <commit_policy>
+                    <rule>May be committed only if they contain no secrets.</rule>
+                    <recommendation>Prefer committing *.example templates instead.</recommendation>
+                </commit_policy>
+            </env_files>
+
+            <secrets_file>
+                <file tracked_in_git="false">.wp-secrets.php</file>
+                <contains>
+                    <item>Database password</item>
+                    <item optional="true">WP salts</item>
+                </contains>
+            </secrets_file>
+        </files>
+
+        <wp_config_pattern>
+            <step order="1">Detect environment (local/staging/prod) via deterministic signal (e.g., path).</step>
+            <step order="2">Load non-secret config from .wp-env.&lt;env&gt;.php.</step>
+            <step order="3">Merge .wp-secrets.php on top (secrets override).</step>
+            <step order="4">Define WP constants via helper (e.g., envv()).</step>
+            <operational_rule>If a value is secret, it goes into .wp-secrets.php (never into Git).</operational_rule>
+        </wp_config_pattern>
+    </configuration>
+
+    <deployment>
+        <model>
+            <preferred>SSH into Hetzner and deploy via git pull + rsync into docroots.</preferred>
+        </model>
+
+        <code_deploy>
+            <common_exclusions>
+                <exclude>.wp-secrets.php</exclude>
+                <exclude>.htaccess</exclude>
+                <exclude>wp-content/uploads/</exclude>
+                <exclude>.git/</exclude>
+            </common_exclusions>
+
+            <example_commands note="Adapt paths to actual server layout.">
+                <command>cd ~/site-repo</command>
+                <command>git pull</command>
+                <command>
+                    rsync -av --delete --exclude '.git/' --exclude '.wp-secrets.php' --exclude '.htaccess' --exclude 'wp-content/uploads/' ~/site-repo/ ~/public_html/staging/
+                </command>
+            </example_commands>
+
+            <promotion_rule>Deploy to staging first; deploy to production once staging is validated.</promotion_rule>
+            <production_target>~/public_html/prod/</production_target>
+        </code_deploy>
+
+        <uploads_sync>
+            <direction>staging → production</direction>
+            <command>rsync -av ~/public_html/staging/wp-content/uploads/ ~/public_html/prod/wp-content/uploads/</command>
+            <note>Use --delete only if production should mirror staging.</note>
+        </uploads_sync>
+
+        <database_import>
+            <hetzner_constraints>
+                <rule>Remove CREATE DATABASE / USE lines from dumps before import (users typically can’t create DBs).</rule>
+            </hetzner_constraints>
+            <cleanup method="phpMyAdmin">
+                <step>Select DB → Operations → Drop all tables.</step>
+            </cleanup>
+        </database_import>
+    </deployment>
+
+    <ssl_certificates>
+        <rules>
+            <rule>
+                For HTTP file validation, the CA checks the public DNS target (not local hosts file).
+            </rule>
+            <rule>
+                Ensure auth file is reachable under /.well-known/pki-validation/...
+            </rule>
+            <rule>
+                Ensure .htaccess rules do not block /.well-known/.
+            </rule>
+        </rules>
+    </ssl_certificates>
+
+    <phpstorm_workflow>
+        <open_project_path>C:\xampp\htdocs\treptower-teufel</open_project_path>
+        <indexing>
+            <exclude path="wp-content/uploads/" reason="Large + not versioned." />
+        </indexing>
+        <deployment_settings>
+            <protocol>SFTP</protocol>
+            <target>Hetzner host/port/user</target>
+            <mapping>Local project root → staging/prod docroot</mapping>
+            <auto_upload note="Use only if confident; otherwise rely on git+deploy." />
+        </deployment_settings>
+        <assets_policy>
+            <rule>Keep nav.js and other small theme assets committed and deployed normally.</rule>
+        </assets_policy>
+    </phpstorm_workflow>
+
+    <post_deploy_checks>
+        <checklist environment="staging,production">
+            <item>Homepage loads; no mixed-content warnings.</item>
+            <item>Permalinks work (re-save Permalinks once after move if needed).</item>
+            <item>Media loads (uploads present; thumbnails OK).</item>
+            <item>Admin login works (/wp-admin).</item>
+            <item>Forms and mail flows work (password reset / contact form).</item>
+            <item>WP_DEBUG is false in production.</item>
+        </checklist>
+    </post_deploy_checks>
+
+    <known_pitfalls>
+        <pitfall>
+            <issue>Plugin deprecation output can break admin (headers already sent) on newer PHP versions.</issue>
+            <fix>Baseline on PHP 8.3.</fix>
+        </pitfall>
+        <pitfall>
+            <issue>phpMyAdmin import fails with “Access denied … CREATE DATABASE”.</issue>
+            <fix>Remove CREATE DATABASE / USE from dump.</fix>
+        </pitfall>
+        <pitfall>
+            <issue>.wp-secrets.php exposure risk.</issue>
+            <fix>Block via server config / .htaccess (403/404).</fix>
+        </pitfall>
+    </known_pitfalls>
+
+</tt_setup>
