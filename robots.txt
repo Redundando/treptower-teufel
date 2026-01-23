@@ -2,5 +2,5 @@ User-agent: *
 Disallow: /wp-admin/
 Allow: /wp-admin/admin-ajax.php
 
-Sitemap: https://yourdomain.tld/sitemap.xml?lang=de
-Sitemap: https://yourdomain.tld/sitemap.xml?lang=en
+Sitemap: https://www.treptower-teufel.de/sitemap.xml?lang=de
+Sitemap: https://www.treptower-teufel.de/sitemap.xml?lang=en
