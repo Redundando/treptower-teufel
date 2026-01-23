@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<treptower_teufel_linkmap version="1.0" updated="2026-01-22" base_domain="treptower-teufel.de">
+    <purpose>
+        <summary>Canonical Link-Mapping für treptower-teufel.de (DE/EN) zur Wiederverwendung in Content-Erstellung und Übersetzungen.</summary>
+    </purpose>
+
+    <usage_instructions>
+        <instruction id="use-language-correct-links">
+            Bei neuen Inhalten immer die URL der Ziel-Sprache verwenden (lang="de" oder lang="en").
+        </instruction>
+        <instruction id="swap-links-on-translation">
+            Bei Übersetzungsarbeiten (DE → EN oder EN → DE) vorhandene Links automatisch ersetzen:
+            Suche die passende Seite über @id und tausche die URL auf die entsprechende Sprache um.
+        </instruction>
+        <instruction id="handle-same-url-assets">
+            Wenn ein Eintrag same_url="true" hat (z.B. PDFs), dann ist die Datei sprachübergreifend identisch;
+            Links werden beim Übersetzen nicht verändert.
+        </instruction>
+        <instruction id="prefer-ids">
+            In Automationen bevorzugt über die stabilen @id-Werte referenzieren (nicht über Titel/Slug).
+        </instruction>
+    </usage_instructions>
+
+    <sections>
+        <section id="general" name="General">
+            <page id="homepage" type="page">
+                <title lang="de">Homepage</title>
+                <title lang="en">Homepage</title>
+                <url lang="de">https://www.treptower-teufel.de/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/en-home/</url>
+            </page>
+
+            <page id="news" type="page">
+                <title lang="de">News</title>
+                <title lang="en">News</title>
+                <url lang="de">https://www.treptower-teufel.de/aktuelles/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/news/</url>
+            </page>
+
+            <page id="club" type="page">
+                <title lang="de">Über den Verein</title>
+                <title lang="en">Our Club</title>
+                <url lang="de">https://www.treptower-teufel.de/verein/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/our-club/</url>
+            </page>
+
+            <page id="dates-2026" type="page">
+                <title lang="de">Alle anstehenden Vereinstermine</title>
+                <title lang="en">Dates 2026</title>
+                <url lang="de">https://www.treptower-teufel.de/termine-2026/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/dates-2026/</url>
+            </page>
+
+            <page id="faq" type="page">
+                <title lang="de">FAQ</title>
+                <title lang="en">FAQ</title>
+                <url lang="de">https://www.treptower-teufel.de/faq/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/faq-en/</url>
+            </page>
+
+            <page id="contact" type="page">
+                <title lang="de">Kontakt</title>
+                <title lang="en">Contact</title>
+                <url lang="de">https://www.treptower-teufel.de/kontakt/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/contact/</url>
+            </page>
+        </section>
+
+        <section id="membership" name="Membership and Documents">
+            <page id="membership-info" type="page">
+                <title lang="de">Mitgliedschaftsinformationen</title>
+                <title lang="en">Membership</title>
+                <url lang="de">https://www.treptower-teufel.de/mitgliedschaft/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/membership/</url>
+            </page>
+
+            <page id="constitution" type="page">
+                <title lang="de">Satzung</title>
+                <title lang="en">Constitution</title>
+                <url lang="de">https://www.treptower-teufel.de/satzung/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/constitution/</url>
+            </page>
+
+            <page id="fee-schedule" type="page">
+                <title lang="de">Beitragsordnung</title>
+                <title lang="en">Fee Schedule</title>
+                <url lang="de">https://www.treptower-teufel.de/beitragsordnung/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/fee-schedule/</url>
+            </page>
+
+            <page id="application-adults-pdf" type="pdf" same_url="true">
+                <title lang="de">Aufnahmeantrag (PDF)</title>
+                <title lang="en">Membership Application (PDF)</title>
+                <url lang="de">https://www.treptower-teufel.de/wp-content/uploads/aufnahmeantrag_erwachsene_ausfuellbar.pdf</url>
+                <url lang="en">https://www.treptower-teufel.de/wp-content/uploads/aufnahmeantrag_erwachsene_ausfuellbar.pdf</url>
+            </page>
+
+            <page id="application-minors-pdf" type="pdf" same_url="true">
+                <title lang="de">Aufnahmeantrag für Minderjährige (PDF)</title>
+                <title lang="en">Application for Minors (PDF)</title>
+                <url lang="de">https://www.treptower-teufel.de/wp-content/uploads/aufnahmeantrag_kinder1_ausfuellbar.pdf</url>
+                <url lang="en">https://www.treptower-teufel.de/wp-content/uploads/aufnahmeantrag_kinder1_ausfuellbar.pdf</url>
+            </page>
+        </section>
+
+        <section id="booking" name="Booking">
+            <page id="book-outdoor-courts" type="page">
+                <title lang="de">Informationen zur Buchung von Außenplätzen</title>
+                <title lang="en">Book (Outdoor Courts)</title>
+                <url lang="de">https://www.treptower-teufel.de/buchung/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/book/</url>
+            </page>
+
+            <page id="book-indoor-courts" type="page">
+                <title lang="de">Informationen zur Buchung von Hallenplätzen</title>
+                <title lang="en">Book Indoor Tennis Courts (Berlin)</title>
+                <url lang="de">https://www.treptower-teufel.de/tennishalle-in-berlin-buchen/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/book-indoor-tennis-courts-berlin/</url>
+            </page>
+
+            <page id="guest-bookings" type="page">
+                <title lang="de">Informationen zu Gastbuchungen (Miete von Tennisplätzen)</title>
+                <title lang="en">Book Tennis Court (No Membership)</title>
+                <url lang="de">https://www.treptower-teufel.de/tennisplatz-mieten-berlin-ohne-mitgliedschaft/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/book-tennis-court-berlin-no-membership/</url>
+            </page>
+        </section>
+
+        <section id="play-train" name="Play and Train">
+            <page id="play-train-overview" type="page">
+                <title lang="de">Übersicht unserer Spiel- und Trainingsangebote</title>
+                <title lang="en">Play &amp; Train</title>
+                <url lang="de">https://www.treptower-teufel.de/spielen-trainieren/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/play-train/</url>
+            </page>
+
+            <page id="social-tennis-sunday" type="page">
+                <title lang="de">Spielangebot Social Tennis Sunday</title>
+                <title lang="en">Social Tennis Sunday</title>
+                <url lang="de">https://www.treptower-teufel.de/social-tennis-sunday/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/social-tennis-sunday-en/</url>
+            </page>
+
+            <page id="individual-training" type="page">
+                <title lang="de">Informationen zu Einzeltrainings</title>
+                <title lang="en">Individual Training</title>
+                <url lang="de">https://www.treptower-teufel.de/einzeltraining/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/individual-training/</url>
+            </page>
+
+            <page id="beginner-courses" type="page">
+                <title lang="de">Informationen zu Anfängerkursen</title>
+                <title lang="en">Tennis Beginner Courses (Berlin)</title>
+                <url lang="de">https://www.treptower-teufel.de/tennis-anfangerkurse-berlin/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/tennis-beginner-courses-berlin/</url>
+            </page>
+
+            <page id="advanced-courses" type="page">
+                <title lang="de">Informationen zu Kursen für Fortgeschrittene</title>
+                <title lang="en">Advanced Tennis Course (Berlin)</title>
+                <url lang="de">https://www.treptower-teufel.de/tenniskurs-fortgeschrittene-berlin/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/advanced-tennis-course-berlin/</url>
+            </page>
+
+            <page id="newcomer-training" type="page">
+                <title lang="de">Informationen zum Newcomer-Training</title>
+                <title lang="en">Newcomer Training</title>
+                <url lang="de">https://www.treptower-teufel.de/newcomer-training/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/newcomer-training-2/</url>
+            </page>
+
+            <page id="all-upcoming-events" type="page">
+                <title lang="de">Kalenderübersicht aller Trainingsangebote</title>
+                <title lang="en">All Upcoming Events</title>
+                <url lang="de">https://www.treptower-teufel.de/alle-anstehenden-events/</url>
+                <url lang="en">https://www.treptower-teufel.de/en/all-upcoming-events/</url>
+            </page>
+        </section>
+    </sections>
+
+    <contacts>
+        <email id="standard-contact" purpose="standard">kontakt@treptower-teufel.de</email>
+    </contacts>
+</treptower_teufel_linkmap>
