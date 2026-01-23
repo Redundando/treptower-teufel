@@ -465,15 +465,20 @@ function kk_calendar_render_description(string $desc, string $linkText = '» Det
 		$trail = '';
 
 		// common: URL followed by punctuation in plain text
+
 		if (preg_match('~^(.*?)([)\].,;:!?]+)$~', $url, $p)) {
 			$url = $p[1];
 			$trail = $p[2];
 		}
 
 		$href = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
-		return '<a href="' . $href . '">' . $linkText . '</a>' . $trail;
-	}, $desc);
+		$raw = html_entity_decode($href, ENT_QUOTES | ENT_HTML5, 'UTF-8'); // in case < or > are encoded
+		$raw = preg_replace('~<[^>]*>?~', '', $raw);                      // remove <...> and dangling <...
+		$raw = trim($raw);
 
+		$clean_url = esc_url_raw($raw);   // sanitize as URL (storage/logic)
+		return '<a href="' . $clean_url . '">' . $linkText . '</a>' . $trail;
+	}, $desc);
 
 	return $out ?? $desc;
 }
