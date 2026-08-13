@@ -5,6 +5,7 @@
 /*
 !/.gitignore
 !/README.md
+!/STATUS.md
 !/deploy/
 !/wp-config.php
 !/.wp-env.local.php
