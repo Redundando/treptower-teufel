@@ -1,7 +1,0 @@
-{
-	"slug" : "local",
-	"namespace" : "\\TSF_Extension_Manager\\Extension\\Local",
-	"test" : {
-		"_base" : "local.php"
-	}
-}

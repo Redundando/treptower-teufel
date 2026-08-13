@@ -1,12 +1,28 @@
-/wp-content/cache/
-/wp-content/upgrade/
-/wp-content/backups/
-/wp-content/ai1wm-backups/
-/wp-content/uploads/
-/.htaccess
-/.wp-secrets.php
+# Schlankes Repo: nur eigener Code ist versioniert.
+# WordPress-Core, Fremd-Plugins und Sprachdateien werden über wp-admin
+# bzw. Auto-Updates gepflegt und sind bewusst NICHT im Repo (Stand 08/2026).
+
+/*
+!/.gitignore
+!/README.md
+!/deploy/
+!/wp-config.php
+!/.wp-env.local.php
+!/.wp-env.staging.php
+!/.wp-env.production.php
+!/fetch-calendar.php
+!/robots.txt
+!/Teufel Artwork.jpg
+!/Teufel Artwork 1280.jpg
+!/wp-content/
+/wp-content/*
+!/wp-content/mu-plugins/
+!/wp-content/themes/
+/wp-content/themes/*
+!/wp-content/themes/klohn-kit/
+!/wp-content/themes/blankslate-child/
+
+# Nie versionieren, auch nicht innerhalb erlaubter Pfade
+.wp-secrets.php
 *.log
-# Server-lokale/generierte Inhalte und Backups
 *.bak_*
-/hallenbelegung/
-/intern/

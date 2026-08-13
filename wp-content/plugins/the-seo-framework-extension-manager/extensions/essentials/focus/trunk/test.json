@@ -1,7 +1,0 @@
-{
-	"slug" : "focus",
-	"namespace" : "\\TSF_Extension_Manager\\Extension\\Focus",
-	"test" : {
-		"_base" : "focus.php"
-	}
-}

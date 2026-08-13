@@ -1,4 +1,0 @@
-/* do not display AB testing promo under goal conversion overview */
-.matomo-widget[id^="widgetGoalsgoalConversionsOverviewidGoal"] .alert-info {
-    display: none !important;
-}

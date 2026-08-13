@@ -1,7 +1,0 @@
-{
-	"slug" : "cord",
-	"namespace" : "\\TSF_Extension_Manager\\Extension\\Cord",
-	"test" : {
-		"_base" : "cord.php"
-	}
-}
