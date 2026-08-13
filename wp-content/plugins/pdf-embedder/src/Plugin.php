@@ -117,6 +117,8 @@ final class Plugin {
 
 		add_shortcode( PdfEmbedder::TAG, [ $shortcode, 'render' ] );
 
+		( new Viewer\EditorPreview() )->hooks();
+
 		register_block_type(
 			PDFEMB_PLUGIN_DIR . 'block/build/block.json',
 			[
@@ -144,7 +146,7 @@ final class Plugin {
 			'pdfemb_pdfjs',
 			Assets::url( 'js/pdfjs/pdf.js' ),
 			[ 'jquery' ],
-			'2.2.228',
+			'2.16.105',
 			false
 		);
 
@@ -216,14 +218,34 @@ final class Plugin {
 		// Add current plan information for frontend use.
 		$processed['plan'] = 'lite';
 
+		// License key is sensitive; never expose it as it's not needed in the Block Editor anyways.
+		unset( $processed['license_key'] );
+
 		/**
 		 * Data to be made available to block editor script.
 		 *
 		 * @since 4.9.3
+		 *
+		 * @param array $processed Processed/cleaned options data.
 		 */
-		$data = 'const pdfembPluginOptions=' . wp_json_encode( apply_filters( 'pdfemb_enqueue_block_assets_data', $processed ) ) . ';';
+		$data = (array) apply_filters( 'pdfemb_enqueue_block_assets_data', $processed );
 
-		wp_add_inline_script( 'pdfemb-pdf-embedder-viewer-editor-script', $data, 'before' );
+		// Re-apply contract-critical values after the filter so a misbehaving
+		// third-party hook cannot strip or rewrite them. The block JS hard-fails
+		// without `homeUrl` (which would otherwise resolve to the host root on
+		// subdirectory installs and produce a broken iframe), and the
+		// editor-preview route is inert without `editorPreviewNonce`.
+		$data['homeUrl']            = home_url( '/' );
+		$data['editorPreviewNonce'] = wp_create_nonce( Viewer\EditorPreview::NONCE_ACTION );
+
+		// Assign to `window` rather than declaring a `const`: top-level `const`
+		// in a classic script lives in the shared Script Lexical Environment
+		// but is NOT exposed as a property of `window`. The block bundle reads
+		// `window.pdfembPluginOptions.<key>`, which would resolve to undefined
+		// and silently break feature gates (e.g. `editorPreviewNonce`).
+		$json = 'window.pdfembPluginOptions=' . wp_json_encode( $data ) . ';';
+
+		wp_add_inline_script( 'pdfemb-pdf-embedder-viewer-editor-script', $json, 'before' );
 	}
 
 	/**

@@ -109,7 +109,7 @@ function cmplz_menu() {
 						array(
 							'id'                    => 'cookie-scan',
 							'title'                 => __( 'Website Scan', 'complianz-gdpr' ),
-							'intro'                 => __( 'Complianz will scan several pages of your website for first-party cookies and known third-party scripts. The scan will be recurring monthly to keep you up-to-date!', 'complianz-gdpr' ).' '. cmplz_sprintf( __( 'For more information, %sread our 5 tips%s about the site scan.', 'complianz-gdpr'), '<a href="https://complianz.io/cookie-scan-results/" target="_blank">','</a>'),
+							'intro'                 => __( 'Complianz will scan several pages of your website for first-party cookies and known third-party scripts. The scan will be recurring monthly to keep you up-to-date!', 'complianz-gdpr' ) . ' ' . cmplz_sprintf( __( 'For more information, %1$sread our 5 tips%2$s about the site scan.', 'complianz-gdpr' ), '<a href="https://complianz.io/cookie-scan-results/" target="_blank">', '</a>' ),
 							'helpLink'              => 'https://complianz.io/cookie-scan-results/',
 							'save_buttons_required' => false,
 						),
@@ -292,10 +292,11 @@ function cmplz_menu() {
 								'<strong>' . __( 'For the most reliable support', 'complianz-gdpr' ) . '</strong>, ' .
 								cmplz_sprintf(
 									/* translators: 1: URL, 2: aria-label text */
-									__( 'we recommend using our <a href="%s" target="_blank" rel="noopener noreferrer" aria-label="%s">online support form</a> instead.', 'complianz-gdpr' ),
+									__( 'we recommend using our <a href="%1$s" target="_blank" rel="noopener noreferrer" aria-label="%2$s">online support form</a> instead.', 'complianz-gdpr' ),
 									'https://complianz.io/support',
 									esc_attr__( 'Online support form (opens in new tab)', 'complianz-gdpr' )
-								),
+								) . '<br><br>' .
+								'<strong>' . __( 'Please note:', 'complianz-gdpr' ) . '</strong> ' . __( 'Your support request may be processed by Emma, an automated AI assistant. The information you provide will be used solely for the purpose of handling and resolving your support inquiry.', 'complianz-gdpr' ),
 							'premium'      => true,
 							'upgrade'      => 'https://complianz.io/pricing/',
 							'premium_text' => __( 'Get premium support with %1$sComplianz GDPR Premium%2$s', 'complianz-gdpr' ),

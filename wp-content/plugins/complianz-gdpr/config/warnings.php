@@ -454,7 +454,7 @@ function cmplz_load_warning_types() {
 			),
 			'textdomain-just-in-time-notice' => array(
 				'dismissible'         => true,
-				'open'                => __( 'You might see a notice about Complianz when debugging your WordPress website. Although not a breaking issue, pleasee know we\'re attending to this issue.', 'complianz-gdpr' ),
+				'open'                => __( 'You might see a notice about Complianz when debugging your WordPress website. Although not a breaking issue, please know we\'re attending to this issue.', 'complianz-gdpr' ),
 				'warning_condition'   => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? '_true_' : '_false_',
 				'include_in_progress' => false,
 				'url'                 => 'https://complianz.io/about-function-_load_textdomain_just_in_time-was-called-incorrectly/',

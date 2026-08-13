@@ -9,18 +9,12 @@
 namespace Piwik;
 
 use Piwik\Metrics\Formatter;
-/**
- *
- */
 class Timer
 {
     private $timerStart;
     private $memoryStart;
     private $formatter;
     private $timerEnd;
-    /**
-     * @return \Piwik\Timer
-     */
     public function __construct()
     {
         $this->formatter = new Formatter();

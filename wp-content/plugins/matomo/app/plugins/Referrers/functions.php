@@ -28,7 +28,7 @@ function getPathFromUrl($url)
 /**
  * Return translated referrer type
  *
- * @param string $label
+ * @param string|int $label
  * @return string Referrer type
  */
 function getReferrerTypeLabel($label)
@@ -67,9 +67,8 @@ function getReferrerTypeLabel($label)
 }
 /**
  * Works in both directions
- * @param string $name
- * @throws \Exception
- * @return string
+ * @param string|int $name
+ * @return string|int
  */
 function getReferrerTypeFromShortName($name)
 {

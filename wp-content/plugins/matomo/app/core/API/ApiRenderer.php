@@ -85,7 +85,7 @@ abstract class ApiRenderer
         return $this->renderException($exception->getMessage(), $exception);
     }
     /**
-     * @param $dataTable
+     * @param DataTable|array $dataTable
      * @return Renderer
      */
     protected function buildDataTableRenderer($dataTable)
@@ -104,9 +104,6 @@ abstract class ApiRenderer
         return $renderer;
     }
     /**
-     * @param string $format
-     * @param array  $request
-     * @return ApiRenderer
      * @throws Exception
      */
     public static function factory(string $format, array $request) : \Piwik\API\ApiRenderer

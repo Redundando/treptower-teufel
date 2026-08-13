@@ -10,8 +10,6 @@ namespace Piwik\Plugins\Transitions;
 
 use Piwik\Common;
 use Piwik\Config;
-/**
- */
 class Transitions extends \Piwik\Plugin
 {
     /**
@@ -60,11 +58,10 @@ class Transitions extends \Piwik\Plugin
         $out .= '    piwik.transitionsMaxPeriodAllowed = "' . ($maxPeriodAllowed ? $maxPeriodAllowed : 'all') . '"' . "\n";
     }
     /**
-     * Retrieve the period allowed config setting for a site or all sites if null
+     * Retrieve the max period allowed config setting for the given site,
+     * falling back to the general config when no site is given.
      *
-     * @param $idSite
-     *
-     * @return string
+     * @param int|null $idSite
      */
     public static function getPeriodAllowedConfig($idSite) : string
     {

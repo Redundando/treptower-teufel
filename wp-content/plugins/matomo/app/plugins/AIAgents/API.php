@@ -18,6 +18,11 @@ use Piwik\Plugins\API\DataTable\MergeDataTables;
 use Piwik\Segment;
 use Piwik\Segment\SegmentExpression;
 use Piwik\Site;
+/**
+ * Provides reporting API methods for distinguishing AI agent traffic from human traffic.
+ *
+ * @method static \Piwik\Plugins\AIAgents\API getInstance()
+ */
 class API extends PluginAPI
 {
     public const AI_AGENT_SEGMENT = 'aiAgentName!=';
@@ -25,15 +30,28 @@ class API extends PluginAPI
     public const HUMAN_SEGMENT = 'aiAgentName==';
     public const HUMAN_COLUMN_SUFFIX = '_human';
     /**
-     * @param int|string $idSite
-     * @param string $segment
-     * @param string|array<string> $columns
+     * Returns visit summary metrics split between AI agents and human visitors.
+     *
+     * @param int|string|int[] $idSite Website ID(s) to query.
+     *                                 - Single site ID (e.g. 1)
+     *                                 - Multiple site IDs (e.g. [1, 4, 5])
+     *                                 - Comma-separated list ("1,4,5") or "all"
+     * @param 'day'|'week'|'month'|'year'|'range' $period The period to process, processes data for the period
+     *                                                   containing the specified date.
+     * @param string $date The date or date range to process.
+     *                     'YYYY-MM-DD', magic keywords (today, yesterday, lastWeek, lastMonth, lastYear),
+     *                     or date range (ie, 'YYYY-MM-DD,YYYY-MM-DD', lastX, previousX).
+     * @param string $segment Custom segment to append to the AI-agent and human traffic filters.
+     * @param list<string>|string $columns Metrics to include in the response.
+     *                                     Accepts a comma-separated list or array of metric names.
+     * @return DataTable|DataTable\Map Visit summary metrics for the requested site and period, with AI-agent and
+     *                            human-specific column suffixes.
      */
     public function get($idSite, string $period, string $date, string $segment = '', $columns = '') : DataTableInterface
     {
         Piwik::checkUserHasViewAccess($idSite);
         $columns = Piwik::getArrayFromApiParameter($columns);
-        if ($idSite === 'all' || count(Site::getIdSitesFromIdSitesString($idSite)) > 1) {
+        if ($idSite === 'all' || count(Site::getIdSitesFromIdSitesString($idSite, \false, \true)) > 1) {
             $resultSet = new DataTable\Map();
             $resultSet->setKeyName('idSite');
         } elseif (Period::isMultiplePeriod($date, $period)) {

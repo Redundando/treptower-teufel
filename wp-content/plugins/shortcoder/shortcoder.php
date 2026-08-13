@@ -4,13 +4,13 @@ Plugin Name: Shortcoder
 Plugin URI: https://www.aakashweb.com/wordpress-plugins/shortcoder/
 Description: Shortcoder plugin allows to create a custom shortcodes for HTML, JavaScript and other snippets. Now the shortcodes can be used in posts/pages and the snippet will be replaced in place.
 Author: Aakash Chakravarthy
-Version: 6.5.1
+Version: 6.5.4
 Author URI: https://www.aakashweb.com/
 Text Domain: shortcoder
 Domain Path: /languages
 */
 
-define( 'SC_VERSION', '6.5.1' );
+define( 'SC_VERSION', '6.5.4' );
 define( 'SC_PATH', plugin_dir_path( __FILE__ ) ); // All have trailing slash
 define( 'SC_URL', plugin_dir_url( __FILE__ ) );
 define( 'SC_ADMIN_URL', trailingslashit( plugin_dir_url( __FILE__ ) . 'admin' ) );
@@ -138,7 +138,9 @@ final class Shortcoder{
         return apply_filters( 'sc_mod_settings', array(
             'default_editor' => 'code',
             'default_content' => '',
-            'list_content' => 'no'
+            'list_content' => 'no',
+            'sanitize_custom_parameters' => 'yes',
+            'sanitize_custom_fields' => 'yes'
         ));
 
     }
@@ -241,6 +243,7 @@ final class Shortcoder{
     public static function replace_sc_params( $content, $params ){
 
         $params = array_change_key_case( $params, CASE_LOWER );
+        $general_settings = self::get_settings();
 
         preg_match_all('/%%([a-zA-Z0-9_\-]+)\:?(.*?)%%/', $content, $matches);
 
@@ -264,6 +267,10 @@ final class Shortcoder{
                     if( substr( $value, -3 ) == '<p>' ){
                         $value = substr( $value, 0, -3 );
                     }
+                }
+
+                if ( isset( $general_settings[ 'sanitize_custom_parameters' ] ) && $general_settings[ 'sanitize_custom_parameters' ] === 'yes' ) {
+                    $value = wp_kses_post( $value );
                 }
 
             }
@@ -317,6 +324,7 @@ final class Shortcoder{
             return $content;
         }
 
+        $general_settings = self::get_settings();
         $cf_tags = $matches[1];
 
         foreach( $cf_tags as $cf_tag ){
@@ -334,6 +342,10 @@ final class Shortcoder{
                 $value = $cf_actual_val == '' ? $cf_default_val : $cf_actual_val;
             }else{
                 $value = $cf_default_val;
+            }
+
+            if ( isset( $general_settings[ 'sanitize_custom_fields' ] ) && $general_settings[ 'sanitize_custom_fields' ] === 'yes' ) {
+                $value = wp_kses_post( $value );
             }
 
             $full_tag = '$$custom_field:' . $cf_tag . '$$';

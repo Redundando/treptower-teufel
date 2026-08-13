@@ -23,9 +23,6 @@ use Piwik\Piwik;
 use Piwik\ProxyHttp;
 use Piwik\Translation\Translator;
 use Piwik\View;
-/**
- *
- */
 class LanguagesManager extends \Piwik\Plugin
 {
     public const LANGUAGE_SELECTION_NONCE = 'LanguagesManager.selection';
@@ -64,9 +61,7 @@ class LanguagesManager extends \Piwik\Plugin
         $str .= $this->getLanguagesSelector();
     }
     /**
-     * Adds the languages drop-down list to topbars other than the main one rendered
-     * in CoreHome/templates/top_bar.twig. The 'other' topbars are on the Installation
-     * and CoreUpdater screens.
+     * Adds the current user's language name as a JavaScript global variable (piwik.languageName).
      */
     public function jsGlobalVariables(&$str)
     {
@@ -94,7 +89,7 @@ class LanguagesManager extends \Piwik\Plugin
         $language = Common::getRequestVar('language', '', 'string');
         if (empty($language)) {
             $userLanguage = self::getLanguageCodeForCurrentUser();
-            if (\Piwik\Plugins\LanguagesManager\API::getInstance()->isLanguageAvailable($userLanguage)) {
+            if (is_string($userLanguage) && \Piwik\Plugins\LanguagesManager\API::getInstance()->isLanguageAvailable($userLanguage)) {
                 $language = $userLanguage;
             }
         }
@@ -141,16 +136,16 @@ class LanguagesManager extends \Piwik\Plugin
     public static function getLanguageCodeForCurrentUser()
     {
         $languageCode = self::getLanguageFromPreferences();
-        if (!\Piwik\Plugins\LanguagesManager\API::getInstance()->isLanguageAvailable($languageCode)) {
+        if (!is_string($languageCode) || !\Piwik\Plugins\LanguagesManager\API::getInstance()->isLanguageAvailable($languageCode)) {
             $languageCode = Common::extractLanguageAndRegionCodeFromBrowserLanguage(Common::getBrowserLanguage(), \Piwik\Plugins\LanguagesManager\API::getInstance()->getAvailableLanguages());
         }
-        if (!\Piwik\Plugins\LanguagesManager\API::getInstance()->isLanguageAvailable($languageCode)) {
+        if (!is_string($languageCode) || !\Piwik\Plugins\LanguagesManager\API::getInstance()->isLanguageAvailable($languageCode)) {
             $languageCode = StaticContainer::get('Piwik\\Translation\\Translator')->getDefaultLanguage();
         }
         return $languageCode;
     }
     /**
-     * @return string Full english language string, eg. "French"
+     * @return string|false Full english language string, eg. "French"
      */
     public static function getLanguageNameForCurrentUser()
     {
@@ -200,7 +195,7 @@ class LanguagesManager extends \Piwik\Plugin
      */
     public static function setLanguageForSession($languageCode)
     {
-        if (!\Piwik\Plugins\LanguagesManager\API::getInstance()->isLanguageAvailable($languageCode)) {
+        if (!is_string($languageCode) || !\Piwik\Plugins\LanguagesManager\API::getInstance()->isLanguageAvailable($languageCode)) {
             return \false;
         }
         $cookieName = Config::getInstance()->General['language_cookie_name'];

@@ -34,9 +34,9 @@ class CorePluginsAdmin extends Plugin
         $this->getChangesModel()->addChanges($pluginName);
     }
     /**
-     * Remove any changes from a plugin that has been uninstalled
+     * Remove any changes from a plugin that has been deactivated
      *
-     * @param string $pluginName The name of the plugin that was uninstalled
+     * @param string $pluginName The name of the plugin that was deactivated
      */
     public function removePluginChanges(string $pluginName)
     {
@@ -44,8 +44,6 @@ class CorePluginsAdmin extends Plugin
     }
     /**
      * Retrieve an instantiated ChangesModel object
-     *
-     * @return ChangesModel
      */
     private function getChangesModel() : ChangesModel
     {

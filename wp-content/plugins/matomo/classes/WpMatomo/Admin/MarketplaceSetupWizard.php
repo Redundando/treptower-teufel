@@ -9,41 +9,121 @@
 
 namespace WpMatomo\Admin;
 
-class MarketplaceSetupWizard {
+use WpMatomo\Feature;
+use WpMatomo\Settings;
+
+class MarketplaceSetupWizard extends Feature {
 	const MARKETPLACE_PLUGIN_FILE   = 'matomo-marketplace-for-wordpress/matomo-marketplace-for-wordpress.php';
 	const AJAX_IS_ACTIVE_NONCE_NAME = 'matomo-marketplace-setup-wizard-is-active';
 	const AJAX_ACTIVATE_NONCE_NAME  = 'matomo-marketplace-setup-wizard-activate';
 
-	public function __construct() {
-		$this->add_hooks();
+	public function is_active() {
+		if ( ! is_admin() ) {
+			return false;
+		}
+
+		if (
+			$this->is_plugin_install_page()
+			|| $this->is_plugin_activation_request()
+		) {
+			return true;
+		}
+
+		if ( empty( $_REQUEST['page'] ) ) {
+			return false;
+		}
+
+		if ( Menu::SLUG_GET_STARTED === $_REQUEST['page'] ) {
+			return true;
+		}
+
+		if ( Menu::SLUG_MARKETPLACE !== $_REQUEST['page'] ) {
+			return false;
+		}
+
+		return true; // displayed in some manner on all tabs
+	}
+
+	public function get_body( $show_titles = true ) {
+		return new MarketplaceSetupWizardBody( $show_titles );
 	}
 
 	public function show() {
-		$matomo_logo_big           = plugins_url( 'assets/img/logo-big.png', MATOMO_ANALYTICS_FILE );
-		$user_can_upload_plugins   = current_user_can( 'upload_plugins' );
-		$user_can_activate_plugins = current_user_can( 'activate_plugins' );
-		$is_plugin_installed       = is_file( WP_PLUGIN_DIR . '/' . self::MARKETPLACE_PLUGIN_FILE )
-			|| is_file( WP_CONTENT_DIR . '/mu-plugins/' . self::MARKETPLACE_PLUGIN_FILE );
+		$matomo_logo_big               = plugins_url( 'assets/img/logo-big.png?v=' . rawurlencode( matomo_get_asset_version() ), MATOMO_ANALYTICS_FILE );
+		$marketplace_setup_wizard_body = $this->get_body();
 
-		include dirname( __FILE__ ) . '/views/marketplace_setup_wizard.php';
+		include __DIR__ . '/views/marketplace_setup_wizard.php';
 	}
 
-	private function add_hooks() {
-		if ( ! current_user_can( 'upload_plugins' )
-			|| ! current_user_can( 'activate_plugins' )
+	public function register_hooks() {
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		add_action( 'admin_notices', [ $this, 'admin_notices' ] );
+		add_action( 'activated_plugin', [ $this, 'on_plugin_activated' ] );
+		add_action( 'admin_footer', [ $this, 'on_admin_footer' ] );
+	}
+
+	public function on_plugin_activated( $plugin ) {
+		if ( 'matomo-marketplace-for-wordpress/matomo-marketplace-for-wordpress.php' !== $plugin ) {
+			return;
+		}
+
+		if (
+			empty( $_SERVER['HTTP_REFERER'] )
+			|| false === strpos( esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ), 'mtm_marketplace_install' )
 		) {
 			return;
 		}
 
-		$this->enqueue_scripts();
+		// if we are in the marketplace install workflow, and the plugin has been
+		// activated, close the current window to go back to the marketplace setup
+		?>
+		<html>
+		<head></head>
+		<body>
+			<script>
+				window.close();
+			</script>
+		</body>
+		</html>
+		<?php
+		wp_die();
 	}
 
-	private function enqueue_scripts() {
+	public function admin_notices() {
+		if ( ! $this->is_plugin_install_page() ) {
+			return;
+		}
+		?>
+		<div class="notice notice-info">
+			<p>
+				<?php esc_html_e( 'You\'re almost there! Upload the .zip file below to install the Marketplace and start exploring advanced analytics features.', 'matomo' ); ?>
+			</p>
+		</div>
+		<?php
+	}
+
+	public function on_admin_footer() {
+		if ( ! $this->is_plugin_install_page() ) {
+			return;
+		}
+
+		// add script to add query param to plugin upload form submit URL
+		?>
+		<script>
+			window.jQuery(document).ready(function ($) {
+				var $form = $('.wp-upload-form');
+				$form.attr('action', $form.attr('action') + '&mtm_marketplace_install=1');
+			});
+		</script>
+		<?php
+	}
+
+	public function enqueue_scripts() {
 		wp_enqueue_script(
 			'matomo-marketplace-setup-wizard',
 			plugins_url( '/assets/js/marketplace_setup_wizard.js', MATOMO_ANALYTICS_FILE ),
 			[ 'jquery' ],
-			'1.0.0',
+			matomo_get_asset_version(),
 			true
 		);
 
@@ -54,11 +134,17 @@ class MarketplaceSetupWizard {
 				'ajax_url'        => admin_url( 'admin-ajax.php' ),
 				'is_active_nonce' => wp_create_nonce( self::AJAX_IS_ACTIVE_NONCE_NAME ),
 				'activate_nonce'  => wp_create_nonce( self::AJAX_ACTIVATE_NONCE_NAME ),
+				'is_welcome_page' => isset( $_REQUEST['page'] )
+					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+					&& Menu::SLUG_MARKETPLACE === wp_unslash( $_REQUEST['page'] )
+					&& isset( $_REQUEST['tab'] )
+					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+					&& 'marketplace' === wp_unslash( $_REQUEST['tab'] ),
 			]
 		);
 	}
 
-	public static function register_ajax() {
+	public function register_ajax() {
 		add_action( 'wp_ajax_matomo_is_marketplace_active', [ self::class, 'is_marketplace_active' ] );
 		add_action( 'wp_ajax_matomo_activate_marketplace', [ self::class, 'activate_marketplace_plugin' ] );
 	}
@@ -70,7 +156,12 @@ class MarketplaceSetupWizard {
 			wp_send_json_error( [ 'message' => 'forbidden' ], 403 );
 		}
 
-		wp_send_json( [ 'active' => is_plugin_active( self::MARKETPLACE_PLUGIN_FILE ) ] );
+		wp_send_json(
+			[
+				'installed' => self::is_marketplace_installed(),
+				'active'    => is_plugin_active( self::MARKETPLACE_PLUGIN_FILE ),
+			]
+		);
 	}
 
 	public static function activate_marketplace_plugin() {
@@ -82,5 +173,56 @@ class MarketplaceSetupWizard {
 
 		activate_plugin( self::MARKETPLACE_PLUGIN_FILE );
 		wp_send_json( [] );
+	}
+
+	public static function is_marketplace_installed() {
+		return is_file( WP_PLUGIN_DIR . '/' . self::MARKETPLACE_PLUGIN_FILE )
+			|| is_file( WP_CONTENT_DIR . '/mu-plugins/' . self::MARKETPLACE_PLUGIN_FILE );
+	}
+
+	private function is_plugin_install_page() {
+		if ( empty( $_SERVER['REQUEST_URI'] ) ) {
+			return false;
+		}
+
+		$request_path = wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH );
+		if ( ! preg_match( '%/wp-admin/plugin-install\\.php$%', $request_path ) ) {
+			return false;
+		}
+
+		if (
+			empty( $_REQUEST['tab'] )
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			|| 'upload' !== wp_unslash( $_REQUEST['tab'] )
+			|| empty( $_REQUEST['mtm_marketplace_install'] )
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private function is_plugin_activation_request() {
+		if ( empty( $_SERVER['REQUEST_URI'] ) ) {
+			return false;
+		}
+
+		$request_path = wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH );
+		if ( ! preg_match( '%/wp-admin/plugins\\.php$%', $request_path ) ) {
+			return false;
+		}
+
+		if (
+			empty( $_REQUEST['action'] )
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			|| 'activate' !== wp_unslash( $_REQUEST['action'] )
+			|| empty( $_REQUEST['plugin'] )
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			|| 'matomo-marketplace-for-wordpress/matomo-marketplace-for-wordpress.php' !== wp_unslash( $_REQUEST['plugin'] )
+		) {
+			return false;
+		}
+
+		return true;
 	}
 }

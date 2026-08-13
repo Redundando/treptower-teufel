@@ -15,9 +15,6 @@ use Piwik\Piwik;
 use Piwik\Plugins\Installation\FormDefaultSettings;
 use Piwik\Plugins\UserCountry\LocationProvider;
 use Piwik\Scheduler\Scheduler;
-/**
- *
- */
 class GeoIp2 extends \Piwik\Plugin
 {
     public function registerEvents()
@@ -68,8 +65,6 @@ class GeoIp2 extends \Piwik\Plugin
     }
     /**
      * Customize the Installation "default settings" form.
-     *
-     * @param FormDefaultSettings $form
      */
     public function installationFormInit(FormDefaultSettings $form)
     {
@@ -79,8 +74,6 @@ class GeoIp2 extends \Piwik\Plugin
     }
     /**
      * Process the submit on the Installation "default settings" form.
-     *
-     * @param FormDefaultSettings $form
      */
     public function installationFormSubmit(FormDefaultSettings $form)
     {

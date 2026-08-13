@@ -64,7 +64,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
  * phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
  */
-class SystemReport {
+class SystemReport implements MatomoPageContent {
 	const NONCE_NAME                      = 'matomo_troubleshooting';
 	const TROUBLESHOOT_SYNC_USERS         = 'matomo_troubleshooting_action_site_users';
 	const TROUBLESHOOT_SYNC_ALL_USERS     = 'matomo_troubleshooting_action_all_users';
@@ -133,7 +133,8 @@ class SystemReport {
 		) {
 			if ( ! empty( $_POST[ self::TROUBLESHOOT_ARCHIVE_NOW ] ) ) {
 				Bootstrap::do_bootstrap();
-				$scheduled_tasks = new ScheduledTasks( $this->settings );
+				$sync_config     = new \WpMatomo\Site\Sync\SyncConfig( $this->settings );
+				$scheduled_tasks = new ScheduledTasks( $this->settings, $sync_config );
 
 				if ( ! defined( 'PIWIK_ARCHIVE_NO_TRUNCATE' ) ) {
 					// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
@@ -163,7 +164,7 @@ class SystemReport {
 				}
 
 				if ( ! empty( $errors ) ) {
-					echo '<div class="notice notice-warning"><p>Matomo Archive Warnings: ';
+					echo '<div class="matomo-notice notice notice-warning"><p>Matomo Archive Warnings: ';
 					foreach ( $errors as $error ) {
 						// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export
 						echo nl2br( esc_html( matomo_anonymize_value( var_export( $error, 1 ) ) ) );
@@ -171,7 +172,7 @@ class SystemReport {
 					}
 					echo '</p></div>';
 				} else {
-					echo '<div class="notice notice-success"><p>' . esc_html__( 'Matomo Archiving completed successfully!', 'matomo' ) . '</p></div>';
+					echo '<div class="matomo-notice notice notice-success"><p>' . esc_html__( 'Matomo Archiving completed successfully!', 'matomo' ) . '</p></div>';
 				}
 			}
 
@@ -186,7 +187,8 @@ class SystemReport {
 			}
 
 			if ( ! empty( $_POST[ self::TROUBLESHOOT_UPDATE_GEOIP_DB ] ) ) {
-				$scheduled_tasks = new ScheduledTasks( $this->settings );
+				$sync_config     = new \WpMatomo\Site\Sync\SyncConfig( $this->settings );
+				$scheduled_tasks = new ScheduledTasks( $this->settings, $sync_config );
 				$scheduled_tasks->update_geo_ip2_db();
 			}
 
@@ -252,7 +254,7 @@ class SystemReport {
 
 					$tracking_code_generator->update_tracking_code( true );
 
-					echo '<div class="notice notice-success"><p>' . esc_html__( 'JavaScript tracking code regenerated successfully.', 'matomo' ) . '</p></div>';
+					echo '<div class="matomo-notice notice notice-success"><p>' . esc_html__( 'JavaScript tracking code regenerated successfully.', 'matomo' ) . '</p></div>';
 				} catch ( \Exception $ex ) {
 					echo '<div class="error"><p>' . esc_html__( 'Matomo Error', 'matomo' ) . ': ' . esc_html( matomo_anonymize_value( $e->getMessage() . ' =>' . $this->logger->get_readable_trace( $e ) ) ) . '</p></div>';
 				}
@@ -271,7 +273,7 @@ class SystemReport {
 					$scheduler = StaticContainer::get( Scheduler::class );
 					$message   = $scheduler->runTaskNow( $task_to_run );
 
-					echo '<div class="notice notice-success"><p>' . esc_html__( 'Task ran successfully', 'matomo' ) . ': ' . esc_html( $message ) . '</p></div>';
+					echo '<div class="matomo-notice notice notice-success"><p>' . esc_html__( 'Task ran successfully', 'matomo' ) . ': ' . esc_html( $message ) . '</p></div>';
 				} catch ( \Exception $e ) {
 					echo '<div class="error"><p>' . esc_html__( 'Matomo Error', 'matomo' ) . ': ' . esc_html( matomo_anonymize_value( $e->getMessage() . ' =>' . $this->logger->get_readable_trace( $e ) ) ) . '</p></div>';
 				}
@@ -386,7 +388,7 @@ class SystemReport {
 			}
 		}
 
-		include dirname( __FILE__ ) . '/views/systemreport.php';
+		include __DIR__ . '/views/systemreport.php';
 	}
 
 	private function has_only_warnings_no_error( $report_tables ) {
@@ -430,6 +432,7 @@ class SystemReport {
 	private function check_file_exists_and_writable( $rows, $path_to_check, $title, $required ) {
 		$file_exists   = file_exists( $path_to_check );
 		$file_readable = is_readable( $path_to_check );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
 		$file_writable = is_writable( $path_to_check );
 		$comment       = '"' . $path_to_check . '" ';
 		if ( ! $file_exists ) {
@@ -596,6 +599,7 @@ class SystemReport {
 
 		$rows[] = [
 			'name'    => esc_html__( 'Tmp directory writable', 'matomo' ),
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
 			'value'   => is_writable( $tmp_dir ),
 			'comment' => $tmp_dir,
 		];
@@ -761,7 +765,9 @@ class SystemReport {
 			'section' => 'Crons',
 		];
 
-		$scheduled_tasks = new ScheduledTasks( $this->settings );
+		$sync_config = new \WpMatomo\Site\Sync\SyncConfig( $this->settings );
+
+		$scheduled_tasks = new ScheduledTasks( $this->settings, $sync_config );
 		$all_events      = $scheduled_tasks->get_all_events();
 
 		$rows[] = [
@@ -963,6 +969,32 @@ class SystemReport {
 						'comment'    => __( 'The .yml files in the wp-content/plugins/matomo/app/vendor directory are accessible from the internet. This can cause some web security tools to flag your website as suspicious. If you are using Apache, it is probably due to your server configuration disabling the use of .htaccess files. If you are instead using nginx, it is due to your nginx configuration allowing .yml files. You may need to contact your hosting provider to fix this.', 'matomo' ),
 						'is_warning' => true,
 					];
+				}
+			}
+
+			// check that AI tracking script is accessible
+			if ( $this->settings->is_ai_bot_tracking_enabled() ) {
+				$track_ai_url = plugins_url( 'misc/track_ai_bot.php', MATOMO_ANALYTICS_FILE );
+
+				$result = wp_remote_post(
+					$track_ai_url . '?mtm_check=1',
+					array(
+						'method'    => 'GET',
+						'sslverify' => false,
+						'timeout'   => 2,
+					)
+				);
+
+				if ( is_array( $result ) ) {
+					$response_code = (int) $result['response']['code'];
+					if ( 201 !== $response_code ) {
+						$rows[] = [
+							'name'       => __( 'Standalone AI bot tracking script is not accessible. ', 'matomo' ),
+							'value'      => 'warning',
+							'comment'    => sprintf( __( 'The tracking script located at %s is not accessible from the internet. Your web server configuration should be changed to allow direct HTTP requests to this script. You may need to contact your hosting provider to fix this.', 'matomo' ), $track_ai_url ),
+							'is_warning' => true,
+						];
+					}
 				}
 			}
 		}
@@ -1176,7 +1208,7 @@ class SystemReport {
 					$item_comment = $item->getComment();
 					if ( ! empty( $item_comment ) && is_string( $item_comment ) ) {
 						if ( stripos( $item_comment, 'core:archive' ) > 0 ) {
-							// we only want to keep the first sentence like "	Archiving last ran successfully on Wednesday, January 2, 2019 00:00:00 which is 335 days 20:08:11 ago"
+							// we only want to keep the first sentence like "   Archiving last ran successfully on Wednesday, January 2, 2019 00:00:00 which is 335 days 20:08:11 ago"
 							// but not anything that asks user to set up a cronjob
 							$item_comment = substr( $item_comment, 0, stripos( $item_comment, 'core:archive' ) );
 							if ( strpos( $item_comment, '.' ) > 0 ) {
@@ -1753,22 +1785,20 @@ class SystemReport {
 				'comment'    => esc_html__( 'Please check your MySQL user has these permissions (grants):', 'matomo' ) . '<br />' . implode( ', ', $needed_grants ),
 				'is_warning' => false,
 			];
-		} else {
-			if ( ! empty( $grants_missing ) ) {
+		} elseif ( ! empty( $grants_missing ) ) {
 				$rows[] = [
 					'name'       => esc_html__( 'Required permissions', 'matomo' ),
 					'value'      => esc_html__( 'Error', 'matomo' ),
 					'comment'    => esc_html__( 'Missing permissions', 'matomo' ) . ': ' . implode( ', ', $grants_missing ) . '. ' . esc_html__( 'Please check if any of these MySQL permission (grants) are missing and add them if needed.', 'matomo' ) . ' ' . sprintf( '<a href="https://matomo.org/faq/troubleshooting/how-do-i-check-if-my-mysql-user-has-all-required-grants/" target="_blank">%s</a>', __( 'Learn more', 'matomo' ) ),
 					'is_warning' => true,
 				];
-			} else {
-				$rows[] = [
-					'name'       => esc_html__( 'Required permissions', 'matomo' ),
-					'value'      => esc_html__( 'OK', 'matomo' ),
-					'comment'    => '',
-					'is_warning' => false,
-				];
-			}
+		} else {
+			$rows[] = [
+				'name'       => esc_html__( 'Required permissions', 'matomo' ),
+				'value'      => esc_html__( 'OK', 'matomo' ),
+				'comment'    => '',
+				'is_warning' => false,
+			];
 		}
 
 		return $rows;
@@ -2136,5 +2166,9 @@ class SystemReport {
 
 	private function get_errors_present_cache_key() {
 		return 'matomo_system_report_has_errors';
+	}
+
+	public function get_title() {
+		return __( 'Diagnostics', 'matomo' );
 	}
 }

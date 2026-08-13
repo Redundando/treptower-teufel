@@ -22,13 +22,12 @@ use Piwik\Plugins\UserCountry\LocationProvider;
 use WpMatomo\Admin\Admin;
 use WpMatomo\Site\Sync as SiteSync;
 use WpMatomo\User\Sync as UserSync;
-use WpMatomo\Paths;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // if accessed directly
 }
 
-class ScheduledTasks {
+class ScheduledTasks extends Feature {
 	const EVENT_SYNC               = 'matomo_scheduled_sync';
 	const EVENT_DISABLE_ADDHANDLER = 'matomo_scheduled_disable_addhandler';
 	const EVENT_ARCHIVE            = 'matomo_scheduled_archive';
@@ -50,9 +49,15 @@ class ScheduledTasks {
 	 */
 	private $logger;
 
-	public function __construct( Settings $settings ) {
-		$this->settings = $settings;
-		$this->logger   = new Logger();
+	/**
+	 * @var SiteSync\SyncConfig
+	 */
+	private $site_config;
+
+	public function __construct( Settings $settings, SiteSync\SyncConfig $site_config ) {
+		$this->settings    = $settings;
+		$this->site_config = $site_config;
+		$this->logger      = new Logger();
 	}
 
 	public function add_monthly_schedule( $schedules ) {
@@ -62,6 +67,11 @@ class ScheduledTasks {
 		];
 
 		return $schedules;
+	}
+
+	public function register_hooks() {
+		$this->schedule();
+		$this->show_errors_if_admin();
 	}
 
 	public function schedule() {
@@ -184,6 +194,7 @@ class ScheduledTasks {
 							$replace = 'AddHandler';
 						}
 						if ( strpos( $content, $search ) !== false && ( $force_undo || strpos( $content, $replace ) === false ) ) {
+							// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writeable
 							if ( is_writeable( $file ) ) {
 								$content       = str_replace( $search, $replace, $content );
 								$paths         = new Paths();
@@ -233,8 +244,12 @@ class ScheduledTasks {
 	}
 
 	public function update_geo_ip2_db( $db_url_override = null, $asn_url_override = null ) {
-		if ( is_multisite() && ! is_main_site() ) {
+		if ( is_multisite() && ! is_main_site() && is_plugin_active_for_network( 'matomo/matomo.php' ) ) {
 			return; // only run this task once per entire WP install
+		}
+
+		if ( ! $this->is_internet_features_enabled() ) {
+			return;
 		}
 
 		$this->remove_task_errors( [ 'update_geoip2' ] );
@@ -516,5 +531,9 @@ class ScheduledTasks {
 		$this->remove_task_errors( [ $job_id ] );
 
 		wp_send_json( true );
+	}
+
+	private function is_internet_features_enabled() {
+		return strval( $this->site_config->get_config_value( 'General', 'enable_internet_features' ) ) === '1';
 	}
 }

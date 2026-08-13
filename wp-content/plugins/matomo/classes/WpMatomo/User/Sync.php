@@ -24,6 +24,7 @@ use Piwik\Plugins\UsersManager\Model;
 use WP_User;
 use WpMatomo\Bootstrap;
 use WpMatomo\Capabilities;
+use WpMatomo\Feature;
 use WpMatomo\Logger;
 use WpMatomo\ScheduledTasks;
 use WpMatomo\Site;
@@ -33,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // if accessed directly
 }
 
-class Sync {
+class Sync extends Feature {
 
 	/**
 	 * actually allowed is 100 characters...
@@ -46,8 +47,18 @@ class Sync {
 	 */
 	private $logger;
 
+	/**
+	 * @var User
+	 */
+	private $user;
+
 	public function __construct() {
 		$this->logger = new Logger();
+		$this->user   = new User();
+	}
+
+	public function is_active() {
+		return is_admin();
 	}
 
 	public function register_hooks() {
@@ -251,7 +262,7 @@ class Sync {
 					$user_lang_model->setLanguageForUser( $matomo_login, $lang );
 				}
 			}
-			// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+			// phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual
 			if ( 1 != $idsite ) {
 				// only needed if the actual site is not the default site... makes sure when they click in Matomo
 				// UI on "Dashboard" that the correct site is being opened by default
@@ -285,7 +296,7 @@ class Sync {
 		$all_users                    = $user_model->getUsers( [] );
 		foreach ( $all_users as $all_user ) {
 			if ( ! in_array( $all_user['login'], $logins_with_some_view_access, true )
-				 && ! empty( $all_user['login'] ) ) {
+				&& ! empty( $all_user['login'] ) ) {
 				Access::doAsSuperUser(
 					function () use ( $user_model, $all_user ) {
 						$user_model->deleteUserOnly( $all_user['login'] );
@@ -293,6 +304,8 @@ class Sync {
 						$user_model->deleteUserAccess( $all_user['login'] );
 					}
 				);
+				// the WP -> Matomo mapping is cleaned up via the UsersManager.deleteUser event
+				// that deleteUserOnly() fires (see WordPress::onDeleteMatomoUser).
 			}
 		}
 	}
@@ -307,6 +320,13 @@ class Sync {
 
 		$matomo_user_login = User::get_matomo_user_login( $user_id );
 		$user_in_matomo    = null;
+
+		// sanity check: make sure the matomo user login we found (if we found one) belongs
+		// to the WP user being synced. if it does not, delete the mapping.
+		if ( $matomo_user_login && $this->is_matomo_login_owned_by_other_wp_user( $matomo_user_login, $user_id ) ) {
+			User::map_matomo_user_login( $user_id, null );
+			$matomo_user_login = null;
+		}
 
 		if ( $matomo_user_login ) {
 			$user_in_matomo = $user_model->getUser( $matomo_user_login );
@@ -330,6 +350,7 @@ class Sync {
 					)
 				);
 
+				// note: login mappings are deleted in the UsersManager.deleteUser event.
 				$user_model->deleteUser( $user_by_email['login'] );
 			}
 
@@ -337,7 +358,7 @@ class Sync {
 			$login = preg_replace( '/[^A-Za-zÄäÖöÜüß0-9_.@+-]+/D', '_', $login );
 			$login = substr( $login, 0, self::MAX_USER_NAME_LENGTH );
 
-			if ( ! $user_model->getUser( $login ) ) {
+			if ( ! $this->is_matomo_login_taken( $user_model, $login, $user_id ) ) {
 				// username is available...
 				$matomo_user_login = $login;
 			} else {
@@ -351,8 +372,8 @@ class Sync {
 						$matomo_user_login = 'wp_' . $login . $index;
 					}
 
-					$index ++;
-				} while ( $user_model->getUser( $matomo_user_login ) );
+					++$index;
+				} while ( $this->is_matomo_login_taken( $user_model, $matomo_user_login, $user_id ) );
 			}
 		}
 
@@ -373,6 +394,43 @@ class Sync {
 		}
 
 		return $matomo_user_login;
+	}
+
+	/**
+	 * @param Model  $user_model
+	 * @param string $candidate_login
+	 * @param int    $wp_user_id
+	 * @return bool
+	 */
+	private function is_matomo_login_taken( $user_model, $candidate_login, $wp_user_id ) {
+		if ( $user_model->getUser( $candidate_login ) ) {
+			return true; // matomo user exists
+		}
+
+		// sanity check: matomo user does not exist, but another WP user is somehow mapped to
+		// this login
+		return $this->is_matomo_login_owned_by_other_wp_user( $candidate_login, $wp_user_id );
+	}
+
+	/**
+	 * @param string $matomo_user_login
+	 * @param int    $wp_user_id
+	 *
+	 * @return bool
+	 */
+	private function is_matomo_login_owned_by_other_wp_user( $matomo_user_login, $wp_user_id ) {
+		$wp_user_ids_mapped_to_matomo_login = $this->user->get_wp_user_ids_for_matomo_login( $matomo_user_login );
+
+		if ( empty( $wp_user_ids_mapped_to_matomo_login ) ) {
+			return false; // no mapping exists, matomo login not owned by anyone
+		}
+
+		if ( count( $wp_user_ids_mapped_to_matomo_login ) > 1 ) {
+			return true; // more than one user mapped to login, not owned solely by this user
+		}
+
+		// the login is owned by another WP user if the single mapped user is not the requested user
+		return (int) reset( $wp_user_ids_mapped_to_matomo_login ) !== (int) $wp_user_id;
 	}
 
 	public static function get_matomo_lang_from_locale( $locale ) {

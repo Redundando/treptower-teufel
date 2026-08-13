@@ -35,7 +35,7 @@ class CapabilitiesProvider
              *         $capabilities[] = new MyNewCapability();
              *     }
              *
-             * @param Capability[] $reports An array of reports
+             * @param Capability[] $capabilities An array of capabilities
              * @internal
              */
             Piwik::postEvent('Access.Capability.addCapabilities', array(&$capabilities));
@@ -53,7 +53,7 @@ class CapabilitiesProvider
              *         }
              *     }
              *
-             * @param Capability[] $reports An array of reports
+             * @param Capability[] $capabilities An array of capabilities
              * @internal
              */
             Piwik::postEvent('Access.Capability.filterCapabilities', array(&$capabilities));
@@ -66,8 +66,6 @@ class CapabilitiesProvider
         return $cache->fetch($cacheId);
     }
     /**
-     * @param string $capabilityId
-     * @return Capability|null
      * @throws Exception
      */
     public function getCapability(string $capabilityId) : ?\Piwik\Access\Capability
@@ -92,8 +90,6 @@ class CapabilitiesProvider
         return $ids;
     }
     /**
-     * @param string $capabilityId
-     * @return bool
      * @throws Exception
      */
     public function isValidCapability(string $capabilityId) : bool
@@ -102,7 +98,6 @@ class CapabilitiesProvider
         return \in_array($capabilityId, $capabilities, \true);
     }
     /**
-     * @param string $capabilityId
      * @throws Exception
      */
     public function checkValidCapability(string $capabilityId) : void

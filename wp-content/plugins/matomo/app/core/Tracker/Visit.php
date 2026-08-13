@@ -8,16 +8,13 @@
  */
 namespace Piwik\Tracker;
 
-use Piwik\Archive\ArchiveInvalidator;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Container\StaticContainer;
-use Piwik\Date;
-use Piwik\Exception\UnexpectedWebsiteFoundException;
 use Matomo\Network\IPUtils;
 use Piwik\Plugin\Dimension\VisitDimension;
+use Piwik\Plugin\LogTablesProvider;
 use Piwik\Plugins\Actions\Tracker\ActionsRequestProcessor;
-use Piwik\Plugins\UserCountry\Columns\Base;
 use Piwik\Tracker;
 use Piwik\Tracker\Visit\VisitProperties;
 /**
@@ -34,6 +31,7 @@ use Piwik\Tracker\Visit\VisitProperties;
  */
 class Visit implements \Piwik\Tracker\VisitInterface
 {
+    use \Piwik\Tracker\RequestHandlerTrait;
     public const UNKNOWN_CODE = 'xx';
     /**
      * @var GoalManager
@@ -53,53 +51,23 @@ class Visit implements \Piwik\Tracker\VisitInterface
      */
     protected $requestProcessors;
     /**
-     * @var VisitProperties
+     * @var VisitProperties|null
      */
     protected $visitProperties;
     /**
      * @var VisitProperties
      */
     protected $previousVisitProperties;
-    /**
-     * @var ArchiveInvalidator
-     */
-    private $invalidator;
-    protected $fieldsThatRequireAuth = array('city', 'region', 'country', 'lat', 'long');
     public function __construct()
     {
         $requestProcessors = StaticContainer::get('Piwik\\Plugin\\RequestProcessors');
         $this->requestProcessors = $requestProcessors->getRequestProcessors();
         $this->visitProperties = null;
         $this->userSettings = StaticContainer::get('Piwik\\Tracker\\Settings');
-        $this->invalidator = StaticContainer::get('Piwik\\Archive\\ArchiveInvalidator');
     }
-    /**
-     * @param Request $request
-     */
     public function setRequest(\Piwik\Tracker\Request $request)
     {
         $this->request = $request;
-    }
-    private function checkSiteExists(\Piwik\Tracker\Request $request)
-    {
-        try {
-            $request->getIdSite();
-        } catch (UnexpectedWebsiteFoundException $e) {
-            // we allow 0... the request will fail anyway as the site won't exist... allowing 0 will help us
-            // reporting this tracking problem as it is a common issue. Otherwise we would not be able to report
-            // this problem in tracking failures
-            StaticContainer::get(\Piwik\Tracker\Failures::class)->logFailure(\Piwik\Tracker\Failures::FAILURE_ID_INVALID_SITE, $request);
-            throw $e;
-        }
-    }
-    private function validateRequest(\Piwik\Tracker\Request $request)
-    {
-        // Check for params that aren't allowed to be included unless the request is authenticated
-        foreach ($this->fieldsThatRequireAuth as $field) {
-            Base::getValueFromUrlParamsIfAllowed($field, $request);
-        }
-        // Special logic for timestamp as some overrides are OK without auth and others aren't
-        $request->getCurrentTimestamp();
     }
     /**
      *    Main algorithm to handle the visit.
@@ -185,7 +153,7 @@ class Visit implements \Piwik\Tracker\VisitInterface
             Common::printDebug("Executing " . get_class($processor) . "::recordLogs()...");
             $processor->recordLogs($this->visitProperties, $this->request);
         }
-        $this->markArchivedReportsAsInvalidIfArchiveAlreadyFinished();
+        $this->markArchivedReportsAsInvalidIfArchiveAlreadyFinished($this->request);
     }
     /**
      * In the case of a known visit, we have to do the following actions:
@@ -193,9 +161,7 @@ class Visit implements \Piwik\Tracker\VisitInterface
      * 1) Insert the new action
      * 2) Update the visit information
      *
-     * @param Visitor $visitor
-     * @param Action $action
-     * @param $visitIsConverted
+     * @param bool $visitIsConverted
      * @throws VisitorNotFoundInDb
      */
     protected function handleExistingVisit($visitIsConverted)
@@ -253,8 +219,6 @@ class Visit implements \Piwik\Tracker\VisitInterface
      *
      * 2) Insert the visit information
      *
-     * @param Visitor $visitor
-     * @param Action $action
      * @param bool $visitIsConverted
      */
     protected function handleNewVisit($visitIsConverted)
@@ -313,15 +277,6 @@ class Visit implements \Piwik\Tracker\VisitInterface
     {
         return $this->visitProperties->getProperty('location_ip');
     }
-    /**
-     * Gets the UserSettings object
-     *
-     * @return Settings
-     */
-    protected function getSettingsObject()
-    {
-        return $this->userSettings;
-    }
     // is the host any of the registered URLs for this website?
     public static function isHostKnownAliasHost($urlHost, $idSite)
     {
@@ -356,8 +311,10 @@ class Visit implements \Piwik\Tracker\VisitInterface
         $idSite = $this->request->getIdSite();
         $idVisit = $this->visitProperties->getProperty('idvisit');
         $wasInserted = $this->getModel()->updateVisit($idSite, $idVisit, $valuesToUpdate);
-        // Debug output
         if (isset($valuesToUpdate['idvisitor'])) {
+            $this->updateIdVisitorAcrossLogTables($valuesToUpdate['idvisitor']);
+            Common::printDebug('Updating idvisitor across tables for idvisit = ' . $idVisit);
+            //For debug output below
             $valuesToUpdate['idvisitor'] = bin2hex($valuesToUpdate['idvisitor']);
         }
         if ($wasInserted) {
@@ -367,6 +324,21 @@ class Visit implements \Piwik\Tracker\VisitInterface
             // as WP doesn't set `MYSQLI_CLIENT_FOUND_ROWS` and therefore when the update succeeded but no value changed
             // it would still return 0 vs OnPremise would return 1 or 2.
             throw new \Piwik\Tracker\VisitorNotFoundInDb("The visitor with idvisitor=" . bin2hex($this->visitProperties->getProperty('idvisitor')) . " and idvisit=" . @$this->visitProperties->getProperty('idvisit') . " wasn't found in the DB, we fallback to a new visitor");
+        }
+    }
+    protected function updateIdVisitorAcrossLogTables(string $idVisitor) : void
+    {
+        $allLogTables = StaticContainer::get(LogTablesProvider::class)->getAllLogTables();
+        foreach ($allLogTables as $logTable) {
+            if (!$logTable->hasIdVisitorColumn() || $logTable instanceof \Piwik\Plugins\CoreHome\Tracker\LogTable\Visit) {
+                // skip all log tables that do not contain the idvisitor column, and `log_visit`, as it is already handled
+                continue;
+            }
+            $conditions = ['idvisitor' => $this->previousVisitProperties->getProperty('idvisitor')];
+            if ($logTable->getIdColumn() !== 'idvisitor' && $logTable->getColumnToJoinOnIdVisit()) {
+                $conditions[$logTable->getColumnToJoinOnIdVisit()] = $this->visitProperties->getProperty('idvisit');
+            }
+            $this->getModel()->updateIdVisitorInLogTable($logTable->getName(), $idVisitor, $conditions);
         }
     }
     private function printVisitorInformation()
@@ -408,9 +380,7 @@ class Visit implements \Piwik\Tracker\VisitInterface
     /**
      * @param VisitDimension[] $dimensions
      * @param string $hook
-     * @param Visitor $visitor
-     * @param Action|null $action
-     * @param array|null $valuesToUpdate If null, $this->visitorInfo will be updated
+     * @param array|null $valuesToUpdate If null, $this->visitProperties will be updated
      *
      * @return array|null The updated $valuesToUpdate or null if no $valuesToUpdate given
      */
@@ -465,9 +435,8 @@ class Visit implements \Piwik\Tracker\VisitInterface
         return Config::getInstance()->Tracker['visit_standard_length'];
     }
     /**
-     * @param $visitor
-     * @param $valuesToUpdate
-     * @return mixed
+     * @param array $valuesToUpdate
+     * @return array
      */
     private function setIdVisitorForExistingVisit($valuesToUpdate)
     {
@@ -495,35 +464,6 @@ class Visit implements \Piwik\Tracker\VisitInterface
     protected function insertNewVisit($visit)
     {
         return $this->getModel()->createVisit($visit);
-    }
-    private function markArchivedReportsAsInvalidIfArchiveAlreadyFinished()
-    {
-        $idSite = (int) $this->request->getIdSite();
-        $time = $this->request->getCurrentTimestamp();
-        $timezone = $this->getTimezoneForSite($idSite);
-        if (!isset($timezone)) {
-            return;
-        }
-        $date = Date::factory((int) $time, $timezone);
-        // $date->isToday() is buggy when server and website timezones don't match - so we'll do our own checking
-        $startOfToday = Date::factoryInTimezone('yesterday', $timezone)->addDay(1);
-        $isLaterThanYesterday = $date->getTimestamp() >= $startOfToday->getTimestamp();
-        if ($isLaterThanYesterday) {
-            return;
-            // don't try to invalidate archives for today or later
-        }
-        $this->invalidator->rememberToInvalidateArchivedReportsLater($idSite, $date);
-    }
-    private function getTimezoneForSite($idSite)
-    {
-        try {
-            $site = \Piwik\Tracker\Cache::getCacheWebsiteAttributes($idSite);
-        } catch (UnexpectedWebsiteFoundException $e) {
-            return null;
-        }
-        if (!empty($site['timezone'])) {
-            return $site['timezone'];
-        }
     }
     private function makeVisitorFacade()
     {

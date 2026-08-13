@@ -47,8 +47,6 @@ class Updater
      */
     private static $activeInstance;
     /**
-     * Constructor.
-     *
      * @param string|null $pathUpdateFileCore The path to core Update files.
      * @param string|null $pathUpdateFilePlugins The path to plugin update files. Should contain a `'%s'` placeholder
      *                                           for the plugin name.
@@ -67,8 +65,6 @@ class Updater
     }
     /**
      * Adds an UpdateObserver to the internal list of listeners.
-     *
-     * @param UpdateObserver $listener
      */
     public function addUpdateObserver(UpdateObserver $listener)
     {
@@ -147,8 +143,7 @@ class Updater
      * Returns the currently installed version of a Piwik component.
      *
      * @param string $name The component name. Eg, a plugin name, `'core'` or dimension column name.
-     * @return string A semantic version.
-     * @throws \Exception
+     * @return string|false A semantic version, or false if the component version is not recorded yet.
      */
     public function getCurrentComponentVersion($name)
     {
@@ -458,7 +453,7 @@ class Updater
      * Returns any updates that should occur for core and all plugins that are both loaded and
      * installed. Also includes updates required for dimensions.
      *
-     * @return string[]|null Returns the result of `getComponentsWithUpdateFile()`.
+     * @return array|null Returns the result of `getComponentsWithUpdateFile()`.
      */
     public function getComponentUpdates()
     {
@@ -497,7 +492,6 @@ class Updater
     }
     /**
      * @param $file
-     * @param Migration $migration
      * @throws UpdaterErrorException
      * @api
      */

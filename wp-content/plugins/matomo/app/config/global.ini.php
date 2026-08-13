@@ -215,6 +215,10 @@ enabled = 0
 ; Note that for quick debugging, instead of using below setting, you can add `&disable_merged_assets=1` to the Matomo URL
 disable_merged_assets = 0
 
+; if set to 1, the sourcemaps for built vue files will be allowed to be served.
+; this is useful for debugging vue files in the browser
+allow_vue_sourcemaps = 0
+
 [General]
 ; the following settings control whether Unique Visitors `nb_uniq_visitors` and Unique users `nb_users` will be processed for different period types.
 ; year and range periods are disabled by default, to ensure optimal performance for high traffic Matomo instances
@@ -350,6 +354,9 @@ datatable_row_limits = "5,10,25,50,100,250,500,-1"
 ; this value is overwritten by the '# Rows to display' selector.
 ; if set to -1, a click on 'Export as' will export all rows independently of the current '# Rows to display'.
 API_datatable_default_limit = 100
+
+; Maximum number of URLs allowed in API.getBulkRequest for authenticated users (-1 disables the limit)
+API_bulk_request_limit = -1
 
 ; When period=range, below the datatables, when user clicks on "export", the data will be aggregate of the range.
 ; Here you can specify the comma separated list of formats for which the data will be exported aggregated by day
@@ -617,6 +624,9 @@ datatable_archiving_maximum_rows_subtable_custom_dimensions = 1000
 
 ; maximum number of rows for any of the Actions tables (pages, downloads, outlinks)
 datatable_archiving_maximum_rows_actions = 500
+; maximum number of rows used when archiving flat page/title actions before rebuilding hierarchy
+; if set to 0, legacy hierarchical-only Actions archiving is used
+datatable_archiving_maximum_rows_actions_flat = 0
 ; maximum number of rows for pages in categories (sub pages, when clicking on the + for a page category)
 ; note: should not exceed the display limit in Piwik\Actions\Controller::ACTIONS_REPORT_ROWS_DISPLAY
 ; because each subdirectory doesn't have paging at the bottom, so all data should be displayed if possible.
@@ -631,6 +641,16 @@ datatable_archiving_maximum_rows_subtable_events = 500
 
 ; maximum number of rows for the Products reports
 datatable_archiving_maximum_rows_products = 10000
+
+; maximum number of AI Assistants listed in Bot Tracking reports
+datatable_archiving_maximum_rows_bots = 250
+; maximum number of page/document rows listed per AI Assistant in Bot Tracking reports
+datatable_archiving_maximum_rows_subtable_bots = 250
+; maximum number of content URLs (pages/documents) listed in the AI Chatbots Content Requests reports
+datatable_archiving_maximum_rows_ai_chatbot_content = 50000
+; maximum number of page URLs listed in the Human-Favoured / AI-Favoured Pages reports
+; (these span the full human page-URL set, matching the content reports cap)
+datatable_archiving_maximum_rows_ai_chatbot_favoured_pages = 50000
 
 ; maximum number of rows for other tables (Providers, User settings configurations)
 datatable_archiving_maximum_rows_standard = 500
@@ -655,6 +675,11 @@ live_widget_visitor_count_last_minutes = 3
 ; by default visitor profile will show aggregated information for the last up to 100 visits of a visitor
 ; this limit can be adjusted by changing this value
 live_visitor_profile_max_visits_to_aggregate = 100
+
+; maximum number of AI chatbots listed in the real-time AI Chatbots reports
+live_ai_chatbots_maximum_rows = 100 
+; maximum number of page URLs listed in the real-time AI Chatbots top page URL reports
+live_ai_chatbots_top_page_urls_maximum_rows = 100
 
 ; If configured, will abort a MySQL query after the configured amount of seconds and show an error in the UI to for
 ; example lower the date range or tweak the segment (if one is applied). Set it to -1 if the query time should not be
@@ -700,6 +725,18 @@ multi_server_environment = 0
 ;
 ; de facto standard (X-Forwarded-Host)
 ;proxy_host_headers[] = HTTP_X_FORWARDED_HOST
+
+; List of proxy headers for scheme (http/https) detection.
+; If unset, Matomo will ignore proxy scheme headers by default.
+;
+; de facto standard (X-Forwarded-Proto)
+;proxy_scheme_headers[] = HTTP_X_FORWARDED_PROTO
+;
+; alternative header (X-Forwarded-Scheme)
+;proxy_scheme_headers[] = HTTP_X_FORWARDED_SCHEME
+;
+; alternative header (X-Url-Scheme)
+;proxy_scheme_headers[] = HTTP_X_URL_SCHEME
 
 ; List of proxy IP addresses (or IP address ranges) to skip (if present in the above headers).
 ; Generally, only required if there's more than one proxy between the visitor and the backend web server.
@@ -1145,6 +1182,10 @@ delete_reports_keep_year_reports     = 1
 delete_reports_keep_range_reports    = 0
 delete_reports_keep_segment_reports  = 0
 
+[ArchivingMetrics]
+; retention_days - delete archiving metrics older than this many days. Set to 0 to disable cleanup.
+retention_days = 180
+
 [mail]
 defaultHostnameIfEmpty = defaultHostnameIfEmpty.example.org ; default Email @hostname, if current host can't be read from system variables
 transport = ; smtp (using the configuration below) or empty (using built-in mail() function)
@@ -1295,6 +1336,7 @@ Plugins[] = CustomDimensions
 Plugins[] = JsTrackerInstallCheck
 Plugins[] = FeatureFlags
 Plugins[] = AIAgents
+Plugins[] = BotTracking
 
 [PluginsInstalled]
 PluginsInstalled[] = Diagnostics
@@ -1337,7 +1379,9 @@ time_on_load_cap_duration_ms = 0
 [APISettings]
 ; Any key/value pair can be added in this section, they will be available via the REST call
 ; index.php?module=API&method=API.getSettings
+; Access to this API is unrestricted, so do not include any sensitive information here.
 ; This can be used to expose values from Matomo, to control for example a Mobile app tracking
+
 SDK_batch_size = 10
 SDK_interval_value = 30
 
@@ -1352,6 +1396,12 @@ CommonPIIParams[] = addressline1
 CommonPIIParams[] = addressline2
 CommonPIIParams[] = adres
 CommonPIIParams[] = adresse
+CommonPIIParams[] = adresse1
+CommonPIIParams[] = adresse2
+CommonPIIParams[] = adresse3
+CommonPIIParams[] = adresse_email
+CommonPIIParams[] = adresseemail
+CommonPIIParams[] = adressepostale
 CommonPIIParams[] = age
 CommonPIIParams[] = alter
 CommonPIIParams[] = auth
@@ -1362,6 +1412,10 @@ CommonPIIParams[] = billingaddress1
 CommonPIIParams[] = billingaddress2
 CommonPIIParams[] = calle
 CommonPIIParams[] = cardnumber
+CommonPIIParams[] = carte
+CommonPIIParams[] = cartebancaire
+CommonPIIParams[] = carteidentite
+CommonPIIParams[] = cb
 CommonPIIParams[] = cc
 CommonPIIParams[] = ccc
 CommonPIIParams[] = cccsc
@@ -1376,36 +1430,51 @@ CommonPIIParams[] = cctype
 CommonPIIParams[] = cell
 CommonPIIParams[] = cellphone
 CommonPIIParams[] = city
+CommonPIIParams[] = civilite
+CommonPIIParams[] = civilité
+CommonPIIParams[] = cle
 CommonPIIParams[] = clientid
 CommonPIIParams[] = clientsecret
+CommonPIIParams[] = clé
+CommonPIIParams[] = codepostal
 CommonPIIParams[] = company
 CommonPIIParams[] = consumerkey
 CommonPIIParams[] = consumersecret
 CommonPIIParams[] = contrasenya
 CommonPIIParams[] = contraseña
+CommonPIIParams[] = courriel
+CommonPIIParams[] = cp
 CommonPIIParams[] = creditcard
 CommonPIIParams[] = creditcardnumber
 CommonPIIParams[] = cvc
 CommonPIIParams[] = cvv
+CommonPIIParams[] = datedenaissance
+CommonPIIParams[] = dateexpiration
+CommonPIIParams[] = datenaissance
 CommonPIIParams[] = dateofbirth
 CommonPIIParams[] = debitcard
+CommonPIIParams[] = departement
 CommonPIIParams[] = dirección
 CommonPIIParams[] = dob
 CommonPIIParams[] = domain
+CommonPIIParams[] = département
 CommonPIIParams[] = ebost
 CommonPIIParams[] = email
 CommonPIIParams[] = emailaddress
 CommonPIIParams[] = emailadresse
+CommonPIIParams[] = entreprise
 CommonPIIParams[] = epos
 CommonPIIParams[] = epost
 CommonPIIParams[] = eposta
 CommonPIIParams[] = exp
+CommonPIIParams[] = expiration
 CommonPIIParams[] = familyname
 CommonPIIParams[] = firma
 CommonPIIParams[] = firstname
 CommonPIIParams[] = formlogin
 CommonPIIParams[] = fullname
 CommonPIIParams[] = gender
+CommonPIIParams[] = genre
 CommonPIIParams[] = geschlecht
 CommonPIIParams[] = gst
 CommonPIIParams[] = gstnumber
@@ -1416,7 +1485,9 @@ CommonPIIParams[] = iban
 CommonPIIParams[] = ibanaccountnum
 CommonPIIParams[] = ibanaccountnumber
 CommonPIIParams[] = id
+CommonPIIParams[] = identifiant
 CommonPIIParams[] = identifier
+CommonPIIParams[] = identitenationale
 CommonPIIParams[] = indirizzo
 CommonPIIParams[] = kartakredytowa
 CommonPIIParams[] = kennwort
@@ -1431,43 +1502,83 @@ CommonPIIParams[] = kreditkort
 CommonPIIParams[] = lastname
 CommonPIIParams[] = login
 CommonPIIParams[] = mail
+CommonPIIParams[] = mdp
 CommonPIIParams[] = mobiili
 CommonPIIParams[] = mobile
 CommonPIIParams[] = mobilne
+CommonPIIParams[] = mot_de_passe
+CommonPIIParams[] = motdepasse
 CommonPIIParams[] = nachname
 CommonPIIParams[] = name
+CommonPIIParams[] = nationalite
 CommonPIIParams[] = nickname
+CommonPIIParams[] = nom
+CommonPIIParams[] = nomcomplet
+CommonPIIParams[] = nomdefamille
+CommonPIIParams[] = nomfamille
+CommonPIIParams[] = nss
+CommonPIIParams[] = numero_fiscal
+CommonPIIParams[] = numerocarte
+CommonPIIParams[] = numerocarteidentite
+CommonPIIParams[] = numerocompte
+CommonPIIParams[] = numerodecarte
+CommonPIIParams[] = numerofiscal
+CommonPIIParams[] = numeroidentite
+CommonPIIParams[] = numeromobile
+CommonPIIParams[] = numeropasseport
+CommonPIIParams[] = numerosecuritesociale
+CommonPIIParams[] = numerotelephone
+CommonPIIParams[] = numerotva
+CommonPIIParams[] = numfiscal
+CommonPIIParams[] = numsecu
+CommonPIIParams[] = numtva
 CommonPIIParams[] = off
 CommonPIIParams[] = osoite
 CommonPIIParams[] = parole
 CommonPIIParams[] = pass
+CommonPIIParams[] = passeport
 CommonPIIParams[] = passord
 CommonPIIParams[] = password
 CommonPIIParams[] = passwort
 CommonPIIParams[] = pasword
 CommonPIIParams[] = paswort
 CommonPIIParams[] = paword
+CommonPIIParams[] = pays
 CommonPIIParams[] = phone
 CommonPIIParams[] = pin
 CommonPIIParams[] = plz
+CommonPIIParams[] = portable
 CommonPIIParams[] = postalcode
 CommonPIIParams[] = postcode
 CommonPIIParams[] = postleitzahl
+CommonPIIParams[] = prenom
 CommonPIIParams[] = privatekey
+CommonPIIParams[] = prénom
 CommonPIIParams[] = publickey
 CommonPIIParams[] = pw
 CommonPIIParams[] = pwd
 CommonPIIParams[] = pword
 CommonPIIParams[] = pwrd
+CommonPIIParams[] = questionsecrete
+CommonPIIParams[] = region
+CommonPIIParams[] = reponsesecrete
+CommonPIIParams[] = rib
 CommonPIIParams[] = rue
 CommonPIIParams[] = secret
+CommonPIIParams[] = secretclé
 CommonPIIParams[] = secretq
 CommonPIIParams[] = secretquestion
+CommonPIIParams[] = securitesociale
+CommonPIIParams[] = sexe
 CommonPIIParams[] = shippingaddress
 CommonPIIParams[] = shippingaddress1
 CommonPIIParams[] = shippingaddress2
+CommonPIIParams[] = signature
+CommonPIIParams[] = siren
+CommonPIIParams[] = siret
 CommonPIIParams[] = socialsec
 CommonPIIParams[] = socialsecuritynumber
+CommonPIIParams[] = societe
 CommonPIIParams[] = socsec
 CommonPIIParams[] = sokak
 CommonPIIParams[] = ssn
@@ -1484,16 +1595,21 @@ CommonPIIParams[] = telefonnr
 CommonPIIParams[] = telefonnummer
 CommonPIIParams[] = telefono
 CommonPIIParams[] = telephone
+CommonPIIParams[] = titre
 CommonPIIParams[] = token
 CommonPIIParams[] = token_auth
 CommonPIIParams[] = tokenauth
+CommonPIIParams[] = tva
 CommonPIIParams[] = téléphone
 CommonPIIParams[] = ulica
 CommonPIIParams[] = user
 CommonPIIParams[] = username
+CommonPIIParams[] = utilisateur
 CommonPIIParams[] = vat
 CommonPIIParams[] = vatnumber
 CommonPIIParams[] = via
+CommonPIIParams[] = ville
+CommonPIIParams[] = voie
 CommonPIIParams[] = vorname
 CommonPIIParams[] = wachtwoord
 CommonPIIParams[] = wagwoord

@@ -19,7 +19,7 @@ class Settings
     public const OS_BOT = 'BOT';
     /**
      * If `true`, the config ID for a visitor will be the same no matter what site is being tracked.
-     * If `false, the config ID will be different.
+     * If `false`, the config ID will be different.
      *
      * @var bool
      */
@@ -103,7 +103,6 @@ class Settings
      * @param $ip
      * @param $browserLang
      * @param $fingerprintHash
-     * @return string
      */
     protected function getConfigHash(\Piwik\Tracker\Request $request, $os, $browserName, $browserVersion, $plugin_Flash, $plugin_Java, $plugin_Quicktime, $plugin_RealPlayer, $plugin_PDF, $plugin_WindowsMedia, $plugin_Silverlight, $plugin_Cookie, $ip, $browserLang, $fingerprintHash) : string
     {

@@ -40,8 +40,6 @@ class ReplaceColumnNames extends BaseFilter
 {
     protected $mappingToApply;
     /**
-     * Constructor.
-     *
      * @param DataTable $table The table that will be eventually filtered.
      * @param array|null $mappingToApply The name mapping to apply. Must map old column names
      *                                   with new ones, eg,
@@ -88,9 +86,6 @@ class ReplaceColumnNames extends BaseFilter
             $this->filterSubTable($row);
         }
     }
-    /**
-     * @param Simple $table
-     */
     protected function filterSimple(Simple $table)
     {
         foreach ($table->getRows() as $row) {

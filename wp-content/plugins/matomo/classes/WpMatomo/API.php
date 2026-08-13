@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * phpcs:disable WordPress.Security.NonceVerification.Missing
  */
-class API {
+class API extends Feature {
 	const VERSION = 'matomo/v1';
 
 	const ROUTE_HIT = 'hit';
@@ -170,6 +170,7 @@ class API {
 			'run'        => 'POST',
 			'send'       => 'POST',
 			'publish'    => 'POST',
+			'set'        => 'POST',
 			'delete'     => 'DELETE',
 			'remove'     => 'DELETE',
 		];
@@ -225,6 +226,7 @@ class API {
 		// ensure user is authenticated through WordPress!
 		unset( $_GET['token_auth'] );
 		unset( $_POST['token_auth'] );
+		unset( $params['token_auth'] );
 
 		Bootstrap::do_bootstrap();
 

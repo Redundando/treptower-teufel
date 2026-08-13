@@ -6,3 +6,7 @@
 /.htaccess
 /.wp-secrets.php
 *.log
+# Server-lokale/generierte Inhalte und Backups
+*.bak_*
+/hallenbelegung/
+/intern/

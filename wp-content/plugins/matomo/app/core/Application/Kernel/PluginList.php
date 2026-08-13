@@ -29,7 +29,7 @@ class PluginList
      * Plugins bundled with core package, disabled by default
      * @var array
      */
-    private $corePluginsDisabledByDefault = array('DBStats', 'ExamplePlugin', 'ExampleCommand', 'ExampleSettingsPlugin', 'ExampleUI', 'ExampleVisualization', 'ExamplePluginTemplate', 'ExampleTracker', 'ExampleLogTables', 'ExampleReport', 'ExampleAPI', 'ExampleVue', 'MobileAppMeasurable', 'TagManager');
+    private $corePluginsDisabledByDefault = array('ArchivingMetrics', 'DBStats', 'ExamplePlugin', 'ExampleCommand', 'ExampleSettingsPlugin', 'ExampleUI', 'ExampleVisualization', 'ExamplePluginTemplate', 'ExampleTracker', 'ExampleLogTables', 'ExampleReport', 'ExampleAPI', 'ExampleVue', 'MobileAppMeasurable', 'TagManager');
     // Themes bundled with core package, disabled by default
     private $coreThemesDisabledByDefault = array('ExampleTheme');
     public function __construct(\Piwik\Application\Kernel\GlobalSettingsProvider $settings)
@@ -72,8 +72,8 @@ class PluginList
      * Sorts an array of plugins in the order they should be loaded. We cannot use DI here as DI is not initialized
      * at this stage.
      *
-     * @params string[] $plugins
-     * @return \string[]
+     * @param string[] $plugins
+     * @return list<string>
      */
     public function sortPlugins(array $plugins)
     {
@@ -104,7 +104,7 @@ class PluginList
      *
      * @param string[] $plugins
      * @param array[] $pluginJsonCache  For internal testing only
-     * @return \string[]
+     * @return string[]
      */
     public function sortPluginsAndRespectDependencies(array $plugins, $pluginJsonCache = array())
     {

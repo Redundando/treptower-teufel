@@ -28,6 +28,7 @@ use Piwik\Plugins\Login\Security\BruteForceDetection;
 use Piwik\Plugins\PrivacyManager\SystemSettings;
 use Piwik\Plugins\UsersManager\API as APIUsersManager;
 use Piwik\Plugins\UsersManager\Model as UsersModel;
+use Piwik\Plugins\UsersManager\UserLoginHelper;
 use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\QuickForm2;
 use Piwik\Request;
@@ -65,7 +66,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      * @var SystemSettings
      */
     protected $systemSettings;
-    /*
+    /**
      * @var PasswordVerifier
      */
     protected $passwordVerify;
@@ -74,8 +75,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     private $passwordStrength;
     /**
-     * Constructor.
-     *
      * @param PasswordResetter $passwordResetter
      * @param \Piwik\Auth $auth
      * @param SessionInitializer $sessionInitializer
@@ -129,7 +128,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      * Login form
      *
      * @param string $messageNoAccess Access error message
-     * @param bool $infoMessage
+     * @param string|false $infoMessage
      * @return string
      * @internal param string $currentUrl Current URL
      */
@@ -142,7 +141,10 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             // validate if there is error message
             if ($messageNoAccess === "") {
                 $loginOrEmail = $form->getSubmitValue('form_login');
-                $login = $this->getLoginFromLoginOrEmail($loginOrEmail);
+                if (!is_string($loginOrEmail)) {
+                    $loginOrEmail = '';
+                }
+                $login = UserLoginHelper::normalizeLoginOrEmailToLogin($loginOrEmail);
                 $password = $form->getSubmitValue('form_password');
                 try {
                     $this->authenticateAndRedirect($login, $password);
@@ -162,17 +164,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         $this->configureView($view);
         self::setHostValidationVariablesView($view);
         return $view->render();
-    }
-    private function getLoginFromLoginOrEmail($loginOrEmail)
-    {
-        $model = new UsersModel();
-        if (!$model->userExists($loginOrEmail)) {
-            $user = $model->getUserByEmail($loginOrEmail);
-            if (!empty($user)) {
-                return $user['login'];
-            }
-        }
-        return $loginOrEmail;
     }
     /**
      * Configure common view properties
@@ -199,17 +190,14 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         $nonceKey = 'confirmPassword';
         $messageNoAccess = '';
         if (!empty($_POST)) {
-            $nonce = Common::getRequestVar('nonce', null, 'string', $_POST);
-            $password = Common::getRequestVar('password', null, 'string', $_POST);
-            if ($password) {
-                $password = Common::unsanitizeInputValue($password);
-            }
+            $nonce = Request::fromPost()->getStringParameter('nonce');
+            $password = Request::fromPost()->getStringParameter('password');
             $errorMessage = Nonce::verifyNonceWithErrorMessage($nonceKey, $nonce);
-            if ($errorMessage !== "") {
+            if ($errorMessage !== '') {
                 $messageNoAccess = $errorMessage;
             } elseif ($this->passwordVerify->isPasswordCorrect(Piwik::getCurrentUserLogin(), $password)) {
-                $this->passwordVerify->setPasswordVerifiedCorrectly();
-                return;
+                $this->passwordVerify->setPasswordVerifiedCorrectly(Piwik::getCurrentUserLogin());
+                return '';
             } else {
                 $messageNoAccess = Piwik::translate('Login_WrongPasswordEntered');
             }
@@ -273,6 +261,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     public function ajaxNoAccess($errorMessage)
     {
+        http_response_code(401);
         return sprintf('<div class="alert alert-danger">
                 <p><strong>%s:</strong> %s</p>
                 <p><a href="%s">%s</a></p>
@@ -283,7 +272,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      *
      * @param string $login user name
      * @param string $password plain-text or hashed password
-     * @param string $urlToRedirect URL to redirect to, if successfully authenticated
+     * @param string|false $urlToRedirect URL to redirect to, if successfully authenticated
      * @param bool $passwordHashed indicates if $password is hashed
      */
     protected function authenticateAndRedirect($login,
@@ -455,8 +444,9 @@ $passwordHashed = \false)
         }
         $errorMessage = null;
         $passwordHash = null;
-        $login = Common::getRequestVar('login');
-        $resetToken = Common::getRequestVar('resetToken');
+        $request = Request::fromRequest();
+        $login = $request->getStringParameter('login');
+        $resetToken = $request->getStringParameter('resetToken');
         try {
             $passwordHash = $this->passwordResetter->checkValidConfirmPasswordToken($login, $resetToken);
         } catch (Exception $ex) {

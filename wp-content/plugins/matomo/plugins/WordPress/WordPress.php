@@ -14,6 +14,7 @@ use Piwik\Access;
 use Piwik\API\Request;
 use Piwik\Common;
 use Piwik\Config;
+use Piwik\Container\StaticContainer;
 use Piwik\FrontController;
 use Piwik\Option;
 use Piwik\Piwik;
@@ -21,6 +22,9 @@ use Piwik\Plugin;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\CoreHome\SystemSummary\Item;
 use Piwik\Plugins\WordPress\Html\PluginUrlReplacer;
+use Piwik\Plugins\WordPress\Overrides\ProfessionalServices\PromoCustomizer;
+use Piwik\Plugins\WordPress\Workaround\ProcessedReportForceShortDateFormat;
+use Piwik\Plugins\WordPress\Workaround\ProcessedReportInnerCallHooks;
 use Piwik\Scheduler\Task;
 use Piwik\Url;
 use Piwik\Version;
@@ -63,9 +67,10 @@ class WordPress extends Plugin
             'Template.header' => 'onHeader',
             'AssetManager.makeNewAssetManagerObject' => 'makeNewAssetManagerObject',
             'ScheduledTasks.shouldExecuteTask' => 'shouldExecuteTask',
+            'SitesManager.shouldPerformEmptySiteCheck' => 'shouldPerformEmptySiteCheck',
             'API.TagManager.getContainerInstallInstructions.end' => 'addInstallInstructions',
             'API.Tour.getChallenges.end' => 'modifyTourChallenges',
-	        'API.ScheduledReports.generateReport.end' => 'onGenerateReportEnd',
+	          'API.ScheduledReports.generateReport.end' => 'onGenerateReportEnd',
             'API.CorePluginsAdmin.getSystemSettings.end' => 'onGetSystemSettingsEnd',
             'API.SitesManager.updateSite' => 'allowUpdateSiteForMeasurableSettings',
             'API.SitesManager.updateSite.end' => 'reDisableSitesAdmin',
@@ -76,7 +81,46 @@ class WordPress extends Plugin
             'Controller.CorePluginsAdmin.safemode.end' => 'modifySafemodeHtml',
             'Tracker.setTrackerCacheGeneral' => ['function' => 'setTrackerCacheGeneral', 'after' => true],
             'Platform.initialized' => ['function' => 'onPlatformInitialized', 'before' => true],
+            'Template.jsGlobalVariables' => 'addJsGlobalVariables',
+            'API.Request.dispatch' => 'onApiRequestDispatch',
+            'API.Request.dispatch.end' => 'onApiRequestDispatchEnd',
+            'UsersManager.deleteUser' => 'onDeleteMatomoUser',
+            ProcessedReportInnerCallHooks::PROCESSED_REPORT_INNER_END_EVENT => 'afterProcessedReportInner',
         );
+    }
+
+    /**
+     * Delete login mappings when a Matomo user is deleted.
+     *
+     * @param string $userLogin
+     */
+    public function onDeleteMatomoUser($userLogin)
+    {
+        ( new WpMatomo\User() )->delete_mappings_for_matomo_login($userLogin);
+    }
+
+    public function shouldPerformEmptySiteCheck( &$shouldPerformEmptySiteCheck ) {
+        $shouldPerformEmptySiteCheck = false;
+    }
+
+    public function onApiRequestDispatch(&$finalParameters, $pluginName, $methodName) {
+        StaticContainer::get(ProcessedReportInnerCallHooks::class)->onDispatchStart($finalParameters, $pluginName, $methodName);
+    }
+
+    public function onApiRequestDispatchEnd(&$returnedValue, $extraInfo) {
+        StaticContainer::get(ProcessedReportInnerCallHooks::class)->onDispatchEnd($returnedValue, $extraInfo);
+    }
+
+    public function afterProcessedReportInner(&$returnedValue, $extraInfo) {
+        StaticContainer::get(ProcessedReportForceShortDateFormat::class)->replacePeriodsUsingCustomDateFormatIfRequested($returnedValue);
+    }
+
+    public function addJsGlobalVariables(&$output) {
+        $output .= 'piwik.mwpHomeUrl = ' . json_encode(\home_url()) . ";\n";
+
+        $settings = WpMatomo::$settings ?: new Settings();
+        $isAiBotTrackingEnabledInMwp = $settings->is_ai_bot_tracking_enabled();
+        $output .= 'piwik.isAiBotTrackingEnabledInMwp = ' . json_encode($isAiBotTrackingEnabledInMwp) . ";\n";
     }
 
     public function onPlatformInitialized()
@@ -160,6 +204,7 @@ class WordPress extends Plugin
         $translationKeys[] = 'WordPress_SaveChanges';
         $translationKeys[] = 'WordPress_NoMeasurableSettingsAvailable';
         $translationKeys[] = 'General_Confirm'; // this is not loaded client side by default for some reason
+        $translationKeys[] = 'WordPress_AIBotTrackingIsNotEnabled';
 	}
 
     public function modifyTourChallenges(&$challenges)
@@ -266,6 +311,7 @@ class WordPress extends Plugin
         $list->remove('About Matomo', 'CoreAdminHome_TrackingFailures');
         $list->remove('About Matomo', 'CoreHome_SystemSummaryWidget');
         $list->remove('About Matomo', 'CoreHome_QuickLinks');
+        $list->remove('About Matomo', 'ProfessionalServices_WidgetPremiumServicesForPiwik');
     }
 
     public function isTrackerPlugin() {
@@ -387,8 +433,14 @@ class WordPress extends Plugin
 
             $pluginUrlReplacer = new PluginUrlReplacer();
             $result = $pluginUrlReplacer->replaceThirdPartyPluginUrls( $result );
-	    }
+
+            if ($module === 'ProfessionalServices') {
+                $promoCustomizer = new PromoCustomizer();
+                $result = $promoCustomizer->customizePromoHtml($result);
+            }
+        }
     }
+
     public function onDispatchRequest(&$module, &$action, &$parameters)
     {
         if ($module === 'Proxy' && in_array($action, array('getNonCoreJs', 'getCoreJs', 'getCss'))) {
@@ -521,5 +573,37 @@ class WordPress extends Plugin
         $files[] = "../plugins/WordPress/stylesheets/export.css";
         $files[] = "../plugins/WordPress/stylesheets/blogselection.css";
         $files[] = "../plugins/WordPress/vue/src/PluginMeasurableSettings/PluginMeasurableSettings.less";
+        $files[] = "../plugins/WordPress/stylesheets/overrides.css";
+
+        // matomo's core StylesheetUIAssetFetcher::addUmdCssFilesIfDetected() only detects vue UMD
+        // bundle stylesheets for plugins located under PIWIK_INCLUDE_PATH . '/plugins'. third party
+        // plugins installed into a custom plugins directory (see MATOMO_PLUGIN_DIRS /
+        // Manager::getPluginsDirectories()) are skipped there, so we add them here instead.
+        foreach (Manager::getInstance()->getLoadedPluginsName() as $pluginName) {
+            $umdCssFile = $this->getCustomPluginDirUmdCssFileIfExists($pluginName);
+            if (null !== $umdCssFile) {
+                $files[] = $umdCssFile;
+            }
+        }
+    }
+
+    public function getCustomPluginDirUmdCssFileIfExists($pluginName)
+    {
+        $pluginDir      = rtrim(Manager::getPluginDirectory($pluginName), '/') . '/';
+        $corePluginsDir = Manager::getPluginsDirectory();
+
+        // core plugins are already handled by Matomo core
+        if (strpos($pluginDir, $corePluginsDir) === 0) {
+            return null;
+        }
+
+        if (!is_file($pluginDir . 'vue/dist/' . $pluginName . '.css')) {
+            return null;
+        }
+
+        // note: the relative path will be resolved correctly to the non-core plugin directory
+        // elsewhere. adding it to the list above just triggers the logic that will ensure
+        // it is loaded in the frontend.
+        return 'plugins/' . $pluginName . '/vue/dist/' . $pluginName . '.css';
     }
 }

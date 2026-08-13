@@ -48,9 +48,6 @@ abstract class Period
      */
     protected $translator;
     /**
-     * Constructor.
-     *
-     * @param Date $date
      * @ignore
      */
     public function __construct(\Piwik\Date $date)
@@ -116,7 +113,7 @@ abstract class Period
             return $this->getDate();
         }
         $periods = $this->getSubperiods();
-        /** @var $currentPeriod Period */
+        /** @var Period $currentPeriod */
         $currentPeriod = $periods[0];
         while ($currentPeriod->getNumberOfSubperiods() > 0) {
             $periods = $currentPeriod->getSubperiods();
@@ -154,7 +151,7 @@ abstract class Period
             return $this->getDate();
         }
         $periods = $this->getSubperiods();
-        /** @var $currentPeriod Period */
+        /** @var Period $currentPeriod */
         $currentPeriod = $periods[count($periods) - 1];
         while ($currentPeriod->getNumberOfSubperiods() > 0) {
             $periods = $currentPeriod->getSubperiods();
@@ -217,7 +214,6 @@ abstract class Period
      *
      * Note: the time component of the period's dates and `$date` is ignored.
      *
-     * @param Date $today
      * @return bool
      */
     public function isDateInPeriod(\Piwik\Date $date)
@@ -228,7 +224,6 @@ abstract class Period
     /**
      * Returns whether the given period date range intersects with this one.
      *
-     * @param Period $other
      * @return bool
      */
     public function isPeriodIntersectingWith(\Piwik\Period $other)

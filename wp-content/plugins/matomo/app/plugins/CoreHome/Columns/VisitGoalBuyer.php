@@ -58,8 +58,6 @@ class VisitGoalBuyer extends VisitDimension
         return self::$visitEcommerceStatus;
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
      * @return mixed
      */
@@ -68,10 +66,8 @@ class VisitGoalBuyer extends VisitDimension
         return $this->getBuyerType($request);
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
-     * @return int
+     * @return int|false
      */
     public function onExistingVisit(Request $request, Visitor $visitor, $action)
     {

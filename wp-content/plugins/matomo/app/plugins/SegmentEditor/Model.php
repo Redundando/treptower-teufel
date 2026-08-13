@@ -35,7 +35,7 @@ class Model
         return $segments;
     }
     /**
-     * Returns all stored segments.
+     * Returns all segments that are enabled for auto archiving.
      *
      * @param bool|int $idSite Whether to return stored segments for a specific idSite, or segments that are available
      *                         for all sites. If supplied, must be a valid site ID.
@@ -69,8 +69,8 @@ class Model
     /**
      * Returns all stored segments that are available for the given site and login.
      *
-     * @param  string $userLogin
      * @param  int    $idSite Whether to return stored segments for a specific idSite, or all of them. If supplied, must be a valid site ID.
+     * @param  string $userLogin
      * @return array
      */
     public function getAllSegmentsForSite($idSite, $userLogin)
@@ -107,11 +107,10 @@ class Model
         return $segment;
     }
     /**
-     * Gets a list of segments that have been deleted in the last week and therefore may have orphaned archives.
+     * Gets a list of segments that have been deleted on or after the given date and therefore may have orphaned archives.
      * @param Date $date Segments deleted on or after this date will be returned.
      * @return array of segments. The segments are only populated with the fields needed for archive invalidation
      * (e.g. definition, enable_only_idsite).
-     * @throws \Exception
      */
     public function getSegmentsDeletedSince(Date $date)
     {
@@ -213,7 +212,7 @@ class Model
     }
     public static function install()
     {
-        $segmentTable = "`idsegment` INT(11) NOT NULL AUTO_INCREMENT,\n                         `name` VARCHAR(255) NOT NULL,\n                         `definition` TEXT NOT NULL,\n                         `hash` CHAR(32) NULL,\n                         `login` VARCHAR(100) NOT NULL,\n                         `enable_all_users` tinyint(4) NOT NULL default 0,\n                         `enable_only_idsite` INTEGER(11) NULL,\n                         `auto_archive` tinyint(4) NOT NULL default 0,\n                         `ts_created` TIMESTAMP NULL,\n                         `ts_last_edit` TIMESTAMP NULL,\n                         `deleted` tinyint(4) NOT NULL default 0,\n                         PRIMARY KEY (`idsegment`)";
+        $segmentTable = "`idsegment` INT(11) NOT NULL AUTO_INCREMENT,\n                         `name` VARCHAR(255) NOT NULL,\n                         `definition` TEXT NOT NULL,\n                         `hash` CHAR(32) NULL,\n                         `login` VARCHAR(100) NOT NULL,\n                         `enable_all_users` tinyint(4) NOT NULL default 0,\n                         `enable_only_idsite` INTEGER(11) NULL,\n                         `auto_archive` tinyint(4) NOT NULL default 0,\n                         `ts_created` TIMESTAMP NULL,\n                         `ts_last_edit` TIMESTAMP NULL,\n                         `starred` tinyint(4) NOT NULL default 0,\n                         `starred_by` VARCHAR(100) NULL default NULL,\n                         `deleted` tinyint(4) NOT NULL default 0,\n                         PRIMARY KEY (`idsegment`)";
         DbHelper::createTable(self::$rawPrefix, $segmentTable);
     }
 }

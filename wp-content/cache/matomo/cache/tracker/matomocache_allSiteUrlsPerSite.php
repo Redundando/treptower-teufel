@@ -1,1 +1,1 @@
-<?php return unserialize('a:2:{s:8:"lifetime";i:1769157717;s:4:"data";a:1:{i:1;a:1:{i:0;s:33:"http://localhost/treptower-teufel";}}}', ['allowed_classes' => false]);
+<?php return unserialize('a:2:{s:8:"lifetime";i:1786656791;s:4:"data";a:1:{i:1;a:1:{i:0;s:31:"https://www.treptower-teufel.de";}}}', ['allowed_classes' => false]);

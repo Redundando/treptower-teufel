@@ -15,17 +15,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // if accessed directly
 }
 
-class Info {
+class Info implements MatomoPageContent {
+
 	const NONCE_NAME = 'matomo_newsletter';
 	const FORM_NAME  = 'matomo_newsletter_signup';
 
+	/**
+	 * @var bool
+	 */
+	private $is_multisite;
+
+	public function __construct( $is_multisite = false ) {
+		$this->is_multisite = $is_multisite;
+	}
+
 	private function update_if_submitted() {
 		if ( isset( $_POST )
-			 && ! empty( $_POST[ self::FORM_NAME ] )
-			 && is_admin()
-			 && check_admin_referer( self::NONCE_NAME )
-			 && $this->show_newsletter_signup()
-			 && current_user_can( Capabilities::KEY_VIEW ) ) {
+			&& ! empty( $_POST[ self::FORM_NAME ] )
+			&& is_admin()
+			&& check_admin_referer( self::NONCE_NAME )
+			&& $this->show_newsletter_signup()
+			&& current_user_can( Capabilities::KEY_VIEW ) ) {
 			$user   = wp_get_current_user();
 			$locale = explode( '_', get_user_locale( $user->ID ) );
 			wp_remote_get(
@@ -65,6 +75,12 @@ class Info {
 		$signedup_newsletter = $this->update_if_submitted();
 		$show_newsletter     = $this->show_newsletter_signup();
 
-		include dirname( __FILE__ ) . '/views/' . $template . '.php';
+		include __DIR__ . '/views/' . $template . '.php';
+	}
+
+	public function get_title() {
+		return $this->is_multisite
+			? __( 'Matomo Analytics in Multi Site mode', 'matomo' )
+			: __( 'How can we help?', 'matomo' );
 	}
 }

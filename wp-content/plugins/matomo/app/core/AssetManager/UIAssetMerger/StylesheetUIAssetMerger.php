@@ -9,7 +9,7 @@
 namespace Piwik\AssetManager\UIAssetMerger;
 
 use Exception;
-use lessc;
+use Matomo\Dependencies\lessc;
 use Piwik\AssetManager\UIAsset;
 use Piwik\AssetManager\UIAssetMerger;
 use Piwik\Common;
@@ -41,7 +41,7 @@ class StylesheetUIAssetMerger extends UIAssetMerger
         try {
             $compiled = $this->lessCompiler->compile($concatenatedAssets);
         } catch (\Exception $e) {
-            // save the concated less files so we can debug the issue
+            // save the concatenated less files so we can debug the issue
             $this->saveConcatenatedAssets($concatenatedAssets);
             throw new StylesheetLessCompileException($e->getMessage());
         }
@@ -95,7 +95,7 @@ class StylesheetUIAssetMerger extends UIAssetMerger
      */
     private static function getLessCompiler()
     {
-        if (!class_exists("lessc")) {
+        if (!class_exists("\\Matomo\\Dependencies\\lessc")) {
             throw new Exception("Less was added to composer during 2.0. ==> Execute this command to update composer packages: \$ php composer.phar install");
         }
         $less = new lessc();

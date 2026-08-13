@@ -25,8 +25,6 @@ use Piwik\Segment\SegmentExpression;
 use Piwik\Tracker;
 use Piwik\Cache as PiwikCache;
 use Piwik\Tracker\Cache as TrackerCache;
-use Piwik\Plugins\FeatureFlags\FeatureFlagManager;
-use Piwik\Plugins\PrivacyManager\FeatureFlags\PrivacyCompliance;
 use Piwik\Plugins\UserId\Settings\UserIdDisabled;
 /**
  * The Request object holding the http parameters for this tracking request. Use getParam() to fetch a named parameter.
@@ -51,7 +49,7 @@ class Request
      * whatever they want in this array, and other RequestProcessors can modify these
      * values to change tracker behavior.
      *
-     * @var string[][]
+     * @var array<string, array<string, mixed>> Keyed by plugin name, then metadata key.
      */
     private $requestMetadata = array();
     public const UNKNOWN_RESOLUTION = 'unknown';
@@ -83,7 +81,7 @@ $tokenAuth = '')
         }
         // check for 4byte utf8 characters in all tracking params and replace them with � if not support by database
         $this->params = $this->replaceUnsupportedUtf8Chars($this->params);
-        $this->customTimestampDoesNotRequireTokenauthWhenNewerThan = (int) \Piwik\Tracker\TrackerConfig::getConfigValue('tracking_requests_require_authentication_when_custom_timestamp_newer_than', $this->getIdSiteIfExists());
+        $this->customTimestampDoesNotRequireTokenauthWhenNewerThan = \Piwik\Tracker\TrackerConfig::getIntegerConfigValue('tracking_requests_require_authentication_when_custom_timestamp_newer_than', 0, $this->getIdSiteIfExists());
     }
     protected function replaceUnsupportedUtf8Chars($value, $key = \false)
     {
@@ -167,7 +165,10 @@ $tokenAuth)
             if ($this->isAuthenticated) {
                 Common::printDebug("token_auth is authenticated!");
             } else {
-                StaticContainer::get('Piwik\\Tracker\\Failures')->logFailure(\Piwik\Tracker\Failures::FAILURE_ID_NOT_AUTHENTICATED, $this);
+                if (preg_match('/^\\w{28,36}$/', $tokenAuth) || empty($tokenAuth)) {
+                    // only log a failure if the token auth looks partial valid or is completely missing
+                    StaticContainer::get('Piwik\\Tracker\\Failures')->logFailure(\Piwik\Tracker\Failures::FAILURE_ID_NOT_AUTHENTICATED, $this);
+                }
             }
         } else {
             $this->isAuthenticated = \true;
@@ -471,7 +472,7 @@ $tokenAuth, $idSite)
         return (int) $cdt;
     }
     /**
-     * Returns true if the timestamp is valid ie. timestamp is sometime in the last 10 years and is not in the future.
+     * Returns true if the timestamp is valid ie. timestamp is sometime in the last 20 years and is not in the future.
      *
      * @param $time int Timestamp to test
      * @param $now int Current timestamp
@@ -698,20 +699,23 @@ $tokenAuth, $idSite)
     }
     public function getForcedUserId()
     {
-        $featureFlagManager = StaticContainer::get(FeatureFlagManager::class);
-        if ($featureFlagManager->isFeatureActive(PrivacyCompliance::class)) {
-            $idSite = $this->getIdSite();
-            $cache = TrackerCache::getCacheWebsiteAttributes($idSite);
-            $cacheKey = UserIdDisabled::class;
-            if (($cache[$cacheKey] ?? \false) === \true) {
-                return \false;
-            }
-        }
         $userId = $this->getParam('uid');
-        if (strlen($userId) > 0) {
-            return $userId;
+        if (strlen($userId) === 0) {
+            return \false;
         }
-        return \false;
+        try {
+            $idSite = $this->getIdSite();
+            if (!empty($idSite) && $idSite > 0) {
+                $cache = TrackerCache::getCacheWebsiteAttributes($idSite);
+                $cacheKey = UserIdDisabled::class;
+                if (($cache[$cacheKey] ?? \false) === \true) {
+                    return \false;
+                }
+            }
+        } catch (\Exception $e) {
+            // Might fail for e.g. not existing sites, but we do not want to throw an exception at this stage
+        }
+        return $userId;
     }
     public function getForcedVisitorId()
     {

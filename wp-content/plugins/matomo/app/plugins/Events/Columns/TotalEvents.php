@@ -25,8 +25,6 @@ class TotalEvents extends VisitDimension
         return Piwik::translate('Events_EventsSegmentHelp', '&segment=events>0');
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
      * @return mixed
      */
@@ -38,10 +36,8 @@ class TotalEvents extends VisitDimension
         return 0;
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
-     * @return int
+     * @return string|false
      */
     public function onExistingVisit(Request $request, Visitor $visitor, $action)
     {

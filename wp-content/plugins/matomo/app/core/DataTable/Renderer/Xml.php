@@ -16,18 +16,15 @@ use Piwik\DataTable\Simple;
 use Piwik\Piwik;
 /**
  * XML export of a given DataTable.
- * See the tests cases for more information about the XML format (/tests/core/DataTable/Renderer.test.php)
+ * See the tests for more information about the XML format (tests/PHPUnit/Unit/DataTable/Renderer/XmlTest.php).
  * Or have a look at the API calls examples.
  *
  * Works with recursive DataTable (when a row can be associated with a subDataTable).
- *
  */
 class Xml extends Renderer
 {
     /**
      * Computes the dataTable output and returns the string/binary
-     *
-     * @return string
      */
     public function render() : string
     {
@@ -36,11 +33,7 @@ class Xml extends Renderer
     /**
      * Computes the output for the given data table
      *
-     * @param DataTable|DataTable\Map $table
-     * @param bool $returnOnlyDataTableXml
-     * @param string $prefixLines
-     * @return string
-     * @throws Exception
+     * @param DataTable\DataTableInterface|array $table
      */
     protected function renderTable($table, bool $returnOnlyDataTableXml = \false, string $prefixLines = '') : string
     {
@@ -101,7 +94,6 @@ class Xml extends Renderer
      *
      * @param array $array The array to render.
      * @param string $prefixLines The string to prefix each line in the output.
-     * @return string
      */
     private function renderArray(array $array, string $prefixLines) : string
     {
@@ -176,10 +168,7 @@ class Xml extends Renderer
     /**
      * Computes the output for the given data table array
      *
-     * @param Map $table
      * @param array $array
-     * @param string $prefixLines
-     * @return string
      */
     protected function renderDataTableMap(Map $table, array $array, string $prefixLines = '') : string
     {
@@ -299,8 +288,6 @@ class Xml extends Renderer
      * Computes the output for the given data array
      *
      * @param array $array
-     * @param string $prefixLine
-     * @return string
      */
     protected function renderDataTable($array, string $prefixLine = '') : string
     {
@@ -365,8 +352,6 @@ class Xml extends Renderer
      * Computes the output for the given data array (representing a simple data table)
      *
      * @param $array
-     * @param string $prefixLine
-     * @return string
      */
     protected function renderDataTableSimple($array, string $prefixLine = '') : string
     {
@@ -396,9 +381,6 @@ class Xml extends Renderer
     }
     /**
      * Returns true if a string is a valid XML tag name, false if otherwise.
-     *
-     * @param string $str
-     * @return bool
      */
     private static function isValidXmlTagName(string $str) : bool
     {

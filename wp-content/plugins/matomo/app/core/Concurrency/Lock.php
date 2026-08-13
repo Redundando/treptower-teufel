@@ -24,7 +24,6 @@ class Lock
     private $defaultTtl = null;
     private $lastAcquireTime = null;
     /**
-     * @param LockBackend $backend
      * @param string $namespace
      * @param int|null $defaultTtl defaults to {@link self::DEFAULT_TTL}
      */
@@ -44,7 +43,6 @@ class Lock
      *
      * @todo remove in Matomo 6.0
      * @deprecated use {@link reacquireLock()} instead.
-     * @return bool
      */
     public function reexpireLock() : bool
     {
@@ -52,8 +50,6 @@ class Lock
     }
     /**
      * Reacquires the current lock. The TTL will be extended if 1/4 of the TTL already passed by.
-     *
-     * @return bool
      */
     public function reacquireLock() : bool
     {
@@ -79,12 +75,11 @@ class Lock
     }
     /**
      * Executes and returns the result of the provided callback if a lock with given id can be acquired
-     * The method will automatically retry to acquire the lock up to 5 minutes.
+     * The method will automatically retry to acquire the lock for up to 5 seconds.
      *
      * @param string $id
      * @param callable $callback
      * @return mixed
-     * @throws \Exception if lock couldn't be acquired within 5 minutes
      */
     public function execute($id, $callback)
     {
@@ -130,8 +125,6 @@ class Lock
     }
     /**
      * Return if the acquired lock is currently locked
-     *
-     * @return bool
      */
     public function isLocked() : bool
     {
@@ -142,8 +135,6 @@ class Lock
     }
     /**
      * Releases the acquired lock
-     *
-     * @return void
      */
     public function unlock() : void
     {
@@ -157,7 +148,6 @@ class Lock
      *
      * @deprecated use {@link extendLock()} instead.
      * @todo remove in Matomo 6.0
-     * @return bool
      */
     public function expireLock($ttlInSeconds) : bool
     {

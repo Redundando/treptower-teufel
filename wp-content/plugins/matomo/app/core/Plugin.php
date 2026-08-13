@@ -109,7 +109,7 @@ if (!class_exists('Piwik\\Plugin')) {
          */
         private $cache;
         /**
-         * Constructor.
+         *
          *
          * @param string|bool $pluginName A plugin name to force. If not supplied, it is set
          *                                to the last part of the class name.
@@ -212,6 +212,7 @@ if (!class_exists('Piwik\\Plugin')) {
          *                                                      'before'   => true // execute before callbacks w/o ordering
          *                                                  )
          *                   )
+         * @phpstan-return array<string, string|array{function: string, after?: bool, before?: bool}>
          * @since 2.15.0
          */
         public function registerEvents()
@@ -221,6 +222,8 @@ if (!class_exists('Piwik\\Plugin')) {
         /**
          * This method is executed after a plugin is loaded and translations are registered.
          * Useful for initialization code that uses translated strings.
+         *
+         * @return void
          */
         public function postLoad()
         {
@@ -245,6 +248,7 @@ if (!class_exists('Piwik\\Plugin')) {
          * - update existing tables
          * - etc.
          *
+         * @return void
          * @throws \Exception if installation of fails for some reason.
          */
         public function install()
@@ -258,6 +262,7 @@ if (!class_exists('Piwik\\Plugin')) {
          * In most cases, if you have an {@link install()} method, you should provide
          * an {@link uninstall()} method.
          *
+         * @return void
          * @throws \Exception if uninstallation of fails for some reason.
          */
         public function uninstall()
@@ -266,6 +271,8 @@ if (!class_exists('Piwik\\Plugin')) {
         }
         /**
          * Executed every time the plugin is enabled.
+         *
+         * @return void
          */
         public function activate()
         {
@@ -273,6 +280,8 @@ if (!class_exists('Piwik\\Plugin')) {
         }
         /**
          * Executed every time the plugin is disabled.
+         *
+         * @return void
          */
         public function deactivate()
         {
@@ -320,8 +329,11 @@ if (!class_exists('Piwik\\Plugin')) {
          *                                   given subclass. If the requested file exists but does not extend this class
          *                                   a warning will be shown to advice a developer to extend this certain class.
          *
-         * @return string|null  Null if the requested component does not exist or an instance of the found
-         *                         component.
+         * @template T of object
+         * @phpstan-param class-string<T>|''|false|null $expectedSubclass
+         *
+         * @return class-string<T>|null  Null if the requested component does not exist,
+         *                               or the class string of the found component.
          */
         public function findComponent($componentName, $expectedSubclass)
         {
@@ -357,6 +369,11 @@ if (!class_exists('Piwik\\Plugin')) {
             }
             return $classname;
         }
+        /**
+         * @template T of object
+         * @param class-string<T>|''|false|null $expectedSubclass
+         * @return array<class-string<T>>
+         */
         public function findMultipleComponents($directoryWithinPlugin, $expectedSubclass)
         {
             $this->createCacheIfNeeded();
@@ -376,7 +393,7 @@ if (!class_exists('Piwik\\Plugin')) {
         /**
          * Detect whether there are any missing dependencies.
          *
-         * @param null $piwikVersion Defaults to the current Piwik version
+         * @param string|null $piwikVersion Defaults to the current Piwik version
          * @return bool
          */
         public function hasMissingDependencies($piwikVersion = null)
@@ -526,9 +543,9 @@ if (!class_exists('Piwik\\Plugin')) {
             return \Piwik\Date::factory((int) $time);
         }
         /**
-         * @param $directoryWithinPlugin
-         * @param $expectedSubclass
-         * @return array
+         * @template T of object
+         * @param class-string<T>|''|false|null $expectedSubclass
+         * @return array<class-string<T>>
          */
         private function doFindMultipleComponents($directoryWithinPlugin, $expectedSubclass)
         {

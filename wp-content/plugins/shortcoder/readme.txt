@@ -7,8 +7,8 @@ Donate link: https://www.paypal.me/vaakash/
 License: GPLv2 or later
 Requires PHP: 5.3
 Requires at least: 4.9.0
-Tested up to: 6.8
-Stable tag: 6.5.1
+Tested up to: 7.0.2
+Stable tag: 6.5.4
 
 Create custom "Shortcodes" easily for HTML, JavaScript, CSS code snippets and use the shortcodes within posts, pages & widgets
 
@@ -132,8 +132,21 @@ Yes, this feature is available in the PRO version. You can upgrade to the [PRO v
 
 ## Changelog
 
+### 6.5.4
+* Fix: Select and insert shortcode popup is available only for administrators.
+* Fix: Custom parameter value will be sanitized by default.
+* Fix: Remove double slash in the JS include URL of the TinyMCE editor button.
+* Fix: Support for WordPress 7.0
+
+### 6.5.3
+* New: Added general setting to sanitize custom field values before using in shortcode content.
+* Fix: Support for WordPress 6.9
+
+### 6.5.2
+* Fix: Sanitize custom field value before being inserted into post.
+
 ### 6.5.1
-* PRO: Added `null` checks to fix warning in some scenarios.
+* Fix: Added `null` checks to fix warning in some scenarios.
 
 ### 6.5
 * Fix: Support for WordPress 6.8.

@@ -28,7 +28,13 @@ if ( ! class_exists( "cmplz_document" ) ) {
 
 			add_filter( 'the_content', array( $this, 'revert_divs_to_summary' ) );
 
-
+			// Restrict cmplz_document_status meta to users with manage_privacy capability.
+			register_meta( 'post', 'cmplz_document_status', array(
+				'auth_callback'     => function() {
+					return current_user_can( 'manage_privacy' );
+				},
+				'sanitize_callback' => 'sanitize_text_field',
+			) );
         }
 
 		static function this() {
@@ -662,8 +668,8 @@ if ( ! class_exists( "cmplz_document" ) ) {
 					       . esc_html( $element['title'] ) . '</h2>';
 				}
 				if ( isset( $element['subtitle'] ) ) {
-					return '<p class="subtitle annex">' . esc_html( $nr )
-					       . esc_html( $element['subtitle'] ) . '</p>';
+					return '<h3 class="subtitle annex">' . esc_html( $nr )
+					       . esc_html( $element['subtitle'] ) . '</h3>';
 				}
 			}
 
@@ -688,7 +694,7 @@ if ( ! class_exists( "cmplz_document" ) ) {
 				if ( $paragraph > 0 && $sub_paragraph > 0 && $this->is_numbered_element( $element ) ) {
 					$nr = $paragraph . "." . $sub_paragraph . " ";
 				}
-				return '<p class="cmplz-subtitle">' . esc_html( $nr ) . esc_html( $element['subtitle'] ) . '</p>';
+				return '<h3 class="cmplz-subtitle">' . esc_html( $nr ) . esc_html( $element['subtitle'] ) . '</h3>';
 			}
 
 
@@ -2190,16 +2196,20 @@ if ( ! class_exists( "cmplz_document" ) ) {
 				return $content;
 			}
 
-			//quotest get encoded for some strange reason. Decode.
-			$content = str_replace( '&#8221;', '"', $content );
-			$content = preg_replace('/\[cmplz-details-open([^>]*?)\]/', '<details $1>', $content);
-
-			$content = preg_replace('/\[cmplz-details-close\]/', '</details>', $content);
-			// Replace <summary> tags with custom <div>
-			$content = preg_replace('/\[cmplz-summary-open([^>]*?)\]/', '<summary $1>', $content);
-			$content =  preg_replace('/\[cmplz-summary-close\]/', '</summary>', $content);
+			// Decode curly quotes only within shortcode attributes, then sanitise output via wp_kses allowlist.
+			$allowed_details = array( 'details' => array( 'class' => array(), 'open' => array() ) );
+			$allowed_summary = array( 'summary' => array( 'class' => array() ) );
+			$content = preg_replace_callback( '/\[cmplz-details-open([^\]]*?)\]/', function( $matches ) use ( $allowed_details ) {
+				$attrs = str_replace( '&#8221;', '"', $matches[1] );
+				return wp_kses( '<details ' . $attrs . '>', $allowed_details );
+			}, $content );
+			$content = preg_replace( '/\[cmplz-details-close\]/', '</details>', $content );
+			$content = preg_replace_callback( '/\[cmplz-summary-open([^\]]*?)\]/', function( $matches ) use ( $allowed_summary ) {
+				$attrs = str_replace( '&#8221;', '"', $matches[1] );
+				return wp_kses( '<summary ' . $attrs . '>', $allowed_summary );
+			}, $content );
+			$content = preg_replace( '/\[cmplz-summary-close\]/', '</summary>', $content );
 			return $content;
 		}
-
 	}
 }

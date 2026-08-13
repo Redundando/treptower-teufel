@@ -10,10 +10,11 @@ namespace Piwik\API;
 
 use Exception;
 use Piwik\Access;
+use Piwik\Http\HttpCodeException;
 use Piwik\Request\AuthenticationToken;
 use Piwik\Cache;
 use Piwik\Common;
-use Piwik\Config;
+use Piwik\Config\GeneralConfig;
 use Piwik\Container\StaticContainer;
 use Piwik\Context;
 use Piwik\DataTable;
@@ -51,8 +52,15 @@ use Piwik\Log\LoggerInterface;
  *
  * **Basic Usage**
  *
- *     $request = new Request('method=UserLanguage.getLanguage&idSite=1&date=yesterday&period=week'
- *                          . '&format=xml&filter_limit=5&filter_offset=0')
+ *     $request = new Request([
+ *         'method' => 'UserLanguage.getLanguage',
+ *         'idSite' => 1,
+ *         'date' => 'yesterday',
+ *         'period' => 'week',
+ *         'format' => 'xml',
+ *         'filter_limit' => 5,
+ *         'filter_offset' => 0,
+ *     ])
  *     $result = $request->process();
  *     echo $result;
  *
@@ -125,8 +133,6 @@ class Request
         return $requestArray;
     }
     /**
-     * Constructor.
-     *
      * @param string|array $request Query string that defines the API call (must at least contain a **method** parameter),
      *                              eg, `'method=UserLanguage.getLanguage&idSite=1&date=yesterday&period=week&format=xml'`
      *                              If a request is not provided, then we use the values in the `$_GET` and `$_POST`
@@ -192,11 +198,11 @@ class Request
      * If `'original'` is supplied for the output format, the result is returned as a PHP
      * object.
      *
-     * @throws PluginDeactivatedException if the module plugin is not activated.
+     * @return DataTable|DataTable\Map|scalar|array|object|resource|null The data resulting from the API call.
      * @throws Exception if the requested API method cannot be called, if required parameters for the
      *                   API method are missing or if the API method throws an exception and the **format**
      *                   query parameter is **original**.
-     * @return DataTable|Map|string The data resulting from the API call.
+     * @throws PluginDeactivatedException if the module plugin is not activated.
      */
     public function process()
     {
@@ -250,7 +256,11 @@ class Request
                 return $response->getResponse($returnedValue, $module, $method);
             });
         } catch (Exception $e) {
-            StaticContainer::get(LoggerInterface::class)->error('Uncaught exception in API: {exception}', ['exception' => $e, 'ignoreInScreenWriter' => \true]);
+            if ($e instanceof HttpCodeException && $e->getCode() >= 400 && $e->getCode() < 500) {
+                StaticContainer::get(LoggerInterface::class)->debug('Uncaught client error in API: {exception}', ['exception' => $e, 'ignoreInScreenWriter' => \true]);
+            } else {
+                StaticContainer::get(LoggerInterface::class)->error('Uncaught exception in API: {exception}', ['exception' => $e, 'ignoreInScreenWriter' => \true]);
+            }
             if (empty($response)) {
                 $response = new \Piwik\API\ResponseBuilder('console', $this->request);
             }
@@ -350,7 +360,7 @@ $tokenToRestore, $hadSuperUserAccess)
     /**
      * Returns the current API method being executed, if the current request is an API request.
      *
-     * @param array $request  eg array('module' => 'API', 'method' => 'Test.getMethod')
+     * @param array|null $request  eg array('module' => 'API', 'method' => 'Test.getMethod')
      * @return string|null
      * @throws Exception
      */
@@ -429,15 +439,21 @@ $tokenAuth)
             $ex->setIsHtmlMessage();
             throw $ex;
         }
-        $allowWriteAmin = Config::getInstance()->General['enable_framed_allow_write_admin_token_auth'] == 1;
-        if (Piwik::isUserHasSomeWriteAccess() && !$allowWriteAmin) {
+        $allowWriteAdminModuleActionConfig = StaticContainer::get('token_auth.write_admin_allowed_module_actions');
+        if (!is_array($allowWriteAdminModuleActionConfig)) {
+            $allowWriteAdminModuleActionConfig = [];
+        }
+        $allowWriteAdmin = GeneralConfig::getConfigValue('enable_framed_allow_write_admin_token_auth') == 1;
+        $allowWriteAdminModuleAction = in_array($module . '.' . $action, $allowWriteAdminModuleActionConfig, \true);
+        if (Piwik::isUserHasSomeWriteAccess() && !$allowWriteAdmin && !$allowWriteAdminModuleAction) {
             // we allow UI authentication/ embedding widgets / reports etc only for users that have only view
             // access. it's mostly there to get users to use auth tokens of view users when embedding reports
             // token_auth is fine for API calls since they would be always authenticated later anyway
             // token_auth is also fine in CLI mode as eg doAsSuperUser might be used etc
             //
             // NOTE: this does not apply if the [General] enable_framed_allow_write_admin_token_auth INI
-            // option is set.
+            // option is set, or if the current module/action is allowlisted in the
+            // token_auth.write_admin_allowed_module_actions DI entry.
             $ex = new \Piwik\Exception\Exception(Piwik::translate('Widgetize_ViewAccessRequired', [Url::getExternalLinkTag('https://matomo.org/faq/troubleshooting/faq_147/') . 'https://matomo.org/faq/troubleshooting/faq_147/</a>']));
             $ex->setIsHtmlMessage();
             throw $ex;
@@ -592,7 +608,7 @@ $tokenAuth)
     /**
      * Returns the segment query parameter from the original request, without modifications.
      *
-     * @return array|bool
+     * @return string|false
      */
     public static function getRawSegmentFromRequest()
     {

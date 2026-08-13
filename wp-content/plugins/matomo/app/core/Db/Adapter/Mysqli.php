@@ -16,14 +16,10 @@ use Piwik\Db\Schema;
 use Piwik\Piwik;
 use Zend_Config;
 use Zend_Db_Adapter_Mysqli;
-/**
- */
 class Mysqli extends Zend_Db_Adapter_Mysqli implements AdapterInterface
 {
     use Db\TransactionalDatabaseDynamicTrait;
     /**
-     * Constructor
-     *
      * @param array|Zend_Config $config database configuration
      */
     public function __construct($config)
@@ -165,7 +161,7 @@ class Mysqli extends Zend_Db_Adapter_Mysqli implements AdapterInterface
      * Test error number
      *
      * @param Exception $e
-     * @param string $errno
+     * @param string|int $errno
      * @return bool
      */
     public function isErrNo($e, $errno)
@@ -176,7 +172,8 @@ class Mysqli extends Zend_Db_Adapter_Mysqli implements AdapterInterface
      * Test error number
      *
      * @param Exception $e
-     * @param string $errno
+     * @param \mysqli|null $connection
+     * @param string|int $errno
      * @return bool
      */
     public static function isMysqliErrorNumber($e, $connection, $errno)

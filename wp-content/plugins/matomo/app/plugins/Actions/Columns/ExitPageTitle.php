@@ -35,8 +35,6 @@ class ExitPageTitle extends VisitDimension
         return new Discriminator('log_action', 'type', Action::TYPE_PAGE_TITLE);
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
      * @return int|bool
      */
@@ -49,10 +47,8 @@ class ExitPageTitle extends VisitDimension
         return (int) $idActionName;
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
-     * @return int|bool
+     * @return int|false|null
      */
     public function onExistingVisit(Request $request, Visitor $visitor, $action)
     {

@@ -62,9 +62,6 @@ class SiteContentDetector
     }
     /**
      * Returns the site content detection object with the provided id, or null if it can't be found
-     *
-     * @param string $id
-     * @return SiteContentDetectionAbstract|null
      */
     public function getSiteContentDetectionById(string $id) : ?SiteContentDetectionAbstract
     {
@@ -85,8 +82,6 @@ class SiteContentDetector
     }
     /**
      * Reset the detections
-     *
-     * @return void
      */
     private function resetDetections() : void
     {
@@ -107,7 +102,6 @@ class SiteContentDetector
      * @param ?array      $siteResponse  String containing the site data to search, if blank then data will be retrieved
      *                                   from the current request site via an http request
      * @param int         $timeOut       How long to wait for the site to response, defaults to 5 seconds
-     * @return void
      */
     public function detectContent(array $detectContent = [], ?int $idSite = null, ?array $siteResponse = null, int $timeOut = 5) : void
     {
@@ -153,9 +147,6 @@ class SiteContentDetector
      * Returns if the detection with the provided id was detected or not
      *
      * Note: self::detectContent needs to be called before.
-     *
-     * @param string $detectionClassId
-     * @return bool
      */
     public function wasDetected(string $detectionClassId) : bool
     {
@@ -187,8 +178,6 @@ class SiteContentDetector
      *
      * @param array $detectContent
      * @param array $cache
-     *
-     * @return bool
      */
     private function checkCacheHasRequiredProperties(array $detectContent, array $cache) : bool
     {
@@ -228,11 +217,6 @@ class SiteContentDetector
     }
     /**
      * Save data to the cache
-     *
-     * @param string $cacheKey
-     * @param int    $cacheLife
-     *
-     * @return void
      */
     private function saveToCache(string $cacheKey, int $cacheLife) : void
     {
@@ -259,8 +243,6 @@ class SiteContentDetector
      * Run various detection checks for site content
      *
      * @param array $detectContent    Array of detection types used to filter the checks that are run
-     *
-     * @return void
      */
     private function detectionChecks(array $detectContent) : void
     {
@@ -283,9 +265,6 @@ class SiteContentDetector
     /**
      * Retrieve data from the specified site using an HTTP request
      *
-     * @param string $url
-     * @param int $timeOut
-     *
      * @return array
      */
     private function requestSiteResponse(string $url, int $timeOut) : array
@@ -294,7 +273,7 @@ class SiteContentDetector
             return [];
         }
         // If internet features are disabled, we don't try to fetch any site content
-        if (0 === (int) GeneralConfig::getConfigValue('enable_internet_features')) {
+        if (0 === GeneralConfig::getIntegerConfigValue('enable_internet_features', 0)) {
             return [];
         }
         $siteData = [];

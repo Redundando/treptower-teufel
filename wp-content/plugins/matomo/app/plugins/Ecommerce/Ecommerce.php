@@ -14,9 +14,8 @@ use Piwik\Common;
 use Piwik\Plugin\ArchivedMetric;
 use Piwik\Plugin\ComputedMetric;
 use Piwik\Plugins\Ecommerce\Columns\ProductCategory;
-/**
- *
- */
+use Piwik\Plugins\SegmentEditor\Settings\LimitSegments;
+use Piwik\Segment\SegmentsList;
 class Ecommerce extends \Piwik\Plugin
 {
     /**
@@ -24,7 +23,7 @@ class Ecommerce extends \Piwik\Plugin
      */
     public function registerEvents()
     {
-        return ['Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys', 'Metric.addComputedMetrics' => 'addComputedMetrics', 'Actions.getCustomActionDimensionFieldsAndJoins' => 'provideActionDimensionFields'];
+        return ['Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys', 'Metric.addComputedMetrics' => 'addComputedMetrics', 'Actions.getCustomActionDimensionFieldsAndJoins' => 'provideActionDimensionFields', 'Segment.filterSegments' => 'filterSegments'];
     }
     public function getClientSideTranslationKeys(&$translations)
     {
@@ -64,6 +63,24 @@ class Ecommerce extends \Piwik\Plugin
                     $list->addMetric($metric);
                 }
             }
+        }
+    }
+    public function filterSegments(SegmentsList &$list, array $idSites)
+    {
+        $limitSegmentsSettingEnabled = \false;
+        if (empty($idSites)) {
+            $limitSegmentsSettingEnabled = LimitSegments::getInstance()->getValue();
+        } else {
+            foreach ($idSites as $idsite) {
+                $limitSegmentsSettingEnabled |= LimitSegments::getInstance($idsite)->getValue();
+            }
+        }
+        if ($limitSegmentsSettingEnabled) {
+            $list->remove('Goals_Ecommerce', 'orderId');
+            $list->remove('Goals_Ecommerce', 'revenueOrder');
+            $list->remove('Goals_Ecommerce', 'productPrice');
+            $list->remove('Goals_Ecommerce', 'productName');
+            $list->remove('Goals_Ecommerce', 'productSku');
         }
     }
 }

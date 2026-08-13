@@ -10,14 +10,14 @@ namespace Piwik;
 
 use Exception;
 use Piwik\CliMulti\Process;
+use Piwik\Config\DatabaseConfig;
+use Piwik\Config\GeneralConfig;
+use Piwik\Tracker\Cache as TrackerCache;
 use Piwik\Container\StaticContainer;
 use Piwik\Intl\Data\Provider\LanguageDataProvider;
 use Piwik\Intl\Data\Provider\RegionDataProvider;
 use Piwik\Log\LoggerInterface;
-use Piwik\Plugins\FeatureFlags\FeatureFlagManager;
-use Piwik\Plugins\PrivacyManager\FeatureFlags\PrivacyCompliance;
-use Piwik\Plugins\PrivacyManager\Settings\CampaignTrackingParametersDisabled;
-use Piwik\Tracker\Cache as TrackerCache;
+use Piwik\Tracker\TrackerConfig;
 /**
  * Contains helper methods used by both Piwik Core and the Piwik Tracking engine.
  *
@@ -25,6 +25,7 @@ use Piwik\Tracker\Cache as TrackerCache;
  */
 class Common
 {
+    private const FLOAT_REGEX = "/^[-+]?((([0-9]+(_[0-9]+)*)|(([0-9]+(_[0-9]+)*)?\\.([0-9]+(_[0-9]+)*))|(([0-9]+(_[0-9]+)*)\\.([0-9]+(_[0-9]+)*)?))([eE][+-]?([0-9]+(_[0-9]+)*))?)\$/";
     // constants used to map the referrer type to an integer in the log_visit table
     public const REFERRER_TYPE_DIRECT_ENTRY = 1;
     public const REFERRER_TYPE_SEARCH_ENGINE = 2;
@@ -47,7 +48,7 @@ class Common
     /**
      * Hashes a string into an integer which should be very low collision risks
      * @param string $string String to hash
-     * @return int  Resulting int hash
+     * @return string Resulting numeric hash
      */
     public static function hashStringToInt($string)
     {
@@ -64,9 +65,9 @@ class Common
      * @return string  The prefixed name, ie "piwik-production_log_visit".
      * @api
      */
-    public static function prefixTable($table)
+    public static function prefixTable($table) : string
     {
-        $prefix = \Piwik\Config::getInstance()->database['tables_prefix'];
+        $prefix = DatabaseConfig::getConfigValue('tables_prefix');
         return $prefix . $table;
     }
     /**
@@ -77,7 +78,7 @@ class Common
      */
     public static function prefixTables(...$tables)
     {
-        $result = array();
+        $result = [];
         foreach ($tables as $table) {
             $result[] = self::prefixTable($table);
         }
@@ -95,7 +96,7 @@ class Common
      */
     public static function unprefixTable($table)
     {
-        $prefixTable = \Piwik\Config::getInstance()->database['tables_prefix'];
+        $prefixTable = DatabaseConfig::getConfigValue('tables_prefix');
         if (empty($prefixTable) || strpos($table, $prefixTable) !== 0) {
             return $table;
         }
@@ -104,11 +105,11 @@ class Common
     /*
      * Tracker
      */
-    public static function isGoalPluginEnabled()
+    public static function isGoalPluginEnabled() : bool
     {
         return \Piwik\Plugin\Manager::getInstance()->isPluginActivated('Goals');
     }
-    public static function isActionsPluginEnabled()
+    public static function isActionsPluginEnabled() : bool
     {
         return \Piwik\Plugin\Manager::getInstance()->isPluginActivated('Actions');
     }
@@ -118,7 +119,7 @@ class Common
      * @since added in 0.4.4
      * @return bool true if PHP invoked as a CGI or from CLI
      */
-    public static function isPhpCliMode()
+    public static function isPhpCliMode() : bool
     {
         if (is_bool(self::$isCliMode)) {
             return self::$isCliMode;
@@ -137,7 +138,7 @@ class Common
      * @since added in 0.4.4
      * @return bool true if PHP invoked as a CGI
      */
-    public static function isPhpCgiType()
+    public static function isPhpCgiType() : bool
     {
         $sapiType = php_sapi_name();
         return substr($sapiType, 0, 3) === 'cgi';
@@ -147,10 +148,8 @@ class Common
      * ./console xx:yy
      * or
      * php console xx:yy
-     *
-     * @return bool
      */
-    public static function isRunningConsoleCommand()
+    public static function isRunningConsoleCommand() : bool
     {
         $searched = 'console';
         $consolePos = strpos($_SERVER['SCRIPT_NAME'], $searched);
@@ -185,7 +184,7 @@ class Common
      * If you are wanting to use the pid to check if the process is running eg using `ps`, then you also have to use
      * getmypid directly.
      *
-     * @return int|null
+     * @return int|false
      */
     public static function getProcessId()
     {
@@ -202,7 +201,7 @@ class Common
     /**
      * Multi-byte strlen() - works with UTF-8
      *
-     * Calls `mb_substr` if available and falls back to `substr` if not.
+     * Calls `mb_strlen` if available and falls back to `strlen` if not.
      *
      * @param string $string
      * @return int
@@ -241,8 +240,6 @@ class Common
     /**
      * Timing attack safe string comparison.
      *
-     * @param string $stringA
-     * @param string $stringB
      * @return bool
      */
     public static function hashEquals(string $stringA, string $stringB)
@@ -335,9 +332,9 @@ class Common
         return $value;
     }
     /**
-     * Sanitize a single input value and removes line breaks, tabs and null characters.
+     * Sanitize a single input value and removes line breaks and null characters.
      *
-     * @param string $value
+     * @param string|null $value
      * @return string  sanitized input
      */
     public static function sanitizeInputValue($value)
@@ -408,7 +405,7 @@ class Common
         }
     }
     /**
-     * @param string $value
+     * @param string|null $value
      * @return string Line breaks and line carriage removed
      */
     public static function sanitizeLineBreaks($value)
@@ -441,6 +438,7 @@ class Common
      *                             If `'json'`, the string value will be `json_decode`-d and then sanitized.
      * @param array|null $requestArrayToUse The array to use instead of `$_GET` and `$_POST`.
      * @return mixed The sanitized request parameter.
+     * @phpstan-return ($varType is 'array' ? array : ($varType is 'integer' ? int : ($varType is 'int' ? int : ($varType is 'float' ? float : ($varType is 'string' ? string : ($varType is 'json' ? array|bool|float|int|string|null : mixed))))))
      * @throws Exception If the request parameter doesn't exist and there is no default value, or if the request parameter
      *                   exists but has an incorrect type.
      * @see Request::getParameter()
@@ -559,7 +557,7 @@ class Common
     {
         static $hashAlgorithm = null;
         if (is_null($hashAlgorithm)) {
-            $hashAlgorithm = @\Piwik\Config::getInstance()->General['hash_algorithm'];
+            $hashAlgorithm = GeneralConfig::getConfigValue('hash_algorithm');
         }
         if ($hashAlgorithm) {
             $hash = @hash($hashAlgorithm, $str, $raw_output);
@@ -625,7 +623,7 @@ class Common
     /**
      * Converts a User ID string to the Visitor ID Binary representation.
      *
-     * @param $userId
+     * @param string $userId
      * @return string
      */
     public static function convertUserIdToVisitorIdBin($userId)
@@ -677,10 +675,10 @@ class Common
         return $lastCharacters === $needle;
     }
     /**
-     * Returns the list of parent classes for the given class.
+     * Returns the given class together with its parent classes.
      *
      * @param  string    $class   A class name.
-     * @return string[]  The list of parent classes in order from highest ancestor to the descended class.
+     * @return string[]  The class and its parent classes, in order from highest ancestor to the given class.
      */
     public static function getClassLineage($class)
     {
@@ -779,7 +777,7 @@ class Common
      * @param string $browserLanguage
      * @param array $validCountries Array of valid countries
      * @param bool $enableLanguageToCountryGuess (if true, will guess country based on language that lacks region information)
-     * @return array Array of 2 letter ISO codes
+     * @return string 2 letter ISO code
      */
     public static function extractCountryCodeFromBrowserLanguage($browserLanguage, $validCountries, $enableLanguageToCountryGuess)
     {
@@ -871,7 +869,7 @@ class Common
      *
      * @param string $country 2 letters iso code
      *
-     * @return string  Continent (3 letters code : afr, asi, eur, amn, ams, oce)
+     * @return string  Continent (3 letters code: afr, amc, amn, ams, ant, asi, eur, oce, unk)
      */
     public static function getContinent($country)
     {
@@ -895,19 +893,9 @@ class Common
      *            1 => array( ... ) // campaign keyword parameters
      * );
      */
-    public static function getCampaignParameters(?int $idSite = null, bool $skipCompliancePolicyCheck = \false)
+    public static function getCampaignParameters()
     {
-        if (!$skipCompliancePolicyCheck) {
-            $featureFlagManager = StaticContainer::get(FeatureFlagManager::class);
-            if ($featureFlagManager->isFeatureActive(PrivacyCompliance::class)) {
-                $cache = TrackerCache::getCacheWebsiteAttributes($idSite);
-                $cacheKey = CampaignTrackingParametersDisabled::class;
-                if (($cache[$cacheKey] ?? \false) === \true) {
-                    return [[], []];
-                }
-            }
-        }
-        $return = array(\Piwik\Config::getInstance()->Tracker['campaign_var_name'], \Piwik\Config::getInstance()->Tracker['campaign_keyword_var_name']);
+        $return = [TrackerConfig::getConfigValue('campaign_var_name'), TrackerConfig::getConfigValue('campaign_keyword_var_name')];
         foreach ($return as &$list) {
             if (strpos($list, ',') !== \false) {
                 $list = explode(',', $list);
@@ -947,8 +935,9 @@ class Common
      * Force the separator for decimal point to be a dot. See https://github.com/piwik/piwik/issues/6435
      * If for instance a German locale is used it would be a comma otherwise.
      *
-     * @param  float|string $value
-     * @return string
+     * @param float|string|null|false $value
+     * @return string|null|false
+     * @phpstan-return ($value is null ? null : ($value is false ? false : string))
      */
     public static function forceDotAsSeparatorForDecimalPoint($value)
     {
@@ -956,6 +945,23 @@ class Common
             return $value;
         }
         return str_replace(',', '.', $value);
+    }
+    /**
+     * Parses the given value as float and returns null if it cannot be represented as a PHP float.
+     *
+     * Supports the same string notations as PHP floats, including underscore notation.
+     *
+     * @param mixed $value
+     */
+    public static function parseFloat($value) : ?float
+    {
+        if (is_float($value) || is_int($value)) {
+            return (float) $value;
+        }
+        if (is_string($value) && preg_match(self::FLOAT_REGEX, $value)) {
+            return (float) str_replace('_', '', $value);
+        }
+        return null;
     }
     /**
      * Sets outgoing header.
@@ -1071,7 +1077,7 @@ class Common
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
     /**
-     * @param $validLanguages
+     * @param array $validLanguages
      * @return array
      */
     protected static function checkValidLanguagesIsSet($validLanguages)

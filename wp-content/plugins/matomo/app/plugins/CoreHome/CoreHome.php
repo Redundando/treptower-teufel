@@ -21,12 +21,13 @@ use Piwik\Piwik;
 use Piwik\Plugin\ArchivedMetric;
 use Piwik\Plugin\ComputedMetric;
 use Piwik\Plugin\ThemeStyles;
+use Piwik\Plugins\CoreHome\FeatureFlags\ReportHeaderRedesign;
+use Piwik\Plugins\FeatureFlags\FeatureFlagManager;
+use Piwik\Plugins\SegmentEditor\Settings\LimitSegments;
+use Piwik\Segment\SegmentsList;
 use Piwik\SettingsPiwik;
 use Piwik\SettingsServer;
 use Piwik\Tracker\Model as TrackerModel;
-/**
- *
- */
 class CoreHome extends \Piwik\Plugin
 {
     /**
@@ -40,7 +41,17 @@ class CoreHome extends \Piwik\Plugin
      */
     public function registerEvents()
     {
-        return array('AssetManager.getStylesheetFiles' => 'getStylesheetFiles', 'AssetManager.getJavaScriptFiles' => 'getJsFiles', 'AssetManager.filterMergedJavaScripts' => 'filterMergedJavaScripts', 'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys', 'Metric.addComputedMetrics' => 'addComputedMetrics', 'Request.initAuthenticationObject' => ['function' => 'checkAllowedIpsOnAuthentication', 'before' => \true], 'AssetManager.addStylesheets' => 'addStylesheets', 'Request.dispatchCoreAndPluginUpdatesScreen' => ['function' => 'checkAllowedIpsOnAuthentication', 'before' => \true], 'Tracker.setTrackerCacheGeneral' => 'setTrackerCacheGeneral');
+        return array('AssetManager.getStylesheetFiles' => 'getStylesheetFiles', 'AssetManager.getJavaScriptFiles' => 'getJsFiles', 'AssetManager.filterMergedJavaScripts' => 'filterMergedJavaScripts', 'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys', 'Metric.addComputedMetrics' => 'addComputedMetrics', 'Request.initAuthenticationObject' => ['function' => 'checkAllowedIpsOnAuthentication', 'before' => \true], 'AssetManager.addStylesheets' => 'addStylesheets', 'Request.dispatchCoreAndPluginUpdatesScreen' => ['function' => 'checkAllowedIpsOnAuthentication', 'before' => \true], 'Tracker.setTrackerCacheGeneral' => 'setTrackerCacheGeneral', 'Segment.filterSegments' => 'filterSegments', 'Template.bodyClass' => 'addBodyClass');
+    }
+    public function addBodyClass(&$out, $type)
+    {
+        $featureFlagManager = StaticContainer::get(FeatureFlagManager::class);
+        // The report header redesign moves widget controls and report actions to a shared
+        // top-right header. It is gated app-wide by this flag so later tickets can scope
+        // CSS/JS with `body.report-header-redesign-enabled` across every report surface.
+        if ($featureFlagManager->isFeatureActive(ReportHeaderRedesign::class)) {
+            $out .= ' report-header-redesign-enabled';
+        }
     }
     public function isTrackerPlugin()
     {
@@ -118,6 +129,7 @@ class CoreHome extends \Piwik\Plugin
         $stylesheets[] = "plugins/CoreHome/vue/src/EnrichedHeadline/EnrichedHeadline.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/Notification/Notification.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/QuickAccess/QuickAccess.less";
+        $stylesheets[] = "plugins/CoreHome/vue/src/SearchInput/SearchInput.less";
         $stylesheets[] = "plugins/CoreHome/stylesheets/selector.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/ReportingPage/ReportingPage.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/ReportExport/ReportExport.less";
@@ -127,6 +139,7 @@ class CoreHome extends \Piwik\Plugin
         $stylesheets[] = "plugins/CoreHome/vue/src/PeriodSelector/PeriodSelector.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/MultiPairField/MultiPairField.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/DropdownMenu/DropdownMenu.less";
+        $stylesheets[] = "plugins/CoreHome/vue/src/DraggableList/DraggableList.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/Sparkline/Sparkline.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/FieldArray/FieldArray.less";
         $stylesheets[] = "plugins/CoreHome/vue/src/Comparisons/Comparisons.less";
@@ -157,6 +170,7 @@ class CoreHome extends \Piwik\Plugin
         $jsFiles[] = "plugins/CoreHome/javascripts/corehome.js";
         $jsFiles[] = "plugins/CoreHome/javascripts/top_controls.js";
         $jsFiles[] = "libs/jqplot/jqplot-custom.min.js";
+        $jsFiles[] = "plugins/CoreHome/javascripts/themes.js";
         $jsFiles[] = "plugins/CoreHome/javascripts/color_manager.js";
         $jsFiles[] = "plugins/CoreHome/javascripts/notification.js";
         $jsFiles[] = "plugins/CoreHome/javascripts/listingFormatter.js";
@@ -313,8 +327,22 @@ class CoreHome extends \Piwik\Plugin
         $translationKeys[] = 'General_DateRangeTo';
         $translationKeys[] = 'General_DoubleClickToChangePeriod';
         $translationKeys[] = 'General_Apply';
+        $translationKeys[] = 'General_ChoosePeriod';
         $translationKeys[] = 'General_Period';
         $translationKeys[] = 'General_CompareTo';
+        $translationKeys[] = 'CoreHome_PresetDateToday';
+        $translationKeys[] = 'CoreHome_PresetDateYesterday';
+        $translationKeys[] = 'CoreHome_PresetDateLast7Days';
+        $translationKeys[] = 'CoreHome_PresetDateLast30Days';
+        $translationKeys[] = 'CoreHome_PresetDateLast90Days';
+        $translationKeys[] = 'CoreHome_PresetDateLastWeekMonSun';
+        $translationKeys[] = 'CoreHome_PresetDateLastMonth';
+        $translationKeys[] = 'CoreHome_PresetDateLastQuarter';
+        $translationKeys[] = 'CoreHome_PresetDateLastYear';
+        $translationKeys[] = 'CoreHome_PresetDateThisWeekMonToday';
+        $translationKeys[] = 'CoreHome_PresetDateThisMonth';
+        $translationKeys[] = 'CoreHome_PresetDateThisQuarter';
+        $translationKeys[] = 'CoreHome_PresetDateThisYear';
         $translationKeys[] = 'CoreHome_DateInvalid';
         $translationKeys[] = 'CoreHome_EnterZenMode';
         $translationKeys[] = 'CoreHome_ExitZenMode';
@@ -356,8 +384,10 @@ class CoreHome extends \Piwik\Plugin
         $translationKeys[] = 'CoreHome_TechDeprecationWarning';
         $translationKeys[] = 'CoreHome_StartDate';
         $translationKeys[] = 'CoreHome_EndDate';
+        $translationKeys[] = 'CoreHome_InvalidComparisonDateRange';
         $translationKeys[] = 'CoreHome_DataForThisReportHasBeenDisabled';
         $translationKeys[] = 'CoreHome_ChangeVisualization';
+        $translationKeys[] = 'CoreHome_ReportConfigure';
         $translationKeys[] = 'General_ExportThisReport';
         $translationKeys[] = 'Annotations_Annotations';
         $translationKeys[] = 'CoreHome_CloseSearch';
@@ -377,6 +407,7 @@ class CoreHome extends \Piwik\Plugin
         $translationKeys[] = 'CoreHome_CopyModalNote';
         $translationKeys[] = 'CoreHome_CopyX';
         $translationKeys[] = 'CoreHome_CopyXDescription';
+        $translationKeys[] = 'CoreHome_WebAnalyticsReports';
         // add admin menu translations
         if (SettingsPiwik::isMatomoInstalled() && Common::getRequestVar('module', '') != 'CoreUpdater' && Piwik::isUserHasSomeViewAccess()) {
             /*
@@ -395,6 +426,32 @@ class CoreHome extends \Piwik\Plugin
                     }
                 }
             });
+        }
+    }
+    public function filterSegments(SegmentsList &$list, array $idSites)
+    {
+        $limitSegmentsSettingEnabled = \false;
+        if (empty($idSites)) {
+            $limitSegmentsSettingEnabled = LimitSegments::getInstance()->getValue();
+        } else {
+            foreach ($idSites as $idsite) {
+                $limitSegmentsSettingEnabled |= LimitSegments::getInstance($idsite)->getValue();
+            }
+        }
+        if ($limitSegmentsSettingEnabled) {
+            $list->remove('General_Visitors', 'userId');
+            $list->remove('General_Visitors', 'visitIp');
+            $list->remove('General_Visitors', 'visitId');
+            $list->remove('General_Visitors', 'visitorId');
+            $list->remove('General_Visitors', 'fingerprint');
+            $list->remove('Referrers_Referrers', 'campaignId');
+            $list->remove('General_Actions', 'actionServerHour');
+            $list->remove('General_Actions', 'actionServerMinute');
+            $list->remove('General_Visitors', 'visitServerHour');
+            $list->remove('General_Visitors', 'visitEndServerMinute');
+            $list->remove('General_Visitors', 'visitEndServerSecond');
+            $list->remove('General_Visitors', 'visitStartServerHour');
+            $list->remove('General_Visitors', 'visitStartServerMinute');
         }
     }
 }

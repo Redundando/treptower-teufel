@@ -148,10 +148,21 @@ class Woocommerce extends Base {
 		global $wp;
 
 		if ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) {
-			$order_id = isset( $wp->query_vars['order-received'] ) ? $wp->query_vars['order-received'] : 0;
-			if ( ! empty( $order_id ) && $order_id > 0 ) {
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $this->on_order( $order_id );
+			$order_id = isset( $wp->query_vars['order-received'] ) ? absint( $wp->query_vars['order-received'] ) : 0;
+
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$order_key = isset( $_GET['key'] ) ? wc_clean( wp_unslash( $_GET['key'] ) ) : '';
+
+			if ( $order_id > 0 ) {
+				$order = wc_get_order( $order_id );
+
+				if (
+					$order instanceof WC_Order
+					&& hash_equals( $order->get_order_key(), $order_key )
+				) {
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $this->on_order( $order_id );
+				}
 			}
 		}
 	}
@@ -231,7 +242,7 @@ class Woocommerce extends Base {
 			return;
 		}
 
-		// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+		// phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 		if ( $this->get_order_meta( $order, $this->key_order_tracked ) == 1 ) {
 			$this->logger->log( sprintf( 'Ignoring already tracked order %d', $order_id ) );
 
@@ -446,7 +457,7 @@ class Woocommerce extends Base {
 			return false;
 		}
 
-		// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+		// phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 		return $this->get_order_meta( $order, $this->key_order_tracked ) == 1;
 	}
 

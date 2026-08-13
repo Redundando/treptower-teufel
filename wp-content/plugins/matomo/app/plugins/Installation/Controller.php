@@ -374,7 +374,7 @@ class Controller extends ControllerAdmin
         return AssetManager::compileCustomStylesheets($files);
     }
     /**
-     * Return the base.less compiled to css
+     * Return the compiled JavaScript for the installation screen.
      *
      * @return string
      */
@@ -407,6 +407,9 @@ class Controller extends ControllerAdmin
         }
         if (count($headers = ProxyHeaders::getProxyHostHeaders()) > 0) {
             $config->General['proxy_host_headers'] = $headers;
+        }
+        if (count($headers = ProxyHeaders::getProxySchemeHeaders()) > 0) {
+            $config->General['proxy_scheme_headers'] = $headers;
         }
         if (Common::getRequestVar('clientProtocol', 'http', 'string') == 'https') {
             $protocol = 'https';

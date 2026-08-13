@@ -44,16 +44,18 @@ class ArchiveSelector
         return new \Piwik\DataAccess\Model();
     }
     /**
-     * @param ArchiveProcessor\Parameters $params
-     * @param bool $minDatetimeArchiveProcessedUTC deprecated. Will be removed in Matomo 4.
-     * @return array An array with four values:
-     *               - the latest archive ID or false if none
+     * @param false|int|string|Date|null $minDatetimeArchiveProcessedUTC The minimum ts_archived an archive must have to be considered usable, or false to accept any.
+     * @param bool|null $includeInvalidated true to include archives that are DONE_INVALIDATED, false if only DONE_OK,
+     *                                      null to determine automatically based on $params.
+     * @return array An array with the following values:
+     *               - the latest archive ID(s) or false if none
      *               - the latest visits value for the latest archive, regardless of whether the archive is invalidated or not
      *               - the latest visits converted value for the latest archive, regardless of whether the archive is invalidated or not
      *               - whether there is an archive that exists or not. if this is true and the latest archive is false, it means
      *                 the archive found was not usable (for example, it was invalidated and we are not looking for invalidated archives)
      *               - the ts_archived for the latest usable archive
-     * @throws Exception
+     *               - the doneFlag value for the latest archive
+     *               - existing records contained in partial archives, if applicable
      */
     public static function getArchiveIdAndVisits(ArchiveProcessor\Parameters $params, $minDatetimeArchiveProcessedUTC = \false, $includeInvalidated = null)
     {
@@ -62,7 +64,10 @@ class ArchiveSelector
         $dateStart = $params->getPeriod()->getDateStart();
         $dateStartIso = $dateStart->toString('Y-m-d');
         $dateEndIso = $params->getPeriod()->getDateEnd()->toString('Y-m-d');
-        $numericTable = \Piwik\DataAccess\ArchiveTableCreator::getNumericTable($dateStart);
+        $numericTable = \Piwik\DataAccess\ArchiveTableCreator::getNumericTable($dateStart, \false);
+        if (empty($numericTable)) {
+            return self::archiveInfoBcResult(['idArchives' => \false, 'visits' => \false, 'visitsConverted' => \false, 'archiveExists' => \false, 'tsArchived' => \false, 'doneFlagValue' => \false, 'existingRecords' => null]);
+        }
         $requestedPlugin = $params->getRequestedPlugin();
         $requestedReport = $params->getArchiveOnlyReport();
         $segment = $params->getSegment();
@@ -131,7 +136,6 @@ class ArchiveSelector
      *                       '2010-01-01' => array(1,2,3)
      *                   )
      *               )
-     * @throws
      */
     public static function getArchiveIds($siteIds, $periods, $segment, $plugins, $includeInvalidated = \true, $_skipSetGroupConcatMaxLen = \false)
     {
@@ -167,7 +171,6 @@ class ArchiveSelector
      *                       )
      *                   )
      *               )
-     * @throws
      */
     public static function getArchiveIdsAndStates($siteIds, $periods, $segment, $plugins, $includeInvalidated = \true, $_skipSetGroupConcatMaxLen = \false) : array
     {
@@ -193,7 +196,10 @@ class ArchiveSelector
                 continue;
                 // avoid creating any archive tables in the future
             }
-            $table = \Piwik\DataAccess\ArchiveTableCreator::getNumericTable($period->getDateStart());
+            $table = \Piwik\DataAccess\ArchiveTableCreator::getNumericTable($period->getDateStart(), \false);
+            if (empty($table)) {
+                continue;
+            }
             $monthToPeriods[$table][] = $period;
         }
         $db = Db::get();
@@ -280,9 +286,12 @@ class ArchiveSelector
             $date = Date::factory($yearMonth . '-01');
             $isNumeric = $archiveDataType === 'numeric';
             if ($isNumeric) {
-                $table = \Piwik\DataAccess\ArchiveTableCreator::getNumericTable($date);
+                $table = \Piwik\DataAccess\ArchiveTableCreator::getNumericTable($date, \false);
             } else {
-                $table = \Piwik\DataAccess\ArchiveTableCreator::getBlobTable($date);
+                $table = \Piwik\DataAccess\ArchiveTableCreator::getBlobTable($date, \false);
+            }
+            if (empty($table)) {
+                continue;
             }
             $ids = array_map('intval', $ids);
             $sql = sprintf($getValuesSql, $table, implode(',', $ids));
@@ -336,7 +345,6 @@ class ArchiveSelector
      * this instance is querying for.
      *
      * @param array $plugins
-     * @param Segment $segment
      * @param bool $includeInvalidated
      * @return string
      */
@@ -362,8 +370,9 @@ class ArchiveSelector
      * - the ts_archived for the latest idarchive
      * - the doneFlag value for the latest archive
      *
-     * @param $results
-     * @param $doneFlags
+     * @param array $results
+     * @param array $requestedPluginDoneFlags
+     * @param string $allPluginsDoneFlag
      * @return array
      */
     private static function findArchiveDataWithLatestTsArchived($results, $requestedPluginDoneFlags, $allPluginsDoneFlag)
@@ -444,7 +453,10 @@ class ArchiveSelector
         // $yearMonth = "2022-11",
         foreach ($archiveIdsPerMonth as $yearMonth => $ids) {
             $date = Date::factory($yearMonth . '-01');
-            $table = \Piwik\DataAccess\ArchiveTableCreator::getBlobTable($date);
+            $table = \Piwik\DataAccess\ArchiveTableCreator::getBlobTable($date, \false);
+            if (empty($table)) {
+                continue;
+            }
             $ids = array_map('intval', $ids);
             $sql = sprintf($getValuesSql, $table, implode(',', $ids));
             $cursor = Db::get()->query($sql, $bind);
@@ -478,6 +490,7 @@ class ArchiveSelector
                     // $rawName = eg 'PluginName_ArchiveName'
                     $rawName = $chunk->getRecordNameWithoutChunkAppendix($row['name']);
                     foreach ($blobs as $subtableId => $blob) {
+                        unset($blobs[$subtableId]);
                         (yield array_merge($row, ['value' => $blob, 'name' => \Piwik\DataAccess\ArchiveSelector::appendIdSubtable($rawName, $subtableId)]));
                     }
                 } else {

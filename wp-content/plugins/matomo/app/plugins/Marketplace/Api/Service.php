@@ -9,9 +9,6 @@
 namespace Piwik\Plugins\Marketplace\Api;
 
 use Piwik\Http;
-/**
- *
- */
 class Service
 {
     public const CACHE_TIMEOUT_IN_SECONDS = 1200;
@@ -71,7 +68,7 @@ $accessToken)
      *
      * @param string $url An absolute URL to the marketplace including domain.
      * @param null|string $destinationPath
-     * @param null|int $timeout Defaults to 60 seconds see {@link self::HTTP_REQUEST_METHOD}
+     * @param null|int $timeout Defaults to 60 seconds see {@link self::HTTP_REQUEST_TIMEOUT}
      * @param null|array $postData eg array('email' => 'user@example.org')
      * @param bool $getExtendedInfo Return the extended response info for the HTTP request.
      * @return bool|string Returns the downloaded data or true if a destination path was given.

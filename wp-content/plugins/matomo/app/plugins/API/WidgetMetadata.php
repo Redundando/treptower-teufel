@@ -54,7 +54,6 @@ class WidgetMetadata
         return $flat;
     }
     /**
-     * @param WidgetConfig $widget
      * @param CategoryList|null $categoryList If null, no category information will be added to the widgets in first
      *                                        level (they will be added to nested widgets as potentially needed eg for
      *                                        widgets in ByDimensionView where they are needed to build the left menu)
@@ -83,6 +82,14 @@ class WidgetMetadata
         $middleware = $widget->getMiddlewareParameters();
         if (!empty($middleware)) {
             $item['middlewareParameters'] = $middleware;
+        }
+        $clientComponent = $widget->getClientSideComponent();
+        if (!empty($clientComponent)) {
+            $item['clientComponent'] = $clientComponent;
+            $clientProps = $widget->getClientSideProps();
+            if (!empty($clientProps)) {
+                $item['clientComponent']['props'] = $clientProps;
+            }
         }
         if ($widget instanceof ReportWidgetConfig) {
             $item['viewDataTable'] = $widget->getViewDataTable();
@@ -133,18 +140,18 @@ class WidgetMetadata
     }
     /**
      * @param Category|null $category
-     * @return array
+     * @return array|null
      */
     private function buildCategoryMetadata($category)
     {
         if (!isset($category)) {
             return null;
         }
-        return array('id' => (string) $category->getId(), 'name' => $category->getDisplayName(), 'order' => $category->getOrder(), 'icon' => $category->getIcon(), 'help' => Piwik::translate($category->getHelp()), 'widget' => $category->getWidget() ?: null);
+        return array('id' => (string) $category->getId(), 'name' => $category->getDisplayName(), 'order' => $category->getOrder(), 'icon' => $category->getIcon(), 'help' => Piwik::translate($category->getHelp()), 'widget' => $category->getWidget() ?: null, 'groups' => $category->getGroups());
     }
     /**
      * @param Subcategory|null $subcategory
-     * @return array
+     * @return array|null
      */
     private function buildSubcategoryMetadata($subcategory)
     {
@@ -196,8 +203,6 @@ class WidgetMetadata
         return $subcategory;
     }
     /**
-     * @param CategoryList $categoryList
-     * @param WidgetsList $widgetsList
      * @return array
      */
     private function buildPagesMetadata(CategoryList $categoryList, WidgetsList $widgetsList)

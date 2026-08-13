@@ -64,7 +64,7 @@ use Piwik\Site;
 class DataComparisonFilter
 {
     /**
-     * @var array
+     * @var \Piwik\Request
      */
     private $request;
     /**
@@ -125,16 +125,18 @@ class DataComparisonFilter
         $this->checkComparisonLimit($this->periodCompareLimit, 'data_comparison_period_limit');
         $this->segmentName = $this->getSegmentNameFromReport($report);
         $this->compareSegments = self::getCompareSegments();
-        if (count($this->compareSegments) > $this->segmentCompareLimit + 1) {
-            throw new BadRequestException(Piwik::translate('General_MaximumNumberOfSegmentsComparedIs', [$this->segmentCompareLimit]));
+        $segmentCompareLimitPlusMain = $this->segmentCompareLimit + 1;
+        if (count($this->compareSegments) > $segmentCompareLimitPlusMain) {
+            throw new BadRequestException(Piwik::translate('General_MaximumNumberOfSegmentsComparedIs', [$segmentCompareLimitPlusMain]));
         }
         $this->compareDates = self::getCompareDates($request);
         $this->comparePeriods = self::getComparePeriods($request);
         if (count($this->compareDates) !== count($this->comparePeriods)) {
             throw new BadRequestException(Piwik::translate('General_CompareDatesParamMustMatchComparePeriods', ['compareDates', 'comparePeriods']));
         }
-        if (count($this->compareDates) > $this->periodCompareLimit + 1) {
-            throw new BadRequestException(Piwik::translate('General_MaximumNumberOfPeriodsComparedIs', [$this->periodCompareLimit]));
+        $periodCompareLimitPlusMain = $this->periodCompareLimit + 1;
+        if (count($this->compareDates) > $periodCompareLimitPlusMain) {
+            throw new BadRequestException(Piwik::translate('General_MaximumNumberOfPeriodsComparedIs', [$periodCompareLimitPlusMain]));
         }
         if (count($this->compareSegments) == 1 && count($this->comparePeriods) == 1) {
             return;
@@ -157,9 +159,6 @@ class DataComparisonFilter
     {
         return !empty(Common::getRequestVar('compareSegments', [], $type = 'array', $request)) || !empty(Common::getRequestVar('comparePeriods', [], $type = 'array', $request)) || !empty(Common::getRequestVar('compareDates', [], $type = 'array', $request));
     }
-    /**
-     * @param DataTable\DataTableInterface $table
-     */
     public function compare(DataTable\DataTableInterface $table)
     {
         if (empty($this->compareSegments) && empty($this->comparePeriods)) {
@@ -474,7 +473,6 @@ class DataComparisonFilter
      *
      * @see \Piwik\Plugins\CoreVisualizations\Visualizations\Sparklines::render()
      *
-     * @return bool
      * @throws \Exception
      */
     private function shouldIncludeTrendValues() : bool

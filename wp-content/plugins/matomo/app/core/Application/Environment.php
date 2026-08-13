@@ -142,7 +142,7 @@ class Environment
      * Returns the kernel global GlobalSettingsProvider object. Derived classes can override this method
      * to provide a different implementation.
      *
-     * @return null|GlobalSettingsProvider
+     * @return GlobalSettingsProvider
      */
     protected function getGlobalSettings()
     {
@@ -166,7 +166,6 @@ class Environment
         $validator->validate();
     }
     /**
-     * @param EnvironmentManipulator $manipulator
      * @internal
      */
     public static function setGlobalEnvironmentManipulator(\Piwik\Application\EnvironmentManipulator $manipulator)

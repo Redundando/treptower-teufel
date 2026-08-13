@@ -27,7 +27,7 @@ class ArchiveFilter
      * If supplied, archiving will be launched only for periods that fall within this date range. For example,
      * `"2012-01-01,2012-03-15"` would result in January 2012, February 2012 being archived but not April 2012.
      *
-     * @var Date[]
+     * @var Date[]|false
      */
     private $restrictToDateRange = \false;
     /**
@@ -120,7 +120,7 @@ class ArchiveFilter
         }
     }
     /**
-     * @return null
+     * @return string[]|null
      */
     public function getSegmentsToForce()
     {
@@ -149,15 +149,12 @@ class ArchiveFilter
     {
         return $this->disableSegmentsArchiving;
     }
-    /**
-     * @param bool $disableSegmentsArchiving
-     */
     public function setDisableSegmentsArchiving(bool $disableSegmentsArchiving)
     {
         $this->disableSegmentsArchiving = $disableSegmentsArchiving;
     }
     /**
-     * @return false|string
+     * @return Date[]|false
      */
     public function getRestrictToDateRange()
     {
@@ -169,7 +166,7 @@ class ArchiveFilter
     public function setRestrictToDateRange($restrictToDateRange)
     {
         if (empty($restrictToDateRange)) {
-            $this->restrictToDateRange = $restrictToDateRange;
+            $this->restrictToDateRange = \false;
             return;
         }
         try {
@@ -188,9 +185,6 @@ class ArchiveFilter
     {
         $this->skipSegmentsForToday = $skipSegmentsForToday;
     }
-    /**
-     * @return bool
-     */
     public function isSkipSegmentsForToday() : bool
     {
         return $this->skipSegmentsForToday;

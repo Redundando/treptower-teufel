@@ -192,10 +192,14 @@
         "ViewAndAddAnnotations": "Ver y agregar anotaciones para %s…",
         "YouCannotModifyThisNote": "No puede modificar esta anotación porque no la creó usted ni tiene acceso de administrador para este sitio."
     },
+    "BotTracking": {
+        "PageUrl": "URL da páxina",
+        "SiteWithoutDataBackToMatomo": "Voltar a Matomo"
+    },
     "Contents": {
-        "Impressions": "Impresións",
         "ContentName": "Nome do contido",
-        "Contents": "Contido"
+        "Contents": "Contido",
+        "Impressions": "Impresións"
     },
     "CoreHome": {
         "CategoryNoData": "Non hai datos nesta categoría. Intente \"Incluir todos os datos\".",
@@ -203,6 +207,8 @@
         "ChangeVisualization": "Cambiar visualización",
         "CheckForUpdates": "Buscar actualizacións",
         "CheckPiwikOut": "Controla Matomo!",
+        "PresetDateToday": "Hoxe",
+        "PresetDateYesterday": "Onte",
         "ShowJSCode": "Ver o código javascript para insertar",
         "SystemSummaryPhpVersion": "Versión PHP"
     },
@@ -222,15 +228,15 @@
         "LatestStableRelease": "Versión estábel máis recente",
         "NotificationClickToUpdateThemes": "Prema aquí para actualizar os temas agora:",
         "PiwikHasBeenSuccessfullyUpgraded": "Matomo foi actualizado correctamente!",
-        "UpdateTitle": "Actualizar",
-        "UpdateSuccessTitle": "Matomo foi actualizado correctamente!",
-        "UpdateErrorTitle": "Erro de actualización",
         "ThankYouUpdatePiwik": "Grazas por usar Matomo e mantelo actualizado!",
+        "UpdateErrorTitle": "Erro de actualización",
+        "UpdateSuccessTitle": "Matomo foi actualizado correctamente!",
+        "UpdateTitle": "Actualizar",
         "UpgradeComplete": "Anovación rematada!",
         "UpgradePiwik": "Anovar Matomo",
         "VerifyingUnpackedFiles": "A comprobar os ficheiros desempaquetados",
-        "WarningMessages": "Mensaxes de advertencia:",
-        "ViewVersionChangelog": "Ver o rexistro de cambios desta versión:"
+        "ViewVersionChangelog": "Ver o rexistro de cambios desta versión:",
+        "WarningMessages": "Mensaxes de advertencia:"
     },
     "DBStats": {
         "Table": "Táboa"
@@ -260,14 +266,14 @@
         "WidgetBrowsers": "Navegadores dos visitantes"
     },
     "Feedback": {
-        "IWantTo": "Quero:",
         "CommunityHelp": "Axuda da comunidade",
-        "ProfessionalHelp": "Axuda profesional",
-        "ContactUs": "Contacte connosco"
+        "ContactUs": "Contacte connosco",
+        "IWantTo": "Quero:",
+        "ProfessionalHelp": "Axuda profesional"
     },
     "GeoIp2": {
-        "DownloadingDb": "A descargar %s",
         "DownloadNewDatabasesEvery": "Actualizar as bases de datos cada",
+        "DownloadingDb": "A descargar %s",
         "UpdaterHasNotBeenRun": "O actualizador non foi executado nunca.",
         "UpdaterIsNotScheduledToRun": "Non está planificado para ser executado no futuro.",
         "UpdaterScheduledForNextRun": "Está planificado para ser executado durante a próxima execución da orde core:archive de cron.",
@@ -1208,24 +1214,24 @@
         "NumberFormatCurrencyCompact10000000000000000Other": "",
         "NumberFormatCurrencyCompact1000000000000000One": "",
         "NumberFormatCurrencyCompact1000000000000000Other": "",
-        "NumberFormatCurrencyCompact100000000000000One": "000 B¤",
-        "NumberFormatCurrencyCompact100000000000000Other": "000 B¤",
-        "NumberFormatCurrencyCompact10000000000000One": "00 B¤",
-        "NumberFormatCurrencyCompact10000000000000Other": "00 B¤",
-        "NumberFormatCurrencyCompact1000000000000One": "0 B¤",
-        "NumberFormatCurrencyCompact1000000000000Other": "0 B¤",
-        "NumberFormatCurrencyCompact100000000000One": "000000 M¤",
-        "NumberFormatCurrencyCompact100000000000Other": "000000 M¤",
-        "NumberFormatCurrencyCompact10000000000One": "00000 M¤",
-        "NumberFormatCurrencyCompact10000000000Other": "00000 M¤",
-        "NumberFormatCurrencyCompact1000000000One": "0000 M¤",
-        "NumberFormatCurrencyCompact1000000000Other": "0000 M¤",
-        "NumberFormatCurrencyCompact100000000One": "000 M¤",
-        "NumberFormatCurrencyCompact100000000Other": "000 M¤",
-        "NumberFormatCurrencyCompact10000000One": "00 M¤",
-        "NumberFormatCurrencyCompact10000000Other": "00 M¤",
-        "NumberFormatCurrencyCompact1000000One": "0 M¤",
-        "NumberFormatCurrencyCompact1000000Other": "0 M¤",
+        "NumberFormatCurrencyCompact100000000000000One": "000 B ¤",
+        "NumberFormatCurrencyCompact100000000000000Other": "000 B ¤",
+        "NumberFormatCurrencyCompact10000000000000One": "00 B ¤",
+        "NumberFormatCurrencyCompact10000000000000Other": "00 B ¤",
+        "NumberFormatCurrencyCompact1000000000000One": "0 B ¤",
+        "NumberFormatCurrencyCompact1000000000000Other": "0 B ¤",
+        "NumberFormatCurrencyCompact100000000000One": "000000 M ¤",
+        "NumberFormatCurrencyCompact100000000000Other": "000000 M ¤",
+        "NumberFormatCurrencyCompact10000000000One": "00000 M ¤",
+        "NumberFormatCurrencyCompact10000000000Other": "00000 M ¤",
+        "NumberFormatCurrencyCompact1000000000One": "0000 M ¤",
+        "NumberFormatCurrencyCompact1000000000Other": "0000 M ¤",
+        "NumberFormatCurrencyCompact100000000One": "000 M ¤",
+        "NumberFormatCurrencyCompact100000000Other": "000 M ¤",
+        "NumberFormatCurrencyCompact10000000One": "00 M ¤",
+        "NumberFormatCurrencyCompact10000000Other": "00 M ¤",
+        "NumberFormatCurrencyCompact1000000One": "0 M ¤",
+        "NumberFormatCurrencyCompact1000000Other": "0 M ¤",
         "NumberFormatCurrencyCompact100000One": "0",
         "NumberFormatCurrencyCompact100000Other": "0",
         "NumberFormatCurrencyCompact10000One": "0",
@@ -1297,6 +1303,7 @@
         "Timezone_America_CiudadJuarez": "Ciudad Juárez",
         "Timezone_America_CoralHarbour": "Atikokan",
         "Timezone_America_Cordoba": "Córdoba",
+        "Timezone_America_Coyhaique": "Coihaique",
         "Timezone_America_Cuiaba": "Cuiabá",
         "Timezone_America_Eirunepe": "Eirunepé",
         "Timezone_America_Godthab": "Nuuk",
@@ -1315,6 +1322,7 @@
         "Timezone_America_Merida": "Mérida",
         "Timezone_America_MexicoCity": "Cidade de México",
         "Timezone_America_NewYork": "Nova York",
+        "Timezone_America_Noronha": "Fernando de Noronha",
         "Timezone_America_NorthDakota_Beulah": "Beulah, Dacota do Norte",
         "Timezone_America_NorthDakota_Center": "Center, Dacota do Norte",
         "Timezone_America_NorthDakota_NewSalem": "New Salem, Dacota do Norte",
@@ -1331,6 +1339,7 @@
         "Timezone_Asia_Calcutta": "Calcuta",
         "Timezone_Asia_Chita": "Chitá",
         "Timezone_Asia_Hebron": "Hebrón",
+        "Timezone_Asia_Hovd": "Khovd",
         "Timezone_Asia_Jakarta": "Iacarta",
         "Timezone_Asia_Katmandu": "Katmandú",
         "Timezone_Asia_Khandyga": "Chandyga",
@@ -1350,6 +1359,7 @@
         "Timezone_Australia_Sydney": "Sidney",
         "Timezone_Europe_Astrakhan": "Astrakán",
         "Timezone_Europe_Berlin": "Berlín",
+        "Timezone_Europe_Busingen": "Büsingen",
         "Timezone_Europe_Kaliningrad": "Kaliningrado",
         "Timezone_Europe_Kiev": "Kíiv",
         "Timezone_Europe_Lisbon": "Lisboa",
@@ -1358,7 +1368,7 @@
         "Timezone_Europe_Ulyanovsk": "Ulianovsk",
         "Timezone_Europe_Volgograd": "Volgogrado",
         "Timezone_Pacific_Easter": "Illa de Pascua",
-        "Timezone_Pacific_Enderbury": "Enderbury",
+        "Timezone_Pacific_Enderbury": "illa Kantón",
         "Timezone_Pacific_Galapagos": "Illas Galápagos",
         "Timezone_Pacific_Honolulu": "Honolulú",
         "Timezone_Pacific_Ponape": "Pohnpei",
@@ -1455,10 +1465,10 @@
     "UserCountry": {
         "Continent": "Continente",
         "Country": "País",
-        "country_o1": "Outro país",
         "DistinctCountries": "%s continentes distintos",
         "Region": "Rexión",
-        "SubmenuLocations": "Lugares"
+        "SubmenuLocations": "Lugares",
+        "country_o1": "Outro país"
     },
     "UserId": {
         "UserReportTitle": "Usuario"
@@ -1492,11 +1502,7 @@
     },
     "VisitTime": {
         "LocalTime": "Visitas por hora local",
-        "NHour": "%s h",
-        "ServerTime": "Visitas por hora do servidor",
-        "SubmenuTimes": "Tempos",
-        "WidgetLocalTime": "Visitas por hora local",
-        "WidgetServerTime": "Visitas por hora do servidor"
+        "SubmenuTimes": "Tempos"
     },
     "VisitorInterest": {
         "VisitsPerDuration": "Visitas por duración",

@@ -21,8 +21,6 @@ use Piwik\Plugin\Manager;
 use Piwik\Plugins\CustomVariables\CustomVariables;
 use Piwik\Plugins\Events\Actions\ActionEvent;
 use Piwik\Tracker\Visit\VisitProperties;
-/**
- */
 class GoalManager
 {
     // log_visit.visit_goal_buyer
@@ -100,8 +98,6 @@ class GoalManager
      *
      * @param int $idSite
      * @param Action $action
-     * @param VisitProperties $visitor
-     * @param Request $request
      * @throws Exception
      * @return array[] Goals matched
      */
@@ -125,10 +121,7 @@ class GoalManager
      * is returned. Otherwise null is returned.
      *
      * @param array $goal
-     * @param Action $action
-     * @param VisitProperties $visitor
-     * @param Request $request
-     * @return bool|null if a goal is matched, a string of the Action URL is returned, or if no goal was matched it returns null
+     * @return string|null The Action URL that triggered the goal, or null if no goal was matched
      */
     public function detectGoalMatch($goal, \Piwik\Tracker\Action $action, VisitProperties $visitor, \Piwik\Tracker\Request $request)
     {
@@ -215,11 +208,6 @@ class GoalManager
     }
     /**
      * Records one or several goals matched in this request.
-     *
-     * @param Visitor $visitor
-     * @param array $visitorInformation
-     * @param array $visitCustomVariables
-     * @param Action $action
      */
     public function recordGoals(VisitProperties $visitProperties, \Piwik\Tracker\Request $request)
     {
@@ -270,9 +258,7 @@ class GoalManager
      * Will deal with 2 types of conversions: Ecommerce Order and Ecommerce Cart update (Add to cart, Update Cart etc).
      *
      * @param array $conversion
-     * @param Visitor $visitor
-     * @param Action $action
-     * @param array $visitInformation
+     * @param Action|null $action
      */
     protected function recordEcommerceGoal(VisitProperties $visitProperties, \Piwik\Tracker\Request $request, $conversion, $action)
     {
@@ -561,10 +547,8 @@ class GoalManager
     /**
      * Records a standard non-Ecommerce goal in the DB (URL/Title matching),
      * linking the conversion to the action that triggered it
-     * @param $goal
-     * @param Visitor $visitor
-     * @param Action $action
-     * @param $visitorInformation
+     * @param array $goal
+     * @param Action|null $action
      */
     protected function recordStandardGoals(VisitProperties $visitProperties, \Piwik\Tracker\Request $request, $goal, $action)
     {
@@ -604,13 +588,12 @@ class GoalManager
         return $randomInt;
     }
     /**
-     * Helper function used by other record* methods which will INSERT or UPDATE the conversion in the DB
+     * Helper function used by other record* methods which will INSERT the conversion in the DB
      *
      * @param array $conversion
      * @param array $visitInformation
-     * @param Request $request
      * @param Action|null $action
-     * @param int|null $convertedGoal
+     * @param array|null $convertedGoal
      * @return bool
      */
     protected function insertNewConversion($conversion, $visitInformation, \Piwik\Tracker\Request $request, $action, $convertedGoal = null)
@@ -689,7 +672,7 @@ class GoalManager
      * @param string $hook
      * @param Visitor $visitor
      * @param Action|null $action
-     * @param array|null $valuesToUpdate If null, $this->visitorInfo will be updated
+     * @param array|null $valuesToUpdate
      *
      * @return array|null The updated $valuesToUpdate or null if no $valuesToUpdate given
      */

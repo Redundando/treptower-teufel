@@ -42,7 +42,7 @@ class Formatter
     /**
      * Returns a prettified time value (in seconds).
      *
-     * @param int $numberOfSeconds The number of seconds.
+     * @param int|float $numberOfSeconds The number of seconds.
      * @param bool $displayTimeAsSentence If set to true, will output `"5min 17s"`, if false `"00:05:17"`.
      * @param bool $round Whether to round to the nearest second or not.
      * @return string
@@ -243,8 +243,6 @@ class Formatter
         return '/^' . implode('|', $metricsRegexParts) . '$/';
     }
     /**
-     * @param DataTable $dataTable
-     * @param Report $report
      * @return Metric[]
      */
     private function getMetricsToFormat(DataTable $dataTable, ?Report $report = null)

@@ -9,7 +9,6 @@
 namespace Piwik\Plugins\FeatureFlags;
 
 use Piwik\Container\StaticContainer;
-use Piwik\Log\Logger;
 use Piwik\Log\LoggerInterface;
 class FeatureFlagManager
 {
@@ -18,7 +17,7 @@ class FeatureFlagManager
      */
     private $storages;
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     private $logger;
     public function __construct(array $storages, LoggerInterface $logger)
@@ -28,13 +27,15 @@ class FeatureFlagManager
     }
     /**
      * @param string $featureFlag The ::class name of a class that implements FeatureFlagInterface
-     * @return bool
      */
     public function isFeatureActive(string $featureFlag) : bool
     {
         $featureFlagObj = $this->createFeatureFlagObjFromString($featureFlag);
         if ($featureFlagObj === null) {
             return \false;
+        }
+        if ($featureFlagObj instanceof \Piwik\Plugins\FeatureFlags\ForcedFeatureFlagStateInterface) {
+            return $featureFlagObj->getForcedFeatureFlagState();
         }
         $featureActive = \false;
         foreach ($this->storages as $storage) {
@@ -46,8 +47,6 @@ class FeatureFlagManager
         return $featureActive;
     }
     /**
-     * @param string $featureFlagName
-     * @return void
      * @internal
      */
     public static function deleteFeatureFlag(string $featureFlagName) : void

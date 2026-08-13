@@ -52,12 +52,12 @@ abstract class Renderer extends BaseFactory
     public $apiMethod = null;
     /**
      * API metadata for the current report
-     * @var array
+     * @var array|false|null
      */
     private $apiMetaData = null;
     /**
      * The current idSite
-     * @var int
+     * @var int|string
      */
     public $idSite = 'all';
     public function __construct()
@@ -65,31 +65,21 @@ abstract class Renderer extends BaseFactory
     }
     /**
      * Sets whether to render subtables or not
-     *
-     * @param bool $enableRenderSubTable
      */
     public function setRenderSubTables(bool $enableRenderSubTable) : void
     {
         $this->renderSubTables = $enableRenderSubTable;
     }
-    /**
-     * @param bool $hideIdSubDataTable
-     */
     public function setHideIdSubDatableFromResponse(bool $hideIdSubDataTable) : void
     {
         $this->hideIdSubDatatable = $hideIdSubDataTable;
     }
-    /**
-     * @param bool $hideMetadata
-     */
     public function setHideMetadataFromResponse(bool $hideMetadata) : void
     {
         $this->hideMetadata = $hideMetadata;
     }
     /**
      * Returns whether to render subtables or not
-     *
-     * @return bool
      */
     protected function isRenderSubtables() : bool
     {
@@ -105,12 +95,11 @@ abstract class Renderer extends BaseFactory
     /**
      * Computes the dataTable output and returns the string/binary
      *
-     * @return mixed
+     * @return string
      */
     public abstract function render();
     /**
      * @see render()
-     * @return string
      */
     public function __toString() : string
     {
@@ -119,8 +108,7 @@ abstract class Renderer extends BaseFactory
     /**
      * Set the DataTable to be rendered
      *
-     * @param DataTableInterface $table table to be rendered
-     * @throws Exception
+     * @param DataTableInterface|array $table table to be rendered
      */
     public function setTable($table)
     {
@@ -220,7 +208,7 @@ abstract class Renderer extends BaseFactory
         return $names;
     }
     /**
-     * @return array|null
+     * @return array|false
      */
     protected function getApiMetaData()
     {
@@ -340,8 +328,9 @@ abstract class Renderer extends BaseFactory
      *            'col2_name' => value2,
      *            'metadata1_name' => value_metadata )
      *
-     * @param null|DataTable|DataTable\Map|Simple $dataTable
-     * @return array  Php array representing the 'flat' version of the datatable
+     * @param null|array|DataTable\DataTableInterface $dataTable
+     * @return mixed  Php array representing the 'flat' version of the datatable, or a scalar value
+     *                when the table is a Simple table with a single column.
      */
     protected function convertDataTableToArray($dataTable = null)
     {
@@ -430,7 +419,6 @@ abstract class Renderer extends BaseFactory
         return $array;
     }
     /**
-     *
      * @param array $array
      * @return array
      */

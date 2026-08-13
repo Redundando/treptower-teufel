@@ -295,6 +295,28 @@ if ( !function_exists('cmplz_upgraded_to_current_version')){
 	}
 }
 
+if ( ! function_exists( 'cmplz_is_new_install' ) ) {
+	/**
+	 * Check whether this is a fresh installation at the current version.
+	 *
+	 * cmplz_first_version is written once in upgrade.php when no prior version
+	 * exists, and is never updated afterwards. Comparing it to CMPLZ_VERSION
+	 * distinguishes a fresh install (equal) from an upgrade (lower).
+	 *
+	 * Returns false when cmplz_first_version is absent — uncertain state,
+	 * safe default to avoid showing upsells to existing users.
+	 *
+	 * @return bool True only when the plugin was installed fresh at the current version.
+	 */
+	function cmplz_is_new_install(): bool {
+		$first_version = get_option( 'cmplz_first_version' );
+		if ( ! $first_version ) {
+			return false;
+		}
+		return version_compare( $first_version, CMPLZ_VERSION, '>=' );
+	}
+}
+
 if ( ! function_exists( 'cmplz_get_template' ) ) {
 	/**
 	 * Get a template based on filename, overridable in theme dir
@@ -890,16 +912,6 @@ if ( ! function_exists( 'cmplz_uses_statistics' ) ) {
 	}
 }
 
-if ( ! function_exists( 'cmplz_show_install_burst_warning' ) ) {
-	function cmplz_show_install_burst_warning() {
-		if ( cmplz_get_option('consent_for_anonymous_stats') === 'yes' && !defined( 'burst_version' ) ) {
-			return true;
-		}
-		return false;
-	}
-}
-
-
 if ( ! function_exists( 'cmplz_uses_only_functional_cookies' ) ) {
 	function cmplz_uses_only_functional_cookies() {
 		return COMPLIANZ::$banner_loader->uses_only_functional_cookies();
@@ -1319,9 +1331,11 @@ if ( ! function_exists( 'cmplz_tcf_active' ) ) {
 			return false;
 		}
 
-		return cmplz_get_option('uses_ad_cookies_personalized') === 'tcf' || cmplz_get_option('uses_ad_cookies_personalized') === 'yes';
+		$tcf_active = cmplz_get_option('uses_ad_cookies_personalized') === 'tcf' || cmplz_get_option('uses_ad_cookies_personalized') === 'yes';
+		return apply_filters( 'cmplz_is_tcf_active', $tcf_active );
 	}
 }
+
 
 if ( !function_exists('cmplz_get_transient') ) {
 
@@ -1339,16 +1353,16 @@ if ( !function_exists('cmplz_get_transient') ) {
 
 		$value = false;
 		$now = time();
-		$transients = get_option('cmplz_transients', array());
+		$transients = get_option( 'cmplz_transients', array() );
 
-		if ( isset($transients[$name]) ) {
-			$data = $transients[$name];
-			$expires = isset($data['expires']) ? $data['expires'] : 0;
-			$value = isset($data['value']) ? $data['value'] : false;
+		if ( isset( $transients[ $name ] ) ) {
+			$data = $transients[ $name ];
+			$expires = isset( $data[ 'expires' ]) ? $data[ 'expires' ] : 0;
+			$value = isset( $data['value'] ) ? $data[ 'value' ] : false;
 			if ( $expires < $now ) {
-				unset($transients[$name]);
+				unset( $transients[$name] );
 
-				update_option('cmplz_transients', $transients);
+				update_option( 'cmplz_transients', $transients, false );
 				$value = false;
 			}
 		}
@@ -1356,7 +1370,7 @@ if ( !function_exists('cmplz_get_transient') ) {
 	}
 }
 
-if (!function_exists('cmplz_delete_transient')) {
+if ( !function_exists('cmplz_delete_transient') ) {
 	/**
 	 * We user our own transient, as the wp transient is not always persistent
 	 *
@@ -1374,7 +1388,7 @@ if (!function_exists('cmplz_delete_transient')) {
 			unset($transients[$name]);
 		}
 
-		update_option( 'cmplz_transients', $transients );
+		update_option( 'cmplz_transients', $transients, false );
 	}
 }
 if (!function_exists('cmplz_set_transient')) {
@@ -1399,7 +1413,7 @@ if (!function_exists('cmplz_set_transient')) {
 				'value'   => $value,
 				'expires' => time() + (int) $expiration,
 		);
-		update_option( 'cmplz_transients', $transients );
+		update_option( 'cmplz_transients', $transients, false );
 	}
 }
 
@@ -2446,6 +2460,24 @@ if ( ! function_exists( 'cmplz_uses_optin' ) ) {
 }
 
 
+if ( ! function_exists( 'cmplz_has_only_functional_category' ) ) {
+	/**
+	 * Check if the site only has functional cookies available
+	 * This means no marketing, statistics, or preferences cookies are used
+	 *
+	 * @return bool
+	 */
+	function cmplz_has_only_functional_category() {
+		// Check if any other categories besides functional are used
+		$uses_marketing = cmplz_uses_marketing_cookies();
+		$uses_statistics = cmplz_uses_statistic_cookies();
+		$uses_preferences = cmplz_uses_preferences_cookies();
+		
+		// If none of the other categories are used, only functional is available
+		return !$uses_marketing && !$uses_statistics && !$uses_preferences;
+	}
+}
+
 if ( ! function_exists( 'cmplz_uses_optout' ) ) {
 	function cmplz_uses_optout() {
 		return ( in_array( 'optout', cmplz_get_used_consenttypes() ) );
@@ -2644,6 +2676,25 @@ if ( ! function_exists( 'cmplz_get_cookiebanners' ) ) {
 	}
 }
 
+/**
+ * Force re-save all cookie banners to regenerate CSS and clear caches
+ *
+ * Used during upgrades to ensure banners render correctly with template changes.
+ *
+ * @return void
+ */
+if ( ! function_exists( 'cmplz_resave_all_banners' ) ) {
+	function cmplz_resave_all_banners() {
+		$banners = cmplz_get_cookiebanners();
+		if ( $banners ) {
+			foreach ( $banners as $banner_item ) {
+				$banner = new CMPLZ_COOKIEBANNER( $banner_item->ID );
+				$banner->save();
+			}
+		}
+	}
+}
+
 if ( ! function_exists( 'cmplz_sanitize_language' ) ) {
 
 	/**
@@ -2778,7 +2829,8 @@ if ( ! function_exists( 'cmplz_sprintf' ) ) {
 	 */
 	function cmplz_sprintf(){
 		$args = func_get_args();
-		$count = substr_count($args[0], '%s');
+		preg_match_all( '/%(?:\d+\$)?s/', $args[0], $placeholder_matches );
+		$count      = count( $placeholder_matches[0] );
 		$args_count = count($args) - 1;
 		if ( $args_count === $count ){
 			return call_user_func_array('sprintf', $args);
@@ -2871,10 +2923,105 @@ if (!function_exists('cmplz_wsc_is_enabled')) {
 	}
 }
 
-if ( ! function_exists('cmplz_targets_quebec') ) {
-	if ( cmplz_get_option('ca_targets_quebec') === 'yes') {
-		return true;
-	}
 
-	return false;
+if ( ! function_exists('cmplz_targets_quebec') ) {
+	function cmplz_targets_quebec() {
+		if ( cmplz_get_option('ca_targets_quebec') === 'yes') {
+			return true;
+		}
+
+		return false;
+	}
+}
+
+if ( ! function_exists( 'cmplz_site_has_webshop' ) ) {
+	/**
+	 * Check if WooCommerce or Easy Digital Downloads is active.
+	 * Plugin presence is checked directly — independent of the is_webshop wizard option,
+	 * which classifies the site legally but does not reflect whether e-commerce pages
+	 * exist and need scanning.
+	 *
+	 * @return bool
+	 */
+	function cmplz_site_has_webshop(): bool {
+		return class_exists( 'WooCommerce' ) || class_exists( 'Easy_Digital_Downloads' );
+	}
+}
+
+if ( ! function_exists( 'cmplz_site_has_custom_post_types' ) ) {
+	/**
+	 * Check if the site has any public non-builtin custom post types registered.
+	 *
+	 * @return bool
+	 */
+	function cmplz_site_has_custom_post_types(): bool {
+		return ! empty( get_post_types( array( 'public' => true, '_builtin' => false ) ) );
+	}
+}
+
+if ( ! function_exists( 'cmplz_site_has_high_post_count' ) ) {
+	/**
+	 * Check whether the site exceeds the volume-upsell post/page threshold.
+	 * Stores two transients (TTL: DAY_IN_SECONDS):
+	 *   cmplz_scan_high_post_count — '1'/'0' boolean guard (avoids COUNT on every request).
+	 *   cmplz_scan_post_count      — raw integer count for the dynamic volume upsell title.
+	 *
+	 * @return bool
+	 */
+	function cmplz_site_has_high_post_count(): bool {
+		$cached = get_transient( 'cmplz_scan_high_post_count' );
+		if ( $cached !== false ) {
+			return $cached === '1';
+		}
+
+		global $wpdb;
+		$count = (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$wpdb->posts}
+			 WHERE post_status = 'publish'
+			 AND post_type IN ('post', 'page')"
+		);
+
+		$threshold = 200;
+		$result    = $count > $threshold;
+		set_transient( 'cmplz_scan_high_post_count', $result ? '1' : '0', DAY_IN_SECONDS );
+		set_transient( 'cmplz_scan_post_count', $count, DAY_IN_SECONDS );
+
+		return $result;
+	}
+}
+
+if ( ! function_exists( 'cmplz_volume_upsell_applies' ) ) {
+	/**
+	 * Check if the volume upsell notice should be shown.
+	 * Returns false when a higher-priority upsell (webshop or CPT) is already active.
+	 *
+	 * @return bool
+	 */
+	function cmplz_volume_upsell_applies(): bool {
+		if ( cmplz_site_has_webshop() || cmplz_site_has_custom_post_types() ) {
+			return false;
+		}
+		return cmplz_site_has_high_post_count();
+	}
+}
+
+
+if ( defined( 'cmplz_free' ) && cmplz_free ) {
+	if ( ! function_exists( 'cmplz_invalidate_post_count_cache' ) ) {
+		/**
+		 * Delete the high-post-count transients when a post is first published.
+		 * Clears both cmplz_scan_high_post_count and cmplz_scan_post_count.
+		 *
+		 * @param string $new New post status.
+		 * @param string $old Previous post status.
+		 * @return void
+		 */
+		function cmplz_invalidate_post_count_cache( string $new, string $old ): void {
+			if ( $new === 'publish' && $old !== 'publish' ) {
+				delete_transient( 'cmplz_scan_high_post_count' );
+				delete_transient( 'cmplz_scan_post_count' );
+			}
+		}
+	}
+	add_action( 'transition_post_status', 'cmplz_invalidate_post_count_cache', 10, 2 );
 }

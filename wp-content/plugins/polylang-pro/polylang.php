@@ -10,9 +10,9 @@
  * Plugin Name:       Polylang Pro
  * Plugin URI:        https://polylang.pro
  * Description:       Adds multilingual capability to WordPress
- * Version:           3.7.6
- * Requires at least: 6.2
- * Requires PHP:      7.2
+ * Version:           3.8.6
+ * Requires at least: 6.5
+ * Requires PHP:      7.4
  * Author:            WP SYNTEX
  * Author URI:        https://polylang.pro
  * Text Domain:       polylang-pro
@@ -38,9 +38,7 @@
 
 use WP_Syntex\Polylang_Pro\Options\Registry as Options_Registry;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Don't access directly.
-}
+defined( 'ABSPATH' ) || exit;
 
 define( 'POLYLANG_PRO', true );
 define( 'POLYLANG_PRO_FILE', __FILE__ );
@@ -69,7 +67,10 @@ if ( defined( 'POLYLANG_BASENAME' ) ) {
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/vendor/wpsyntex/polylang/polylang.php';
 
-if ( empty( $_GET['deactivate-polylang'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-	add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ), 15 ); // After Polylang.
-	add_action( 'pll_pre_init', array( new PLL_Pro(), 'init' ), 0 );
+if ( ! empty( $_GET['deactivate-polylang'] ) || ! defined( 'POLYLANG_ACTIVE' ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+	return;
 }
+
+// At this point, the WP version and php version are high enough.
+add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ), 15 ); // After Polylang.
+add_action( 'pll_pre_init', array( new PLL_Pro(), 'init' ), 0 );

@@ -5,7 +5,7 @@ namespace WpMatomo;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // if accessed directly
 }
-class ErrorNotice {
+class ErrorNotice extends Feature {
 
 	const OPTION_NAME_SYSTEM_REPORT_ERRORS_DISMISSED = 'matomo_system_report_errors_dismissed';
 
@@ -14,6 +14,11 @@ class ErrorNotice {
 	public function __construct( $settings ) {
 		$this->settings = $settings;
 	}
+
+	public function is_active() {
+		return is_admin();
+	}
+
 	public function register_hooks() {
 		add_action( 'admin_notices', [ $this, 'check_errors' ] );
 
@@ -36,8 +41,8 @@ class ErrorNotice {
 			&& $is_matomo_super_user
 		) {
 			$system_report = new \WpMatomo\Admin\SystemReport( $this->settings );
-			if ( ! get_user_meta( get_current_user_id(), self::OPTION_NAME_SYSTEM_REPORT_ERRORS_DISMISSED ) && $system_report->errors_present() ) {
-				echo '<div class="notice notice-warning is-dismissible" id="matomo-systemreporterrors"><p>'
+			if ( ! get_user_meta( get_current_user_id(), self::OPTION_NAME_SYSTEM_REPORT_ERRORS_DISMISSED, true ) && $system_report->errors_present() ) {
+				echo '<div class="matomo-notice notice notice-warning is-dismissible" id="matomo-systemreporterrors"><p>'
 					. sprintf(
 						esc_html__( 'There are some errors in the %1$sMatomo Diagnostics System report%2$s that may prevent the plugin for working normally.', 'matomo' ),
 						'<a href="' . esc_url( admin_url( 'admin.php?page=matomo-systemreport' ) ) . '">',
@@ -47,5 +52,4 @@ class ErrorNotice {
 			}
 		}
 	}
-
 }

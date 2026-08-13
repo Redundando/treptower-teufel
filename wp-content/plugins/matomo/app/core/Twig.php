@@ -51,7 +51,6 @@ function piwik_format_number($string, $minFractionDigits, $maxFractionDigits)
     return $formatter->format($string, $minFractionDigits, $maxFractionDigits);
 }
 /**
- * @param Environment $env
  * @param string $string
  * @param string $strategy
  * @param ?string $charset
@@ -274,7 +273,6 @@ class Twig
      *
      * Usage:
      *     externallink(url)
-     *
      */
     private function addFunctionExternalLink() : void
     {
@@ -529,9 +527,7 @@ class Twig
         }
     }
     /**
-     *
      * Plugin-Templates can be overwritten by putting identically named templates in plugins/[theme]/templates/plugins/[plugin]/
-     *
      */
     private function addCustomPluginNamespaces(FilesystemLoader $loader, string $pluginName) : void
     {
@@ -565,7 +561,6 @@ class Twig
      *
      * Apply custom campaign tracking parameters:
      * {{ 'https://matomo.org/faq/123'|trackmatomolink('SomeCampaign', 'SomeSource', 'SomeMedium') }}
-     *
      */
     private function addFilterTrackMatomoLink() : void
     {

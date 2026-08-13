@@ -24,6 +24,7 @@ use Piwik\Archive\ArchiveInvalidator;
 use WP_STATISTICS\DB;
 use WpMatomo\Db\Settings;
 use WpMatomo\ScheduledTasks;
+use WpMatomo\Site\Sync\SyncConfig;
 use WpMatomo\WpStatistics\Exceptions\MaxEndDateReachedException;
 use WpMatomo\WpStatistics\Importers\Actions\RecordImporter;
 
@@ -199,7 +200,8 @@ SQL;
 				if ( $this->logger ) {
 					$this->logger->info( 'Matomo Analytics starting the report generation of weekly, monthly and yearly reports. This may take a while.' );
 				}
-				$scheduled_tasks = new ScheduledTasks( \WpMatomo::$settings );
+				$sync_config     = new SyncConfig( \WpMatomo::$settings );
+				$scheduled_tasks = new ScheduledTasks( \WpMatomo::$settings, $sync_config );
 				$scheduled_tasks->archive();
 			}
 			if ( $this->logger ) {
@@ -290,6 +292,7 @@ SQL;
 			$this->record_importers = [];
 			foreach ( $record_importers as $record_importer_class ) {
 				if ( ! defined( $record_importer_class . '::PLUGIN_NAME' ) ) {
+					// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 					throw new \Exception( "The $record_importer_class record importer is missing the PLUGIN_NAME constant." );
 				}
 

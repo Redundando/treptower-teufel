@@ -13,6 +13,7 @@ use Exception;
 use Piwik\Cache;
 use Piwik\Common;
 use Piwik\Config;
+use Piwik\Container\ContainerDoesNotExistException;
 use Piwik\Container\StaticContainer;
 use Piwik\DbHelper;
 use Piwik\Exception\NotYetInstalledException;
@@ -96,6 +97,7 @@ class Installer {
 		$paths      = new Paths();
 		$upload_dir = $paths->get_upload_base_dir();
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
 		return is_writable( $upload_dir ) || is_writable( dirname( $upload_dir ) );
 	}
 
@@ -144,13 +146,15 @@ class Installer {
 			$this->create_user(); // we sync users as early as possible to make sure things are set up correctly
 			$this->install_tracker();
 
-			try {
-				$this->logger->log( 'Matomo will now init the environment' );
-				$environment = new \Piwik\Application\Environment( null, Bootstrap::get_extra_di_definitions() );
-				$environment->init();
-			} catch ( Exception $e ) {
-				$this->logger->log( 'Ignoring error environment init' );
-				$this->logger->log_exception( 'install_env_init', $e );
+			if ( ! $this->is_environment_set_up() ) {
+				try {
+					$this->logger->log( 'Matomo will now init the environment' );
+					$environment = new \Piwik\Application\Environment( null, Bootstrap::get_extra_di_definitions() );
+					$environment->init();
+				} catch ( Exception $e ) {
+					$this->logger->log( 'Ignoring error environment init' );
+					$this->logger->log_exception( 'install_env_init', $e );
+				}
 			}
 
 			try {
@@ -207,7 +211,8 @@ class Installer {
 			wp_schedule_single_event( time() + 30, ScheduledTasks::EVENT_UPDATE );
 
 			// to set up geoip in the background later... don't want this to influence the install
-			$tasks                      = new ScheduledTasks( $this->settings );
+			$sync_config                = new Sync\SyncConfig( $this->settings );
+			$tasks                      = new ScheduledTasks( $this->settings, $sync_config );
 			$last_geoip_update_run_time = $tasks->get_last_time_before_cron( ScheduledTasks::EVENT_GEOIP );
 			if ( empty( $last_geoip_update_run_time ) ) {
 				wp_schedule_single_event( time() + 35, ScheduledTasks::EVENT_GEOIP );
@@ -232,9 +237,9 @@ class Installer {
 		// need to make sure to update plugins url if it changes eg if installed somewhere else or domain changes
 
 		if ( $matomo_url
-			 && $plugins_url === $matomo_url
-			 && wp_parse_url( $matomo_url, PHP_URL_SCHEME )
-			 && wp_parse_url( $matomo_url, PHP_URL_HOST )
+			&& $plugins_url === $matomo_url
+			&& wp_parse_url( $matomo_url, PHP_URL_SCHEME )
+			&& wp_parse_url( $matomo_url, PHP_URL_HOST )
 		) {
 			// if currently no scheme or host is set then we'll make sure to overwrite it
 			return;
@@ -280,6 +285,7 @@ class Installer {
 			DbHelper::checkDatabaseVersion();
 		} catch ( Exception $e ) {
 			$message = sprintf( 'Database info detection failed with %s in %s:%s.', $e->getMessage(), $e->getFile(), $e->getLine() );
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 			throw new Exception( $message, $e->getCode(), $e );
 		}
 
@@ -332,6 +338,7 @@ class Installer {
 		$config->forceSave();
 
 		$mode = 0664;
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_chmod
 		if ( ! chmod( $config->getLocalPath(), $mode ) ) {
 			$this->logger->log( "Can't chmod " . $config->getLocalPath() );
 		}
@@ -350,11 +357,11 @@ class Installer {
 	}
 
 	/**
-	 * @param array $default params
+	 * @param array $default_conn_params params
 	 *
 	 * @return array
 	 */
-	public static function get_db_infos( $default = [] ) {
+	public static function get_db_infos( $default_conn_params = [] ) {
 		global $wpdb;
 
 		$socket    = '';
@@ -408,7 +415,7 @@ class Installer {
 		if ( ! empty( $socket ) ) {
 			$database['unix_socket'] = $socket;
 		}
-		$database = array_merge( $default, $database );
+		$database = array_merge( $default_conn_params, $database );
 
 		return $database;
 	}
@@ -550,5 +557,14 @@ class Installer {
 
 		// reload activated plugins just in case something didn't go right above
 		$plugin_manager->loadActivatedPlugins();
+	}
+
+	private function is_environment_set_up() {
+		try {
+			StaticContainer::getContainer();
+			return true;
+		} catch ( ContainerDoesNotExistException $ex ) {
+			return false;
+		}
 	}
 }

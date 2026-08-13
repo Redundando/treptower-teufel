@@ -4,10 +4,10 @@
  * Description: Privacy friendly, GDPR compliant and self-hosted. Matomo is the #1 Google Analytics alternative that gives you control of your data. Free and secure.
  * Author: Matomo
  * Author URI: https://matomo.org
- * Version: 5.6.0
+ * Version: 5.12.1
  * Domain Path: /languages
  * WC requires at least: 2.4.0
- * WC tested up to: 10.3.6
+ * WC tested up to: 10.9.4
  *
  * Matomo - free/libre analytics platform
  *
@@ -38,13 +38,13 @@ $GLOBALS['MATOMO_PLUGIN_FILES'] = array( MATOMO_ANALYTICS_FILE );
 add_action(
 	'init',
 	function () {
-		load_plugin_textdomain( 'matomo', false, basename( dirname( __FILE__ ) ) . '/languages' );
+		load_plugin_textdomain( 'matomo', false, basename( __DIR__ ) . '/languages' );
 	}
 );
 
 function matomo_has_compatible_content_dir() {
 	if ( ! empty( $_SERVER['MATOMO_WP_ROOT_PATH'] )
-		 && file_exists( rtrim( $_SERVER['MATOMO_WP_ROOT_PATH'], '/' ) . '/wp-load.php' ) ) {
+		&& file_exists( rtrim( $_SERVER['MATOMO_WP_ROOT_PATH'], '/' ) . '/wp-load.php' ) ) {
 		return true;
 	}
 
@@ -63,11 +63,11 @@ function matomo_has_compatible_content_dir() {
 	);
 
 	if ( in_array( $content_dir, $abs_paths, true ) ) {
-		 return true;
+		return true;
 	}
 
 	$wpload_base = '../../../wp-load.php';
-	$wpload_full = dirname( __FILE__ ) . '/' . $wpload_base;
+	$wpload_full = __DIR__ . '/' . $wpload_base;
 	if ( file_exists( $wpload_full ) && is_readable( $wpload_full ) ) {
 		return true;
 	} elseif ( realpath( $wpload_full ) && file_exists( realpath( $wpload_full ) ) && is_readable( realpath( $wpload_full ) ) ) {
@@ -85,7 +85,7 @@ function matomo_has_compatible_content_dir() {
 	}
 
 	// look in plugins directory if there is a config file for us
-	$wpload_config = dirname( __FILE__ ) . '/../matomo.wpload_dir.php';
+	$wpload_config = __DIR__ . '/../matomo.wpload_dir.php';
 	if ( file_exists( $wpload_config ) && is_readable( $wpload_config ) ) {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$content = @file_get_contents( $wpload_config ); // we do not include that file for security reasons
@@ -104,11 +104,13 @@ function matomo_has_compatible_content_dir() {
 }
 
 function matomo_header_icon( $full = false ) {
-	$file = 'logo';
+	$class = 'matomo-header-icon';
+	$file  = 'logo.png';
 	if ( $full ) {
-		$file = 'logo-full';
+		$file   = 'logo-full.png';
+		$class .= '-full';
 	}
-	echo '<img height="32" src="' . esc_url( plugins_url( 'assets/img/' . $file . '.png', MATOMO_ANALYTICS_FILE ) ) . '" class="matomo-header-icon">';
+	echo '<img height="32" src="' . esc_url( plugins_url( 'assets/img/' . $file, MATOMO_ANALYTICS_FILE ) . '?v=' . rawurlencode( matomo_get_asset_version() ) ) . '" class="' . esc_attr( $class ) . '">';
 }
 
 function matomo_is_app_request() {
@@ -292,6 +294,12 @@ function matomo_add_plugin( $plugins_directory, $wp_plugin_file, $is_marketplace
 		'pluginsPathAbsolute'        => $root_dir,
 		'webrootDirRelativeToMatomo' => $webroot_dir,
 	);
+}
+
+function matomo_get_asset_version() {
+	$version = \WpMatomo::VERSION;
+	$version = apply_filters( 'matomo_asset_version', $version );
+	return $version;
 }
 
 if ( matomo_is_app_request() || ! empty( $GLOBALS['MATOMO_LOADED_DIRECTLY'] ) ) {

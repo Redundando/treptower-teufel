@@ -20,9 +20,6 @@ use Piwik\Plugins\Marketplace\Environment;
 use Piwik\Plugins\Marketplace\Marketplace;
 use Piwik\Unzip;
 use Piwik\Plugins\Marketplace\Api\Client;
-/**
- *
- */
 class PluginInstaller
 {
     public const PATH_TO_DOWNLOAD = '/latest/plugins/';
@@ -203,8 +200,7 @@ class PluginInstaller
     }
     /**
      * @param $pluginDir
-     * @throws PluginInstallerException
-     * @return string
+     * @return string|false
      */
     private function getNameOfFirstSubfolder($pluginDir)
     {

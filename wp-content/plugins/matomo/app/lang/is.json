@@ -71,6 +71,7 @@
         "GoTo": "Fara í %s",
         "GraphHelp": "Nánari upplýsingar um birtingu grafa í Matomo.",
         "HelloUser": "Halló, %s!",
+        "Help": "Hjálp",
         "HoursMinutes": "%1$s klst %2$s mín",
         "Id": "Auðkenni",
         "InvalidResponse": "Mótteknu gögnin eru ógild.",
@@ -167,9 +168,14 @@
         "ColumnPageURL": "Síðu slóð",
         "ColumnUniqueClicks": "Einstakir músasmellir",
         "ColumnUniqueDownloads": "Einstakt niðurhal",
+        "SubmenuPageTitles": "Síðu titlar",
         "SubmenuPagesEntry": "Inngangssíður",
-        "SubmenuPagesExit": "Útgangssíður",
-        "SubmenuPageTitles": "Síðu titlar"
+        "SubmenuPagesExit": "Útgangssíður"
+    },
+    "BotTracking": {
+        "PageUrl": "Síðu slóð",
+        "SiteWithoutDataBackToMatomo": "Aftur í Matomo",
+        "ContentUrl": "URL"
     },
     "CoreAdminHome": {
         "Administration": "Umsjón",
@@ -182,6 +188,8 @@
     },
     "CoreHome": {
         "ChooseWebsite": "Veldu vef",
+        "PresetDateToday": "Í dag",
+        "PresetDateYesterday": "Í gær",
         "ShowJSCode": "Sýna JavaScript kóða til að setja inn",
         "ThereIsNoDataForThisReport": "Það eru eingin gögn til fyrir þessa skýrslu"
     },
@@ -193,17 +201,17 @@
         "Deactivate": "Slökkva",
         "Inactive": "Slökkt",
         "LicenseHomepage": "Heimasíða hugbúnaðarleyfis",
-        "PluginsExtendPiwik": "Íbætur auka og víkka virknina í Matomo.",
         "OncePluginIsInstalledYouMayActivateHere": "Hérna geturðu kveikteða slökkt á íbót þegar búið er að setja hana inn í kerfið.",
         "PluginHomepage": "Heimasíða íbótar",
+        "PluginsExtendPiwik": "Íbætur auka og víkka virknina í Matomo.",
         "PluginsManagement": "Íbótastjórnun",
         "Status": "Staða",
         "Version": "Útgáfa",
         "Websites": "Vefir"
     },
     "DBStats": {
-        "DatabaseUsage": "Notkun gagnagrunns",
         "DataSize": "Gagnastærð",
+        "DatabaseUsage": "Notkun gagnagrunns",
         "IndexSize": "stærð vísitöflu",
         "MainDescription": "Matomo vistar öll vefgreiningagögn inn í MySQL gagnagrunn. Núna eru Matomo töflurnar að nota %s.",
         "RowCount": "Fjöldi raða",
@@ -229,9 +237,9 @@
         "Browsers": "Vafrar",
         "ColumnBrowser": "Vafri",
         "ColumnOperatingSystem": "Stýrikerfi",
-        "dataTableLabelTypes": "Tegund",
         "OperatingSystems": "Stýrikerfi",
-        "WidgetBrowsers": "Vafrar gesta"
+        "WidgetBrowsers": "Vafrar gesta",
+        "dataTableLabelTypes": "Tegund"
     },
     "Goals": {
         "AddGoal": "Bæta Markmiði við",
@@ -252,17 +260,17 @@
         "GoalIsTriggered": "Markmiðið er kveikt",
         "GoalIsTriggeredWhen": "Markmiðið er kveikt þegar",
         "GoalName": "Nafn Markmiðs",
+        "GoalX": "Markmið %s",
         "Goals": "Markmið",
         "GoalsOverview": "Yfirlit Markmiða",
-        "GoalX": "Markmið %s",
         "IsExactly": "er nákvæmlega %s",
         "Manually": "handvirkt",
         "ManuallyTriggeredUsingJavascriptFunction": "Markmið er kveikt handvirkt með því að nota JavaScript API trackGoal()",
         "MatchesExpression": "upfyllir skilyrðið %s",
         "Optional": "(valkvætt)",
         "Pattern": "Mynstur",
-        "UpdateGoal": "Uppfæra Markmið",
         "URL": "URL",
+        "UpdateGoal": "Uppfæra Markmið",
         "ViewAndEditGoals": "Skoða og breyta Markmiðum",
         "VisitUrl": "Skoða gefinn URL (vefsíðu eða hóp síðna)",
         "WhenVisitors": "þegar gestir",
@@ -271,7 +279,8 @@
     "Installation": {
         "CollaborativeProject": "Matomo er samvinnuverkefni byggt af ást.",
         "Email": "Netfang",
-        "Password": "Lykilorð"
+        "Password": "Lykilorð",
+        "PasswordRepeat": "Lykilorð (endurtekið)"
     },
     "Intl": {
         "Continent_afr": "Afríka",
@@ -1243,10 +1252,17 @@
         "Time_AM": "f.h.",
         "Time_PM": "e.h.",
         "Timezone_Africa_Asmera": "Asmara",
+        "Timezone_America_Araguaina": "Araguaína",
+        "Timezone_America_Argentina_RioGallegos": "Río Gallegos",
+        "Timezone_America_Argentina_Tucuman": "Tucumán",
         "Timezone_America_BahiaBanderas": "Bahia Banderas",
+        "Timezone_America_Belem": "Belém",
         "Timezone_America_Cancun": "Kankún",
         "Timezone_America_CiudadJuarez": "Ciudad Juárez",
         "Timezone_America_CoralHarbour": "Atikokan",
+        "Timezone_America_Cordoba": "Córdoba",
+        "Timezone_America_Cuiaba": "Cuiabá",
+        "Timezone_America_Eirunepe": "Eirunepé",
         "Timezone_America_Godthab": "Nuuk",
         "Timezone_America_Indiana_Knox": "Knox, Indiana",
         "Timezone_America_Indiana_Marengo": "Marengo, Indiana",
@@ -1256,15 +1272,22 @@
         "Timezone_America_Indiana_Vincennes": "Vincennes, Indiana",
         "Timezone_America_Indiana_Winamac": "Winamac, Indiana",
         "Timezone_America_Kentucky_Monticello": "Monticello, Kentucky",
+        "Timezone_America_Maceio": "Maceió",
+        "Timezone_America_Mazatlan": "Mazatlán",
         "Timezone_America_Merida": "Merida",
         "Timezone_America_MexicoCity": "Mexíkóborg",
+        "Timezone_America_Noronha": "Fernando de Noronha",
         "Timezone_America_NorthDakota_Beulah": "Beulah, North Dakota",
         "Timezone_America_NorthDakota_Center": "Center, North Dakota",
         "Timezone_America_NorthDakota_NewSalem": "New Salem, North Dakota",
+        "Timezone_America_Santarem": "Santarém",
+        "Timezone_America_SaoPaulo": "São Paulo",
         "Timezone_America_Scoresbysund": "Ittoqqortoormiit",
         "Timezone_America_StJohns": "St. John’s",
-        "Timezone_Antarctica_DumontDUrville": "Dumont d’Urville",
+        "Timezone_Antarctica_DumontDUrville": "Dumont-d’Urville",
+        "Timezone_Antarctica_Syowa": "Showa",
         "Timezone_Asia_Calcutta": "Kalkútta",
+        "Timezone_Asia_Hovd": "Khovd",
         "Timezone_Asia_Jakarta": "Djakarta",
         "Timezone_Asia_Kamchatka": "Kamtsjatka",
         "Timezone_Asia_Katmandu": "Katmandú",
@@ -1275,16 +1298,19 @@
         "Timezone_Asia_Saigon": "Ho Chi Minh-borg",
         "Timezone_Asia_Shanghai": "Sjanghæ",
         "Timezone_Asia_Ulaanbaatar": "Úlan Bator",
+        "Timezone_Asia_Urumqi": "Ürümqi",
         "Timezone_Atlantic_Azores": "Azoreyjar",
         "Timezone_Atlantic_Canary": "Kanaríeyjar",
         "Timezone_Atlantic_Faeroe": "Færeyjar",
         "Timezone_Europe_Berlin": "Berlín",
+        "Timezone_Europe_Busingen": "Büsingen",
         "Timezone_Europe_Kiev": "Kænugarður",
         "Timezone_Europe_Lisbon": "Lissabon",
         "Timezone_Europe_Madrid": "Madríd",
         "Timezone_Europe_Moscow": "Moskva",
         "Timezone_Pacific_Easter": "Páskaeyja",
-        "Timezone_Pacific_Enderbury": "Enderbury",
+        "Timezone_Pacific_Enderbury": "Kanton-eyja",
+        "Timezone_Pacific_Galapagos": "Galápagos",
         "Timezone_Pacific_Honolulu": "Honolulu",
         "Timezone_Pacific_Marquesas": "Marquesas-eyjar",
         "Timezone_Pacific_Ponape": "Pohnpei",
@@ -1371,7 +1397,6 @@
         "EmailHello": "Halló,",
         "MonthlyScheduleHelp": "Mánaðarleg tímaáætlun: skýrsla er send fyrsta dag hvers mánaðar.",
         "PiwikReports": "Matomo skýrslur",
-        "SendReportNow": "Senda skýrslu strax",
         "SendReportTo": "Senda skýrslu til",
         "SentToMe": "Senda mér",
         "WeeklyScheduleHelp": "Vikuleg tímaáætlun: skýrsla er send hvern mánudag."
@@ -1384,8 +1409,8 @@
         "Sites": "Vefir",
         "Timezone": "Tímabelti",
         "TrackingTags": "Eltir merkimiða fyrir %s",
-        "Urls": "URL",
         "Type": "Tegund",
+        "Urls": "URL",
         "WebsitesManagement": "Stjórnun Vefja"
     },
     "TagManager": {
@@ -1407,12 +1432,12 @@
     "UserCountry": {
         "Continent": "Heimsálfa",
         "Country": "Land",
-        "country_a1": "Nafnlaus milliþjónn",
-        "country_a2": "Gerfihnattasamband",
-        "country_o1": "Annað land",
         "DistinctCountries": "%s mismunandi lönd",
         "Location": "Staðsetning",
-        "SubmenuLocations": "Staðsetningar"
+        "SubmenuLocations": "Staðsetningar",
+        "country_a1": "Nafnlaus milliþjónn",
+        "country_a2": "Gerfihnattasamband",
+        "country_o1": "Annað land"
     },
     "UserId": {
         "UserReportTitle": "Notendur"
@@ -1450,13 +1475,8 @@
     },
     "VisitTime": {
         "ColumnLocalTime": "Staðartími",
-        "ColumnServerTime": "Tímabelti þjóns",
         "LocalTime": "Heimsóknir miðað við staðartíma",
-        "NHour": "%st",
-        "ServerTime": "Heimsóknir miðað við tíma vefþjóns",
-        "SubmenuTimes": "Tímar",
-        "WidgetLocalTime": "Heimsóknir skv. staðartíma",
-        "WidgetServerTime": "Heimsóknir skv. tímabelti þjóns"
+        "SubmenuTimes": "Tímar"
     },
     "VisitorInterest": {
         "BetweenXYMinutes": "%1$s-%2$s mín",

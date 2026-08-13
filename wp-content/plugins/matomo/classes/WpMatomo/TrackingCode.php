@@ -17,7 +17,7 @@ use WpMatomo\TrackingCode\GeneratorOptions;
 use WpMatomo\TrackingCode\TrackingCodeGenerator;
 use WpMatomo\Settings;
 
-class TrackingCode {
+class TrackingCode extends Feature {
 
 	/**
 	 * @var Settings
@@ -108,7 +108,7 @@ class TrackingCode {
 		$this->logger->log( 'Add tracking code. Blog ID: ' . get_current_blog_id(), Logger::LEVEL_DEBUG );
 
 		if ( $this->settings->is_network_enabled()
-			 && 'manually' === $this->settings->get_global_option( 'track_mode' ) ) {
+			&& 'manually' === $this->settings->get_global_option( 'track_mode' ) ) {
 			$site    = new Site();
 			$site_id = $site->get_current_matomo_site_id();
 			if ( $site_id ) {

@@ -11,10 +11,6 @@
     vertical-align: baseline;
 }
 
-.matomo-systemreport-comment {
-    word-break: break-all;
-}
-
 ul.matomo-list {
     list-style-type: disc;
     margin-left: 20px;
@@ -69,9 +65,14 @@ ol.matomo-list {
     margin: 0 20px 10px;
 }
 
-.matomo-header-icon {
+.matomo-header-icon-full, .matomo-header-icon {
     height: 32px;
     vertical-align: top;
+    margin-right: 8px;
+}
+
+.matomo-header-icon {
+    border-radius: 50%;
 }
 
 .matomo-footer ul a {
@@ -162,7 +163,7 @@ table.matomo-tracking-form th {
     transform: translateX(1.03em);
 }
 
-#toplevel_page_matomo a {
+#toplevel_page_matomo a.matomo-notification-dot {
     position: relative;
     display: inline-block;
 }
@@ -175,7 +176,7 @@ table.matomo-tracking-form th {
     height: 6px;
     background-color: #d63638;
     border-radius: 50%;
-    right: 4px;
+    right: 2px;
 }
 
 .notice.matomo-whats-new {
@@ -214,4 +215,149 @@ table.matomo-tracking-form th {
 .plugin-price {
     font-weight: bold;
     color: #f77b00;
+}
+
+.matomo-inline-notice {
+    padding: 1em;
+}
+
+.matomo-inline-notice.matomo-warning {
+    background-color: rgba(255, 165, 0, 0.2);
+}
+
+.matomo-marketplace-wizard {
+    width: 100%;
+    max-width: 700px;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,.3);
+    border-radius: 3px;
+    padding-top: 48px;
+    position: relative;
+    margin: 32px auto 0 auto;
+}
+
+.matomo-marketplace-wizard-header {
+    position: absolute;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background-color: #e9e9e9;
+}
+
+.matomo-marketplace-wizard-logo {
+    top: -14px;
+    left: calc(50% - 38px);
+    position: absolute;
+    border-radius: 50%;
+    background-color: white;
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ccc;
+}
+
+.matomo-marketplace-wizard .matomo-marketplace-wizard-body {
+    padding: 24px;
+}
+
+.matomo-marketplace-wizard-logo img {
+    width: 64px;
+    border-radius: 50%;
+}
+
+.matomo-marketplace-wizard-body .wizard-steps-header {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.matomo-marketplace-wizard-body .wizard-steps-header .step-title {
+    text-transform: uppercase;
+    flex: 1;
+    color: #888;
+}
+
+.matomo-marketplace-wizard-body .wizard-steps-header .divider {
+    width: 33px;
+}
+
+.matomo-marketplace-wizard-body .wizard-steps {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.matomo-marketplace-wizard-body .wizard-steps .step {
+    flex: 1;
+    padding-right: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 6px;
+}
+
+.matomo-marketplace-wizard-body .wizard-steps .divider {
+    width: 1px;
+    background-color: #aaa;
+    margin: 0 16px;
+}
+
+.matomo-marketplace-wizard-body .wizard-footer p{
+    font-size: 0.9em;
+    margin-top: 24px;
+}
+
+.mtm-wp-gte-7 #adminmenu #toplevel_page_matomo li:hover a .awaiting-mod,
+.mtm-wp-gte-7 #adminmenu #toplevel_page_matomo li.current a .awaiting-mod {
+    background-color: var(--wp-admin-theme-color, #3858e9);
+}
+
+.matomo-primary-color-fg {
+    color: #2271b1;
+}
+
+.matomo-primary-color-fill {
+    fill: #2271b1;
+}
+
+.matomo-secondary-color-fg {
+    color: #f6f7f7;
+}
+
+.matomo-primary-color-bg {
+    background-color: #2271b1;
+}
+
+.matomo-secondary-color-bg {
+    background-color: #f6f7f7;
+}
+
+.mtm-wp-gte-7 .matomo-primary-color-fg {
+    color: var(--wp-admin-theme-color, #3858e9);
+}
+
+.mtm-wp-gte-7 .matomo-primary-color-fill {
+    fill: var(--wp-admin-theme-color, #3858e9);
+}
+
+.mtm-wp-gte-7 .matomo-secondary-color-fg {
+    color: white;
+}
+
+.mtm-wp-gte-7 .matomo-primary-color-bg {
+    background-color: var(--wp-admin-theme-color, #3858e9);
+}
+
+.mtm-wp-gte-7 .matomo-secondary-color-bg {
+    background-color: white;
+}
+
+.mtm-wp-gte-7 .matomo-toggle input:checked + .slider {
+    background-color: var(--wp-admin-theme-color, #3858e9);
 }

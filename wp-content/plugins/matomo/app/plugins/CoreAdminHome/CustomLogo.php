@@ -235,8 +235,6 @@ class CustomLogo
     }
     /**
      * Publish logo and small logo from tmp folder to user folder
-     *
-     * @return bool
      */
     public function publishUserLogo() : bool
     {
@@ -262,8 +260,6 @@ class CustomLogo
     }
     /**
      * Publish favicon from tmp folder to user folder
-     *
-     * @return bool
      */
     public function publishUserFavicon() : bool
     {
@@ -284,8 +280,6 @@ class CustomLogo
     }
     /**
      * Remove any uploaded logos from tmp and user folders
-     *
-     * @return void
      */
     public function removeLogos() : void
     {
@@ -294,8 +288,6 @@ class CustomLogo
     }
     /**
      * Remove publicly accessible logos and favicons from the misc/user folder
-     *
-     * @return void
      */
     public function removePublishedLogos() : void
     {
@@ -308,8 +300,6 @@ class CustomLogo
     }
     /**
      * Remove all uploaded logos and favicons from the temp folder
-     *
-     * @return void
      */
     public function removeLogosFromTempFolder() : void
     {
@@ -321,7 +311,6 @@ class CustomLogo
      * @param $uploadFieldName
      * @param $targetHeight
      * @param $path
-     * @return bool
      */
     private function uploadImage($uploadFieldName, $targetHeight, $path) : bool
     {
@@ -370,8 +359,6 @@ class CustomLogo
     }
     /**
      * If tmp logo exists, return it as base64 encoded string for preview in branding settings
-     *
-     * @return string|null
      */
     public function getTempUserLogoBase64() : ?string
     {
@@ -383,8 +370,6 @@ class CustomLogo
     }
     /**
      * If tmp favicon exists, return it as base64 encoded string for preview in branding settings
-     *
-     * @return string|null
      */
     public function getTempUserFaviconBase64() : ?string
     {

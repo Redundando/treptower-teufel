@@ -26,9 +26,6 @@ use Piwik\Translation\Translator;
 use Piwik\View;
 use Piwik\ViewDataTable\Factory as ViewDataTableFactory;
 use Piwik\Plugins\CoreVisualizations\Visualizations\JqplotGraph\Evolution;
-/**
- *
- */
 class Controller extends \Piwik\Plugin\Controller
 {
     /**
@@ -57,7 +54,11 @@ class Controller extends \Piwik\Plugin\Controller
     {
         parent::__construct();
         $this->translator = $translator;
-        $this->goals = Request::processRequest('Goals.getGoals', ['idSite' => $this->idSite, 'filter_limit' => '-1', 'orderByName' => \true], $default = []);
+        if (!empty($this->idSite)) {
+            $this->goals = Request::processRequest('Goals.getGoals', ['idSite' => $this->idSite, 'filter_limit' => '-1', 'orderByName' => \true], $default = []);
+        } else {
+            $this->goals = [];
+        }
     }
     public function manage()
     {
@@ -171,8 +172,8 @@ class Controller extends \Piwik\Plugin\Controller
         if ($idGoal == Piwik::LABEL_ID_GOAL_IS_ECOMMERCE_ORDER) {
             $nameToLabel['nb_conversions'] = 'General_EcommerceOrders';
         } elseif ($idGoal == Piwik::LABEL_ID_GOAL_IS_ECOMMERCE_CART) {
-            $nameToLabel['nb_conversions'] = $this->translator->translate('General_VisitsWith', $this->translator->translate('Goals_AbandonedCart'));
-            $nameToLabel['conversion_rate'] = $nameToLabel['nb_conversions'];
+            $nameToLabel['nb_conversions'] = 'General_AbandonedCarts';
+            $nameToLabel['conversion_rate'] = $this->translator->translate('Goals_ConversionRate', $this->translator->translate('Goals_AbandonedCart'));
             $nameToLabel['revenue'] = $this->translator->translate('Goals_LeftInCart', $this->translator->translate('General_ColumnRevenue'));
             $nameToLabel['items'] = $this->translator->translate('Goals_LeftInCart', $this->translator->translate('Goals_Products'));
         }
@@ -264,11 +265,23 @@ class Controller extends \Piwik\Plugin\Controller
                 $columnConversionRate = 'goal_' . $idGoal . '_conversion_rate';
                 $idGoalToProcess = AddColumnsProcessedMetricsGoal::GOALS_FULL_TABLE;
             }
-            $requestString = "method={$apiMethod}\n                               &format=original\n                               &format_metrics=0\n                               &filter_update_columns_when_show_all_goals=1\n                               &idGoal={$idGoalToProcess}\n                               &filter_sort_order=desc\n                               &filter_sort_column={$columnNbConversions}\n                               &showColumns=label,{$columnNbConversions},{$columnConversionRate}" . "&filter_limit=" . (self::COUNT_TOP_ROWS_TO_DISPLAY + 2);
+            $requestParams = [
+                'method' => $apiMethod,
+                'format' => 'original',
+                'format_metrics' => 0,
+                'filter_update_columns_when_show_all_goals' => 1,
+                'idGoal' => $idGoalToProcess,
+                'filter_sort_order' => 'desc',
+                'filter_sort_column' => $columnNbConversions,
+                'showColumns' => "label,{$columnNbConversions},{$columnConversionRate}",
+                // select a couple more in case some are not valid (ie. conversions==0 or they are "Keyword not defined")
+                'filter_limit' => self::COUNT_TOP_ROWS_TO_DISPLAY + 2,
+            ];
             if ($apiMethod == 'Actions.getEntryPageUrls') {
-                $requestString .= '&flat=1';
+                $requestParams['flat'] = 1;
             }
-            $request = new Request($requestString);
+            $request = new Request($requestParams);
+            /** @var DataTable $datatable */
             $datatable = $request->process();
             $formatter = new Formatter();
             $topDimension = array();
@@ -287,7 +300,8 @@ class Controller extends \Piwik\Plugin\Controller
     protected function getMetricsForGoal($idGoal, $dataRow = null)
     {
         if (!$dataRow) {
-            $request = new Request("method=Goals.get&format=original&idGoal={$idGoal}");
+            $request = new Request(['method' => 'Goals.get', 'format' => 'original', 'idGoal' => $idGoal]);
+            /** @var DataTable $datatable */
             $datatable = $request->process();
             $dataRow = $datatable->getFirstRow();
         }

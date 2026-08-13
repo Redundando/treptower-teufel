@@ -16,6 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // if accessed directly
 }
 
+/**
+ * phpcs:disable WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
+ */
 class Paths {
 
 	private static $host_init_filesystem           = false;
@@ -96,8 +99,8 @@ class Paths {
 		$default_cache_dir     = $base_cache_dir . '/' . MATOMO_UPLOAD_DIR;
 
 		if ( ! $is_multi_site &&
-			 ( ( is_writable( WP_CONTENT_DIR ) && ! is_dir( $base_cache_dir ) )
-			   || is_writable( $base_cache_dir ) ) ) {
+			( ( is_writable( WP_CONTENT_DIR ) && ! is_dir( $base_cache_dir ) )
+				|| is_writable( $base_cache_dir ) ) ) {
 			// we prefer wp-content/cache
 			$cache_dir = $default_cache_dir;
 
@@ -146,8 +149,9 @@ class Paths {
 			return $path_upload_dir;
 		}
 
-		if ( preg_match( '/sites\/(\d)+$/', $path_upload_dir ) ) {
-			$path_upload_dir = preg_replace( '/sites\/(\d)+$/', '', $path_upload_dir );
+		$global_path_upload_dir = $this->get_global_path_upload_dir_if_matches_site_specific_dir( $path_upload_dir );
+		if ( ! empty( $global_path_upload_dir ) ) {
+			$path_upload_dir = $global_path_upload_dir;
 		} else {
 			// re-implement _wp_upload_dir to find hopefully the upload_dir for the network site
 			$upload_path = trim( get_option( 'upload_path' ) );
@@ -167,13 +171,16 @@ class Paths {
 
 		$path_upload_dir = rtrim( $path_upload_dir, '/' ) . '/';
 		if ( ! empty( $file_to_look_for )
-			 && ! file_exists( $path_upload_dir . $file_to_look_for ) ) {
+			&& ! file_exists( $path_upload_dir . $file_to_look_for ) ) {
 			// seems we haven't auto detected the right one yet... (or it is not yet installed)
 			// we go up the site upload dir step by step to try and find the network upload dir
 			$parent_dir = $path_upload_dir;
 			do {
 				$parent_dir = dirname( $parent_dir );
-				if ( file_exists( $parent_dir . $file_to_look_for ) ) {
+				$parent_dir = rtrim( $parent_dir, '/' ) . '/';
+				// NOTE: file_exists here can trigger an open_basedir warning on some setups
+				// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+				if ( @file_exists( $parent_dir . $file_to_look_for ) ) {
 					return $parent_dir;
 				}
 			} while ( strpos( $parent_dir, ABSPATH ) === 0 ); // we don't go outside WP dir
@@ -195,8 +202,8 @@ class Paths {
 	public function clear_cache_dir() {
 		$tmp_dir = $this->get_tmp_dir();
 		if ( $tmp_dir
-			 && is_dir( $tmp_dir )
-			 && is_dir( $tmp_dir . '/cache' ) ) {
+			&& is_dir( $tmp_dir )
+			&& is_dir( $tmp_dir . '/cache' ) ) {
 			// we make sure it's a matomo cache dir to not delete something falsely
 			$file_system_direct = $this->get_file_system();
 			$file_system_direct->rmdir( $tmp_dir, true );
@@ -232,5 +239,21 @@ class Paths {
 			&& is_writable( $upload_dir )
 			&& $this->get_host_init_filesystem_succeeded()
 			&& $is_filesystem_direct_available;
+	}
+
+	/**
+	 * public for tests
+	 *
+	 * @param string $path_upload_dir
+	 * @return string|null
+	 */
+	public function get_global_path_upload_dir_if_matches_site_specific_dir( $path_upload_dir ) {
+		$multisite_path_regex = '%sites/(\d)+/' . preg_quote( MATOMO_UPLOAD_DIR, '%' ) . '$%';
+
+		if ( ! preg_match( $multisite_path_regex, $path_upload_dir ) ) {
+			return null;
+		}
+
+		return preg_replace( $multisite_path_regex, '', $path_upload_dir );
 	}
 }

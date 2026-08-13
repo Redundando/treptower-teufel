@@ -28,8 +28,6 @@ class Updates_4_10_0_b1 extends PiwikUpdates
         $this->migration = $factory;
     }
     /**
-     * @param Updater $updater
-     *
      * @return Migration[]
      */
     public function getMigrations(Updater $updater)

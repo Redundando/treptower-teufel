@@ -17,9 +17,8 @@ use Exception;
 class Daily extends \Piwik\Scheduler\Schedule\Schedule
 {
     /**
-     * @see ScheduledTime::getRescheduledTime
+     * @see Schedule::getRescheduledTime
      * @return int
-     *
      */
     public function getRescheduledTime()
     {
@@ -32,7 +31,7 @@ class Daily extends \Piwik\Scheduler\Schedule\Schedule
         return $rescheduledTime;
     }
     /**
-     * @see ScheduledTime::setDay
+     * @see Schedule::setDay
      * @param int $_day
      * @throws \Exception
      * @ignore

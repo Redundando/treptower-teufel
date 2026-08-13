@@ -50,7 +50,7 @@ class ArchivePurger
     /**
      * Date to use for 'today'. Exists so tests can override this value.
      *
-     * @var $today
+     * @var Date
      */
     private $today;
     /**
@@ -77,11 +77,14 @@ class ArchivePurger
      * table that stores data for `$date`.
      *
      * @param Date $date The date identifying the archive table.
-     * @return int The total number of archive rows deleted (from both the blog & numeric tables).
+     * @return int The total number of archive rows deleted (from both the blob & numeric tables).
      */
     public function purgeInvalidatedArchivesFrom(Date $date)
     {
-        $numericTable = ArchiveTableCreator::getNumericTable($date);
+        $numericTable = ArchiveTableCreator::getNumericTable($date, \false);
+        if (empty($numericTable)) {
+            return 0;
+        }
         $archiveIds = $this->model->getInvalidatedArchiveIdsSafeToDelete($numericTable);
         if (empty($archiveIds)) {
             $this->logger->debug("No invalidated archives found in {table} with newer, valid archives.", array('table' => $numericTable));
@@ -152,14 +155,15 @@ class ArchivePurger
     }
     public function purgeDeletedSiteArchives(Date $dateStart)
     {
-        $archiveTable = ArchiveTableCreator::getNumericTable($dateStart);
+        $archiveTable = ArchiveTableCreator::getNumericTable($dateStart, \false);
+        if (empty($archiveTable)) {
+            return 0;
+        }
         $idArchivesToDelete = $this->model->getArchiveIdsForDeletedSites($archiveTable);
         return $this->purge($idArchivesToDelete, $dateStart, 'deleted sites');
     }
     /**
-     * @param Date $dateStart
      * @param array $deletedSegments List of segments whose archives should be purged
-     * @return int
      */
     public function purgeDeletedSegmentArchives(Date $dateStart, array $deletedSegments) : int
     {
@@ -172,9 +176,7 @@ class ArchivePurger
     /**
      * Purge all numeric and blob archives with the given IDs from the database.
      * @param array $idArchivesToDelete
-     * @param Date $dateStart
      * @param string $reason
-     * @return int
      */
     protected function purge(array $idArchivesToDelete, Date $dateStart, $reason) : int
     {
@@ -190,12 +192,18 @@ class ArchivePurger
     }
     protected function getDeletedSegmentArchiveIds(Date $date, array $deletedSegments)
     {
-        $archiveTable = ArchiveTableCreator::getNumericTable($date);
+        $archiveTable = ArchiveTableCreator::getNumericTable($date, \false);
+        if (empty($archiveTable)) {
+            return [];
+        }
         return $this->model->getArchiveIdsForSegments($archiveTable, $deletedSegments, $this->getOldestTemporaryArchiveToKeepThreshold());
     }
     protected function getOutdatedArchiveIds(Date $date, $purgeArchivesOlderThan)
     {
-        $archiveTable = ArchiveTableCreator::getNumericTable($date);
+        $archiveTable = ArchiveTableCreator::getNumericTable($date, \false);
+        if (empty($archiveTable)) {
+            return [];
+        }
         $result = $this->model->getTemporaryArchivesOlderThan($archiveTable, $purgeArchivesOlderThan);
         $idArchivesToDelete = array();
         if (!empty($result)) {
@@ -214,7 +222,10 @@ class ArchivePurger
      */
     private function getBrokenArchiveIds(Month $month) : array
     {
-        $archiveTable = ArchiveTableCreator::getNumericTable($month->getDateStart());
+        $archiveTable = ArchiveTableCreator::getNumericTable($month->getDateStart(), \false);
+        if (empty($archiveTable)) {
+            return [];
+        }
         $result = $this->model->getArchivesMissingDoneFlag($archiveTable);
         if (!empty($result)) {
             return array_column($result, 'idarchive');
@@ -224,13 +235,15 @@ class ArchivePurger
     /**
      * Deleting "Custom Date Range" reports after 1 day, since they can be re-processed and would take up un-necessary space.
      *
-     * @param $date Date
      * @return int The total number of rows deleted from both the numeric & blob table.
      */
     public function purgeArchivesWithPeriodRange(Date $date)
     {
-        $numericTable = ArchiveTableCreator::getNumericTable($date);
-        $blobTable = ArchiveTableCreator::getBlobTable($date);
+        $numericTable = ArchiveTableCreator::getNumericTable($date, \false);
+        if (empty($numericTable)) {
+            return 0;
+        }
+        $blobTable = ArchiveTableCreator::getBlobTable($date, \false);
         $deletedCount = $this->model->deleteArchivesWithPeriod($numericTable, $blobTable, Piwik::$idPeriods['range'], $this->purgeCustomRangesOlderThan);
         $level = $deletedCount == 0 ? 'debug' : 'info';
         $this->logger->{$level}("Purged {count} range archive rows from {numericTable} & {blobTable}.", array('count' => $deletedCount, 'numericTable' => $numericTable, 'blobTable' => $blobTable));
@@ -240,15 +253,17 @@ class ArchivePurger
     /**
      * Deletes by batches Archive IDs in the specified month,
      *
-     * @param Date $date
-     * @param $idArchivesToDelete
+     * @param array $idArchivesToDelete
      * @return int Number of rows deleted from both numeric + blob table.
      */
     protected function deleteArchiveIds(Date $date, $idArchivesToDelete) : int
     {
         $batches = array_chunk($idArchivesToDelete, 1000);
-        $numericTable = ArchiveTableCreator::getNumericTable($date);
-        $blobTable = ArchiveTableCreator::getBlobTable($date);
+        $numericTable = ArchiveTableCreator::getNumericTable($date, \false);
+        if (empty($numericTable)) {
+            return 0;
+        }
+        $blobTable = ArchiveTableCreator::getBlobTable($date, \false);
         $deletedCount = 0;
         foreach ($batches as $idsToDelete) {
             $deletedCount += $this->model->deleteArchiveIds($numericTable, $blobTable, $idsToDelete);
@@ -256,9 +271,9 @@ class ArchivePurger
         return $deletedCount;
     }
     /**
-     * Returns a timestamp indicating outdated archives older than this timestamp (processed before) can be purged.
+     * Returns a date time string; outdated archives processed before this date time can be purged.
      *
-     * @return int|bool  Outdated archives older than this timestamp should be purged
+     * @return string
      */
     protected function getOldestTemporaryArchiveToKeepThreshold()
     {
@@ -278,8 +293,6 @@ class ArchivePurger
     }
     /**
      * For tests.
-     *
-     * @param Date $yesterday
      */
     public function setYesterdayDate(Date $yesterday)
     {
@@ -287,8 +300,6 @@ class ArchivePurger
     }
     /**
      * For tests.
-     *
-     * @param Date $today
      */
     public function setTodayDate(Date $today)
     {

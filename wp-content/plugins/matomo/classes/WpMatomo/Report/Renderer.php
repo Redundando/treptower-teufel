@@ -12,12 +12,13 @@ namespace WpMatomo\Report;
 use Piwik\DataTable;
 use Piwik\DataTable\DataTableInterface;
 use WpMatomo\Capabilities;
+use WpMatomo\Feature;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // if accessed directly
 }
 
-class Renderer {
+class Renderer extends Feature {
 	const CUSTOM_UNIQUE_ID_VISITS_OVER_TIME = 'visits_over_time';
 
 	public function register_hooks() {
@@ -42,8 +43,11 @@ class Renderer {
 		];
 
 		$data              = new Data();
-		$report            = $data->fetch_report( $report_meta, $period, 'last' . $limit, 'label', $limit );
-		$first_metric_name = 'nb_visits';
+		$report            = $data->fetch_report( $report_meta, $period, 'last' . $limit, 'label', $limit, [ 'forceShortDate' => '1' ] );
+		$matomo_metrics    = [
+			'nb_visits'        => __( 'Visits', 'matomo' ),
+			'nb_uniq_visitors' => __( 'Unique Visitors', 'matomo' ),
+		];
 		$matomo_graph_data = ' data-chart="VisitsSumary"';
 		ob_start();
 

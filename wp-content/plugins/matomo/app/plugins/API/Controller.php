@@ -20,9 +20,6 @@ use Piwik\Plugins\API\Renderer\Original;
 use Piwik\Url;
 use Piwik\UrlHelper;
 use Piwik\View;
-/**
- *
- */
 class Controller extends \Piwik\Plugin\Controller
 {
     public function index()
@@ -30,7 +27,6 @@ class Controller extends \Piwik\Plugin\Controller
         $tokenAuth = StaticContainer::get(AuthenticationToken::class)->getAuthToken() ?: 'anonymous';
         $format = Common::getRequestVar('format', \false);
         $serialize = Common::getRequestVar('serialize', \false);
-        $token = 'token_auth=' . $tokenAuth;
         // when calling the API through http, we limit the number of returned results
         if (!isset($_GET['filter_limit'])) {
             if (isset($_POST['filter_limit'])) {
@@ -39,7 +35,7 @@ class Controller extends \Piwik\Plugin\Controller
                 $_GET['filter_limit'] = Config::getInstance()->General['API_datatable_default_limit'];
             }
         }
-        $request = new Request($token);
+        $request = new Request(['token_auth' => $tokenAuth]);
         $response = $request->process();
         if (is_array($response)) {
             if ($format == 'original' && $serialize != 1) {

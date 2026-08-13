@@ -1,11 +1,10 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 20:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ 20
+(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-var __webpack_unused_export__;
 /**
  * @license React
  * react-jsx-runtime.production.min.js
@@ -16,93 +15,108 @@ var __webpack_unused_export__;
  * LICENSE file in the root directory of this source tree.
  */
 var f=__webpack_require__(677),k=Symbol.for("react.element"),l=Symbol.for("react.fragment"),m=Object.prototype.hasOwnProperty,n=f.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner,p={key:!0,ref:!0,__self:!0,__source:!0};
-function q(c,a,g){var b,d={},e=null,h=null;void 0!==g&&(e=""+g);void 0!==a.key&&(e=""+a.key);void 0!==a.ref&&(h=a.ref);for(b in a)m.call(a,b)&&!p.hasOwnProperty(b)&&(d[b]=a[b]);if(c&&c.defaultProps)for(b in a=c.defaultProps,a)void 0===d[b]&&(d[b]=a[b]);return{$$typeof:k,type:c,key:e,ref:h,props:d,_owner:n.current}}__webpack_unused_export__=l;exports.jsx=q;exports.jsxs=q;
+function q(c,a,g){var b,d={},e=null,h=null;void 0!==g&&(e=""+g);void 0!==a.key&&(e=""+a.key);void 0!==a.ref&&(h=a.ref);for(b in a)m.call(a,b)&&!p.hasOwnProperty(b)&&(d[b]=a[b]);if(c&&c.defaultProps)for(b in a=c.defaultProps,a)void 0===d[b]&&(d[b]=a[b]);return{$$typeof:k,type:c,key:e,ref:h,props:d,_owner:n.current}}exports.Fragment=l;exports.jsx=q;exports.jsxs=q;
 
 
-/***/ }),
+/***/ },
 
-/***/ 848:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 848
+(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 
 
 if (true) {
   module.exports = __webpack_require__(20);
-} else {}
+} else // removed by dead control flow
+{}
 
 
-/***/ }),
+/***/ },
 
-/***/ 677:
-/***/ ((module) => {
+/***/ 677
+(module) {
 
 module.exports = (function() { return this["React"]; }());
 
-/***/ }),
+/***/ },
 
-/***/ 419:
-/***/ ((module) => {
+/***/ 419
+(module) {
 
 module.exports = (function() { return this["lodash"]; }());
 
-/***/ }),
+/***/ },
 
-/***/ 89:
-/***/ ((module) => {
+/***/ 631
+(module) {
+
+module.exports = (function() { return this["wp"]["apiFetch"]; }());
+
+/***/ },
+
+/***/ 89
+(module) {
 
 module.exports = (function() { return this["wp"]["blockEditor"]; }());
 
-/***/ }),
+/***/ },
 
-/***/ 545:
-/***/ ((module) => {
+/***/ 545
+(module) {
 
 module.exports = (function() { return this["wp"]["blocks"]; }());
 
-/***/ }),
+/***/ },
 
-/***/ 959:
-/***/ ((module) => {
+/***/ 959
+(module) {
 
 module.exports = (function() { return this["wp"]["components"]; }());
 
-/***/ }),
+/***/ },
 
-/***/ 601:
-/***/ ((module) => {
+/***/ 987
+(module) {
+
+module.exports = (function() { return this["wp"]["data"]; }());
+
+/***/ },
+
+/***/ 2
+(module) {
+
+module.exports = (function() { return this["wp"]["editor"]; }());
+
+/***/ },
+
+/***/ 601
+(module) {
 
 module.exports = (function() { return this["wp"]["element"]; }());
 
-/***/ }),
+/***/ },
 
-/***/ 873:
-/***/ ((module) => {
+/***/ 873
+(module) {
 
 module.exports = (function() { return this["wp"]["hooks"]; }());
 
-/***/ }),
+/***/ },
 
-/***/ 75:
-/***/ ((module) => {
+/***/ 75
+(module) {
 
 module.exports = (function() { return this["wp"]["i18n"]; }());
 
-/***/ }),
+/***/ },
 
-/***/ 933:
-/***/ ((module) => {
+/***/ 933
+(module) {
 
 module.exports = (function() { return this["wp"]["primitives"]; }());
 
-/***/ }),
-
-/***/ 567:
-/***/ ((module) => {
-
-module.exports = (function() { return this["wp"]["serverSideRender"]; }());
-
-/***/ })
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -166,112 +180,13 @@ var __webpack_exports__ = {};
 (() => {
 "use strict";
 
-// EXTERNAL MODULE: external {"this":["wp","i18n"]}
-var external_this_wp_i18n_ = __webpack_require__(75);
 // EXTERNAL MODULE: external {"this":["wp","blocks"]}
 var external_this_wp_blocks_ = __webpack_require__(545);
-// EXTERNAL MODULE: external {"this":["wp","element"]}
-var external_this_wp_element_ = __webpack_require__(601);
-// EXTERNAL MODULE: external {"this":["wp","blockEditor"]}
-var external_this_wp_blockEditor_ = __webpack_require__(89);
-// EXTERNAL MODULE: external {"this":["wp","hooks"]}
-var external_this_wp_hooks_ = __webpack_require__(873);
-// EXTERNAL MODULE: external {"this":["wp","components"]}
-var external_this_wp_components_ = __webpack_require__(959);
-// EXTERNAL MODULE: external {"this":["wp","serverSideRender"]}
-var external_this_wp_serverSideRender_ = __webpack_require__(567);
-var external_this_wp_serverSideRender_default = /*#__PURE__*/__webpack_require__.n(external_this_wp_serverSideRender_);
-// EXTERNAL MODULE: external "lodash"
-var external_lodash_ = __webpack_require__(419);
 // EXTERNAL MODULE: external {"this":["wp","primitives"]}
 var external_this_wp_primitives_ = __webpack_require__(933);
 // EXTERNAL MODULE: ./node_modules/react/jsx-runtime.js
 var jsx_runtime = __webpack_require__(848);
-;// ./js/src/packages/icons/library/duplication.js
-/**
- * Duplication icon - admin-page Dashicon.
- */
-
-/**
- * WordPress dependencies
- */
-
-
-const isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
-const duplication = isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
-  width: "20",
-  height: "20",
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  children: /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.Path, {
-    d: "M6 15v-13h10v13h-10zM5 16h8v2h-10v-13h2v11z"
-  })
-}) : 'admin-page';
-/* harmony default export */ const library_duplication = ((/* unused pure expression or super */ null && (duplication)));
-;// ./js/src/packages/icons/library/pencil.js
-/**
- * Pencil icon - edit Dashicon.
- */
-
-/**
- * WordPress dependencies
- */
-
-
-const pencil_isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
-const pencil = pencil_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
-  width: "20",
-  height: "20",
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  children: /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.Path, {
-    d: "M13.89 3.39l2.71 2.72c0.46 0.46 0.42 1.24 0.030 1.64l-8.010 8.020-5.56 1.16 1.16-5.58s7.6-7.63 7.99-8.030c0.39-0.39 1.22-0.39 1.68 0.070zM11.16 6.18l-5.59 5.61 1.11 1.11 5.54-5.65zM8.19 14.41l5.58-5.6-1.070-1.080-5.59 5.6z"
-  })
-}) : 'edit';
-/* harmony default export */ const library_pencil = ((/* unused pure expression or super */ null && (pencil)));
-;// ./js/src/packages/icons/library/plus.js
-/**
- * Plus icon - plus Dashicon.
- */
-
-/**
- * WordPress dependencies
- */
-
-
-const plus_isPrimitivesComponents = 'undefined' !== typeof wp.primitive;
-const plus = plus_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
-  width: "20",
-  height: "20",
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  children: /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.Path, {
-    d: "M17 7v3h-5v5h-3v-5h-5v-3h5v-5h3v5h5z"
-  })
-}) : 'plus';
-/* harmony default export */ const library_plus = ((/* unused pure expression or super */ null && (plus)));
-;// ./js/src/packages/icons/library/synchronization.js
-/**
- * Synchronization icon - controls-repeat Dashicon.
- */
-
-/**
- * WordPress dependencies
- */
-
-
-const synchronization_isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
-const synchronization = synchronization_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
-  width: "20",
-  height: "20",
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  children: /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.Path, {
-    d: "M5 7v3l-2 1.5v-6.5h11v-2l4 3.010-4 2.99v-2h-9zM15 13v-3l2-1.5v6.5h-11v2l-4-3.010 4-2.99v2h9z"
-  })
-}) : 'controls-repeat';
-/* harmony default export */ const library_synchronization = ((/* unused pure expression or super */ null && (synchronization)));
-;// ./js/src/packages/icons/library/translation.js
+;// ./node_modules/@wpsyntex/polylang-react-library/build/icons/translation.js
 /**
  * Translation icon - translation Dashicon.
  */
@@ -281,8 +196,8 @@ const synchronization = synchronization_isPrimitivesComponents ? /*#__PURE__*/(0
  */
 
 
-const translation_isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
-const translation = translation_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
+const isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
+const translation = isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
   width: "20",
   height: "20",
   xmlns: "http://www.w3.org/2000/svg",
@@ -291,109 +206,16 @@ const translation = translation_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_run
     d: "M11 7H9.49c-.63 0-1.25.3-1.59.7L7 5H4.13l-2.39 7h1.69l.74-2H7v4H2c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h7c1.1 0 2 .9 2 2v2zM6.51 9H4.49l1-2.93zM10 8h7c1.1 0 2 .9 2 2v7c0 1.1-.9 2-2 2h-7c-1.1 0-2-.9-2-2v-7c0-1.1.9-2 2-2zm7.25 5v-1.08h-3.17V9.75h-1.16v2.17H9.75V13h1.28c.11.85.56 1.85 1.28 2.62-.87.36-1.89.62-2.31.62-.01.02.22.97.2 1.46.84 0 2.21-.5 3.28-1.15 1.09.65 2.48 1.15 3.34 1.15-.02-.49.2-1.44.2-1.46-.43 0-1.49-.27-2.38-.63.7-.77 1.14-1.77 1.25-2.61h1.36zm-3.81 1.93c-.5-.46-.85-1.13-1.01-1.93h2.09c-.17.8-.51 1.47-1 1.93l-.04.03s-.03-.02-.04-.03z"
   })
 }) : 'translation';
-/* harmony default export */ const library_translation = (translation);
-;// ./js/src/packages/icons/library/trash.js
-/**
- * Trash icon - trash Dashicon.
- */
-
-/**
- * WordPress dependencies
- */
-
-
-const trash_isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
-const trash = trash_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
-  width: "20",
-  height: "20",
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  children: /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.Path, {
-    d: "M12 4h3c.6 0 1 .4 1 1v1H3V5c0-.6.5-1 1-1h3c.2-1.1 1.3-2 2.5-2s2.3.9 2.5 2zM8 4h3c-.2-.6-.9-1-1.5-1S8.2 3.4 8 4zM4 7h11l-.9 10.1c0 .5-.5.9-1 .9H5.9c-.5 0-.9-.4-1-.9L4 7z"
-  })
-}) : 'trash';
-/* harmony default export */ const library_trash = ((/* unused pure expression or super */ null && (trash)));
-;// ./js/src/packages/icons/library/star.js
-/**
- * Star icon - star-filled Dashicon.
- */
-
-/**
- * WordPress dependencies
- */
-
-
-const star_isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
-const star_star = star_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
-  width: "20",
-  height: "20",
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  children: /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.Path, {
-    d: "m10 1 3 6 6 .75-4.12 4.62L16 19l-6-3-6 3 1.13-6.63L1 7.75 7 7z"
-  })
-}) : 'star-filled';
-/* harmony default export */ const library_star = ((/* unused pure expression or super */ null && (star_star)));
-;// ./js/src/packages/icons/library/submenu.js
-/**
- * Submenu icon
- */
-
-/**
- * WordPress dependencies
- */
-
-
-const submenu_isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
-const SubmenuIcon = () => submenu_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
-  xmlns: "http://www.w3.org/2000/svg",
-  width: "12",
-  height: "12",
-  viewBox: "0 0 12 12",
-  fill: "none",
-  children: /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.Path, {
-    d: "M1.50002 4L6.00002 8L10.5 4",
-    strokeWidth: "1.5"
-  })
-}) : 'submenu';
-/* harmony default export */ const submenu = (SubmenuIcon);
-;// ./js/src/packages/icons/library/default-lang.js
-/**
- * WordPress dependencies
- */
-
-
-
-/**
- * Internal dependencies
- */
-
-
-const DefaultLangIcon = () => /*#__PURE__*/_jsxs(_Fragment, {
-  children: [/*#__PURE__*/_jsx(Icon, {
-    icon: star,
-    className: "pll-default-lang-icon"
-  }), /*#__PURE__*/_jsx("span", {
-    className: "screen-reader-text",
-    children: __('Default language.', 'polylang-pro')
-  })]
-});
-/* harmony default export */ const default_lang = ((/* unused pure expression or super */ null && (DefaultLangIcon)));
-;// ./js/src/packages/icons/index.js
-/**
- * Icons library
- */
-
-
-
-
-
-
-
-
-
-
-;// ./js/src/blocks/language-switcher-edit.js
+/* harmony default export */ const icons_translation = (translation);
+// EXTERNAL MODULE: external {"this":["wp","i18n"]}
+var external_this_wp_i18n_ = __webpack_require__(75);
+// EXTERNAL MODULE: external {"this":["wp","blockEditor"]}
+var external_this_wp_blockEditor_ = __webpack_require__(89);
+// EXTERNAL MODULE: external {"this":["wp","components"]}
+var external_this_wp_components_ = __webpack_require__(959);
+// EXTERNAL MODULE: external "lodash"
+var external_lodash_ = __webpack_require__(419);
+;// ./vendor/wpsyntex/polylang/js/src/blocks/language-switcher-edit.js
 /**
  * Language switcher block edit.
  */
@@ -407,10 +229,6 @@ const DefaultLangIcon = () => /*#__PURE__*/_jsxs(_Fragment, {
  * WordPress dependencies
  */
 
-
-/**
- * Call initialization of pll/metabox store for getting ready some data.
- */
 
 const i18nAttributeStrings = pll_block_editor_blocks_settings;
 function createLanguageSwitcherEdit(props) {
@@ -517,24 +335,199 @@ function createLanguageSwitcherEdit(props) {
     ToggleControlHideIfNoTranslations
   };
 }
-;// ./js/src/blocks/block.js
+// EXTERNAL MODULE: external {"this":["wp","element"]}
+var external_this_wp_element_ = __webpack_require__(601);
+;// ./vendor/wpsyntex/polylang/js/src/blocks/languages-context.js
 /**
- * Register language switcher block.
+ * WordPress dependencies.
  */
 
+
 /**
- * WordPress Dependencies
+ * Context for the languages.
+ *
+ * @type {React.Context<null>}
+ */
+const LanguagesContext = (0,external_this_wp_element_.createContext)(null);
+;// ./vendor/wpsyntex/polylang/js/src/blocks/hooks/use-memoized-switcher-label.js
+/**
+ * WordPress dependencies
+ */
+// '@wordpress/element' is provided by WordPress core.
+// eslint-disable-next-line import/no-extraneous-dependencies
+
+
+/**
+ * Hook to memoize the switcher label.
+ *
+ * @param {Object}  language  The language object.
+ * @param {boolean} showFlags Whether to show the flags.
+ * @param {boolean} showNames Whether to show the names.
+ * @return {Object} The memoized switcher label containing the text and the flag.
+ */
+const useMemoizedSwitcherLabel = (language, showFlags, showNames) => {
+  const {
+    text,
+    flag
+  } = (0,external_this_wp_element_.useMemo)(() => {
+    let memoizedText = '';
+    if (showNames) {
+      if (showFlags) {
+        memoizedText = ` ${language.name}`;
+      } else {
+        memoizedText = language.name;
+      }
+    }
+    const memoizedFlag = showFlags ? language.flag : '';
+    return {
+      text: memoizedText,
+      flag: memoizedFlag
+    };
+  }, [language, showFlags, showNames]);
+  return {
+    text,
+    flag
+  };
+};
+;// ./vendor/wpsyntex/polylang/js/src/blocks/language-switcher/components/switcher-list-element.js
+/**
+ * Internal dependencies
  */
 
 
+/**
+ * Switcher list element component.
+ *
+ * @param {Object}  props           Component props.
+ * @param {Object}  props.language  Language object.
+ * @param {boolean} props.showFlags Whether to show the flags.
+ * @param {boolean} props.showNames Whether to show the names.
+ * @return {ReactElement}            The Switcher element component.
+ */
 
-
-
-
+const SwitcherListElement = ({
+  language,
+  showFlags,
+  showNames
+}) => {
+  const {
+    text,
+    flag
+  } = useMemoizedSwitcherLabel(language, showFlags, showNames);
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)("li", {
+    children: [/*#__PURE__*/(0,jsx_runtime.jsx)("span", {
+      dangerouslySetInnerHTML: {
+        __html: flag
+      }
+    }), " ", text, " "]
+  });
+};
+;// ./vendor/wpsyntex/polylang/js/src/blocks/language-switcher/components/switcher-ui.js
+/**
+ * Internal dependencies
+ */
 
 
 /**
- * External dependencies
+ * Switcher UI component.
+ *
+ * @param {Object}  props            The component props.
+ * @param {Array}   props.languages  The languages to display.
+ * @param {boolean} props.showFlags  Whether to show the flags.
+ * @param {boolean} props.showNames  Whether to show the names.
+ * @param {boolean} props.isDropdown Whether to show the dropdown.
+ * @return {ReactElement} The Switcher UI component.
+ */
+
+const SwitcherUI = ({
+  languages,
+  showFlags,
+  showNames,
+  isDropdown
+}) => {
+  if (isDropdown) {
+    return /*#__PURE__*/(0,jsx_runtime.jsx)("select", {
+      children: languages.map(language => {
+        return /*#__PURE__*/(0,jsx_runtime.jsx)("option", {
+          value: language.slug,
+          children: language.name
+        }, language.slug);
+      })
+    });
+  }
+  return /*#__PURE__*/(0,jsx_runtime.jsx)("ul", {
+    children: languages.map(language => {
+      return /*#__PURE__*/(0,jsx_runtime.jsx)(SwitcherListElement, {
+        language: language,
+        showFlags: showFlags,
+        showNames: showNames
+      }, language.slug);
+    })
+  });
+};
+// EXTERNAL MODULE: external {"this":["wp","data"]}
+var external_this_wp_data_ = __webpack_require__(987);
+// EXTERNAL MODULE: external {"this":["wp","editor"]}
+var external_this_wp_editor_ = __webpack_require__(2);
+;// ./node_modules/@wpsyntex/polylang-react-library/build/hooks/use-current-language.js
+/**
+ * WordPress dependencies
+ */
+
+// This package is not found in `@wordpress/scripts` like others (peer dependency).
+// eslint-disable-next-line import/no-unresolved
+
+
+/**
+ * Custom hook to get the current language from the editor.
+ *
+ * @param {Array} languages The languages list.
+ * @return {Object|null} The current language, `null` if not found.
+ */
+const useCurrentLanguage = languages => {
+  const currentPost = (0,external_this_wp_data_.useSelect)(select => select(external_this_wp_editor_.store).getCurrentPost());
+  if (!languages || !currentPost) {
+    return null;
+  }
+  const currentLanguageSlug = currentPost.lang ?? pllEditorCurrentLanguageSlug; // eslint-disable-line no-undef
+
+  const currentLanguage = languages.find(language => {
+    return language.slug === currentLanguageSlug;
+  });
+  return currentLanguage ? currentLanguage : null;
+};
+;// ./node_modules/@wpsyntex/polylang-react-library/build/hooks/use-curated-languages.js
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Hook to curate the languages.
+ * Returns an array of languages ensuring that the current language is always the first one.
+ *
+ * @param {Object[]} languages       The languages.
+ * @param {Object}   currentLanguage The current language.
+ * @param {boolean}  reduceToOneItem Whether to reduce the languages to one item.
+ * @return {Object[]} The curated languages.
+ */
+const useCuratedLanguages = (languages, currentLanguage, reduceToOneItem) => {
+  const curatedLanguages = (0,external_this_wp_element_.useMemo)(() => {
+    if (!currentLanguage) {
+      return [];
+    }
+    if (reduceToOneItem) {
+      return [currentLanguage];
+    }
+    return [currentLanguage, ...languages.filter(language => {
+      return language.slug !== currentLanguage.slug;
+    })];
+  }, [languages, currentLanguage, reduceToOneItem]);
+  return curatedLanguages;
+};
+;// ./vendor/wpsyntex/polylang/js/src/blocks/language-switcher/components/switcher-container.js
+/**
+ * WordPress dependencies
  */
 
 
@@ -544,123 +537,375 @@ function createLanguageSwitcherEdit(props) {
 
 
 
-const blocktitle = (0,external_this_wp_i18n_.__)('Language switcher', 'polylang-pro');
-const descriptionTitle = (0,external_this_wp_i18n_.__)('Add a language switcher to allow your visitors to select their preferred language.', 'polylang-pro');
-const panelTitle = (0,external_this_wp_i18n_.__)('Language switcher settings', 'polylang-pro');
 
-// Register the Language Switcher block as first level block in Block Editor.
-(0,external_this_wp_blocks_.registerBlockType)('polylang/language-switcher', {
-  title: blocktitle,
-  description: descriptionTitle,
-  icon: library_translation,
-  category: 'widgets',
-  example: {},
-  edit: props => {
-    const {
-      dropdown
-    } = props.attributes;
-    const {
-      ToggleControlDropdown,
-      ToggleControlShowNames,
-      ToggleControlShowFlags,
-      ToggleControlForceHome,
-      ToggleControlHideCurrent,
-      ToggleControlHideIfNoTranslations
-    } = createLanguageSwitcherEdit(props);
-    return /*#__PURE__*/(0,jsx_runtime.jsxs)(external_this_wp_element_.Fragment, {
-      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_blockEditor_.InspectorControls, {
-        children: /*#__PURE__*/(0,jsx_runtime.jsxs)(external_this_wp_components_.PanelBody, {
-          title: panelTitle,
-          children: [/*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlDropdown, {}), !dropdown && /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlShowNames, {}), !dropdown && /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlShowFlags, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlForceHome, {}), !dropdown && /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlHideCurrent, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlHideIfNoTranslations, {})]
-        })
-      }), /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_components_.Disabled, {
-        children: /*#__PURE__*/(0,jsx_runtime.jsx)((external_this_wp_serverSideRender_default()), {
-          block: "polylang/language-switcher",
+/**
+ * Switcher container component.
+ *
+ * @param {Object} props            The component props.
+ * @param {Object} props.attributes The block attributes.
+ * @return {ReactElement} The Switcher component.
+ */
+
+const SwitcherContainer = ({
+  attributes
+}) => {
+  const {
+    dropdown,
+    show_flags,
+    show_names
+  } = attributes;
+  const {
+    languages
+  } = (0,external_this_wp_element_.useContext)(LanguagesContext);
+  const currentLanguage = useCurrentLanguage(languages);
+  const curatedLanguages = useCuratedLanguages(languages, currentLanguage, dropdown);
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(SwitcherUI, {
+    languages: curatedLanguages,
+    showFlags: show_flags,
+    showNames: show_names,
+    isDropdown: dropdown
+  });
+};
+// EXTERNAL MODULE: external {"this":["wp","apiFetch"]}
+var external_this_wp_apiFetch_ = __webpack_require__(631);
+var external_this_wp_apiFetch_default = /*#__PURE__*/__webpack_require__.n(external_this_wp_apiFetch_);
+;// ./node_modules/@wpsyntex/polylang-react-library/build/hooks/use-languages-list.js
+/**
+ * WordPress dependencies
+ */
+
+
+
+/**
+ * Custom hook to get the languages list.
+ *
+ * @return {Array|null} The languages list, `null` if not loaded yet.
+ */
+const useLanguagesList = () => {
+  const [languages, setLanguages] = (0,external_this_wp_element_.useState)(null);
+  (0,external_this_wp_element_.useEffect)(() => {
+    external_this_wp_apiFetch_default()({
+      path: '/pll/v1/languages',
+      method: 'GET'
+    }).then(response => setLanguages(response));
+  }, []);
+  return languages;
+};
+;// ./vendor/wpsyntex/polylang/js/src/blocks/language-switcher/edit.js
+/**
+ * Edit callback for language switcher block.
+ */
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+
+/**
+ * Edit callback for language switcher block.
+ *
+ * @param {Object} props Block properties.
+ * @return {ReactElement} The block content and controls.
+ */
+
+const Edit = props => {
+  const {
+    dropdown
+  } = props.attributes;
+  const languages = useLanguagesList();
+  const {
+    ToggleControlDropdown,
+    ToggleControlShowNames,
+    ToggleControlShowFlags,
+    ToggleControlForceHome,
+    ToggleControlHideCurrent,
+    ToggleControlHideIfNoTranslations
+  } = createLanguageSwitcherEdit(props);
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+    ...(0,external_this_wp_blockEditor_.useBlockProps)(),
+    children: [/*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_blockEditor_.InspectorControls, {
+      children: /*#__PURE__*/(0,jsx_runtime.jsxs)(external_this_wp_components_.PanelBody, {
+        title: (0,external_this_wp_i18n_.__)('Language switcher settings', 'polylang'),
+        children: [/*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlDropdown, {}), !dropdown && /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlShowNames, {}), !dropdown && /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlShowFlags, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlForceHome, {}), !dropdown && /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlHideCurrent, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlHideIfNoTranslations, {})]
+      })
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_components_.Disabled, {
+      children: /*#__PURE__*/(0,jsx_runtime.jsx)(LanguagesContext.Provider, {
+        value: {
+          languages
+        },
+        children: /*#__PURE__*/(0,jsx_runtime.jsx)(SwitcherContainer, {
           attributes: props.attributes
         })
-      })]
-    });
-  }
-});
+      })
+    })]
+  });
+};
+;// ./vendor/wpsyntex/polylang/src/modules/Blocks/Language_Switcher/Standard/block.json
+const block_namespaceObject = /*#__PURE__*/JSON.parse('{"UU":"polylang/language-switcher"}');
+;// ./vendor/wpsyntex/polylang/js/src/blocks/language-switcher/index.js
+/**
+ * Register language switcher block.
+ */
 
-// Register the Language Switcher block as child block of core/navigation block.
-const navigationLanguageSwitcherName = 'polylang/navigation-language-switcher';
-(0,external_this_wp_blocks_.registerBlockType)(navigationLanguageSwitcherName, {
-  title: blocktitle,
-  description: descriptionTitle,
-  icon: library_translation,
-  category: 'widgets',
-  parent: ['core/navigation'],
-  attributes: {
-    dropdown: {
-      type: 'boolean',
-      default: false
-    },
-    show_names: {
-      type: 'boolean',
-      default: true
-    },
-    show_flags: {
-      type: 'boolean',
-      default: false
-    },
-    force_home: {
-      type: 'boolean',
-      default: false
-    },
-    hide_current: {
-      type: 'boolean',
-      default: false
-    },
-    hide_if_no_translation: {
-      type: 'boolean',
-      default: false
-    }
-  },
-  transforms: {
-    from: [{
-      type: 'block',
-      blocks: ['core/navigation-link'],
-      transform: () => (0,external_this_wp_blocks_.createBlock)(navigationLanguageSwitcherName)
-    }]
-  },
-  usesContext: ['textColor', 'customTextColor', 'backgroundColor', 'customBackgroundColor', 'overlayTextColor', 'customOverlayTextColor', 'overlayBackgroundColor', 'customOverlayBackgroundColor', 'fontSize', 'customFontSize', 'showSubmenuIcon', 'openSubmenusOnClick', 'style'],
-  example: {},
-  edit: props => {
-    const {
-      dropdown
-    } = props.attributes;
-    const {
-      showSubmenuIcon,
-      openSubmenusOnClick
-    } = props.context;
-    const {
-      ToggleControlDropdown,
-      ToggleControlShowNames,
-      ToggleControlShowFlags,
-      ToggleControlForceHome,
-      ToggleControlHideCurrent,
-      ToggleControlHideIfNoTranslations
-    } = createLanguageSwitcherEdit(props);
-    return /*#__PURE__*/(0,jsx_runtime.jsxs)(external_this_wp_element_.Fragment, {
-      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_blockEditor_.InspectorControls, {
-        children: /*#__PURE__*/(0,jsx_runtime.jsxs)(external_this_wp_components_.PanelBody, {
-          title: panelTitle,
-          children: [/*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlDropdown, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlShowNames, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlShowFlags, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlForceHome, {}), !dropdown && /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlHideCurrent, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlHideIfNoTranslations, {})]
-        })
-      }), /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_components_.Disabled, {
-        children: /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-          className: "wp-block-navigation-item",
-          children: [/*#__PURE__*/(0,jsx_runtime.jsx)((external_this_wp_serverSideRender_default()), {
-            block: navigationLanguageSwitcherName,
-            attributes: props.attributes,
-            className: 'wp-block-navigation__container block-editor-block-list__layout'
-          }), submenuIcon(showSubmenuIcon, openSubmenusOnClick, dropdown)]
-        })
-      })]
-    });
-  }
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+(0,external_this_wp_blocks_.registerBlockType)(block_namespaceObject.UU, {
+  icon: icons_translation,
+  edit: Edit
 });
+// EXTERNAL MODULE: external {"this":["wp","hooks"]}
+var external_this_wp_hooks_ = __webpack_require__(873);
+;// ./vendor/wpsyntex/polylang/js/src/blocks/navigation-language-switcher/components/switcher-link-element.js
+/**
+ * Internal dependencies
+ */
+
+
+/**
+ * Switcher link element component.
+ *
+ * @param {Object}  props            Component props.
+ * @param {Object}  props.language   Language object.
+ * @param {boolean} props.isTopLevel Whether the language is the top level language.
+ * @param {boolean} props.showFlags  Whether to show the flags.
+ * @param {boolean} props.showNames  Whether to show the names.
+ * @return {ReactElement}            The Switcher element component.
+ */
+
+const SwitcherLinkElement = ({
+  language,
+  isTopLevel,
+  showFlags,
+  showNames
+}) => {
+  const {
+    text,
+    flag
+  } = useMemoizedSwitcherLabel(language, showFlags, showNames);
+  const prefix = isTopLevel ? '' : ' ';
+  return (
+    /*#__PURE__*/
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    (0,jsx_runtime.jsxs)("a", {
+      href: '#',
+      children: [prefix, /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
+        dangerouslySetInnerHTML: {
+          __html: flag
+        }
+      }), " ", text, " "]
+    })
+  );
+};
+;// ./node_modules/@wpsyntex/polylang-react-library/build/icons/submenu.js
+/**
+ * Submenu icon
+ */
+
+/**
+ * WordPress dependencies
+ */
+
+
+const submenu_isPrimitivesComponents = 'undefined' !== typeof wp.primitives;
+const SubmenuIcon = () => submenu_isPrimitivesComponents ? /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: "12",
+  height: "12",
+  viewBox: "0 0 12 12",
+  fill: "none",
+  children: /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_primitives_.Path, {
+    d: "M1.50002 4L6.00002 8L10.5 4",
+    strokeWidth: "1.5"
+  })
+}) : 'submenu';
+/* harmony default export */ const submenu = (SubmenuIcon);
+;// ./vendor/wpsyntex/polylang/js/src/blocks/navigation-language-switcher/components/switcher-ui.js
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+/**
+ * Switcher UI component.
+ *
+ * @param {Object}  props                 The component props.
+ * @param {Array}   props.languages       The languages to display.
+ * @param {boolean} props.showFlags       Whether to show the flags.
+ * @param {boolean} props.showNames       Whether to show the names.
+ * @param {boolean} props.withSubmenuIcon Whether to show the submenu icon.
+ * @return {ReactElement} The Switcher UI component.
+ */
+
+const switcher_ui_SwitcherUI = ({
+  languages,
+  showFlags,
+  showNames,
+  withSubmenuIcon
+}) => {
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(jsx_runtime.Fragment, {
+    children: languages && languages.map(language => {
+      return /*#__PURE__*/(0,jsx_runtime.jsxs)(external_this_wp_element_.Fragment, {
+        children: [/*#__PURE__*/(0,jsx_runtime.jsx)(SwitcherLinkElement, {
+          language: language,
+          isTopLevel: languages.indexOf(language) === 0,
+          showFlags: showFlags,
+          showNames: showNames
+        }), withSubmenuIcon && /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
+          className: "wp-block-navigation__submenu-icon",
+          children: /*#__PURE__*/(0,jsx_runtime.jsx)(submenu, {})
+        })]
+      }, language.slug);
+    })
+  });
+};
+;// ./vendor/wpsyntex/polylang/js/src/blocks/navigation-language-switcher/components/navigation-switcher-container.js
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+/**
+ * Switcher container component.
+ *
+ * @param {Object} props            The component props.
+ * @param {Object} props.attributes The block attributes.
+ * @param {Object} props.context    The block context.
+ * @return {ReactElement} The Switcher component.
+ */
+
+const NavigationSwitcherContainer = ({
+  attributes,
+  context
+}) => {
+  const {
+    dropdown,
+    show_flags,
+    show_names
+  } = attributes;
+  const {
+    showSubmenuIcon,
+    openSubmenusOnClick
+  } = context;
+  const {
+    languages
+  } = (0,external_this_wp_element_.useContext)(LanguagesContext);
+  const currentLanguage = useCurrentLanguage(languages);
+  const curatedLanguages = useCuratedLanguages(languages, currentLanguage, dropdown);
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(switcher_ui_SwitcherUI, {
+    languages: curatedLanguages,
+    showFlags: Boolean(show_flags),
+    showNames: Boolean(show_names),
+    withSubmenuIcon: Boolean((showSubmenuIcon || openSubmenusOnClick) && dropdown)
+  });
+};
+;// ./vendor/wpsyntex/polylang/js/src/blocks/navigation-language-switcher/edit.js
+/**
+ * Edit callback for navigation language switcher block.
+ */
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+
+/**
+ * Edit callback for navigation language switcher block.
+ *
+ * @param {Object} props Block properties.
+ * @return {ReactElement} The block content and controls.
+ */
+
+const edit_Edit = props => {
+  const {
+    dropdown
+  } = props.attributes;
+  const languages = useLanguagesList();
+  const {
+    ToggleControlDropdown,
+    ToggleControlShowNames,
+    ToggleControlShowFlags,
+    ToggleControlForceHome,
+    ToggleControlHideCurrent,
+    ToggleControlHideIfNoTranslations
+  } = createLanguageSwitcherEdit(props);
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+    ...(0,external_this_wp_blockEditor_.useBlockProps)(),
+    children: [/*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_blockEditor_.InspectorControls, {
+      children: /*#__PURE__*/(0,jsx_runtime.jsxs)(external_this_wp_components_.PanelBody, {
+        title: (0,external_this_wp_i18n_.__)('Language switcher settings', 'polylang'),
+        children: [/*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlDropdown, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlShowNames, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlShowFlags, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlForceHome, {}), !dropdown && /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlHideCurrent, {}), /*#__PURE__*/(0,jsx_runtime.jsx)(ToggleControlHideIfNoTranslations, {})]
+      })
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(external_this_wp_components_.Disabled, {
+      children: /*#__PURE__*/(0,jsx_runtime.jsx)(LanguagesContext.Provider, {
+        value: {
+          languages
+        },
+        children: /*#__PURE__*/(0,jsx_runtime.jsx)(NavigationSwitcherContainer, {
+          attributes: props.attributes,
+          context: props.context
+        })
+      })
+    })]
+  });
+};
+;// ./vendor/wpsyntex/polylang/src/modules/Blocks/Language_Switcher/Navigation/block.json
+const Navigation_block_namespaceObject = /*#__PURE__*/JSON.parse('{"UU":"polylang/navigation-language-switcher"}');
+;// ./vendor/wpsyntex/polylang/js/src/blocks/navigation-language-switcher/menu-items-converter.js
+/**
+ * Menu items converter
+ */
+
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
 
 /**
  * Apply a callback function on each block of the blocks list.
@@ -697,11 +942,9 @@ function mapBlockTree(blocks, menuItems, blocksMapping, mapper) {
  */
 const blocksFilter = (block, menuItems, blocksMapping) => {
   if (block.name === 'core/navigation-link' && block.attributes?.url === '#pll_switcher') {
-    const menuItem = (0,external_lodash_.find)(menuItems, {
-      url: '#pll_switcher'
-    }); // Get the corresponding menu item.
+    const menuItem = menuItems.find(item => item.url === '#pll_switcher'); // Get the corresponding menu item.
     const attributes = menuItem.meta._pll_menu_item; // Get its options.
-    const newBlock = (0,external_this_wp_blocks_.createBlock)(navigationLanguageSwitcherName, attributes);
+    const newBlock = (0,external_this_wp_blocks_.createBlock)(Navigation_block_namespaceObject.UU, attributes);
     blocksMapping[menuItem.id] = newBlock.clientId; // Update the blocks mapping.
     return newBlock;
   }
@@ -719,34 +962,46 @@ const menuItemsToBlocksFilter = (blocks, menuItems) => ({
   ...blocks,
   innerBlocks: mapBlockTree(blocks.innerBlocks, menuItems, blocks.mapping, blocksFilter)
 });
+;// ./vendor/wpsyntex/polylang/js/src/blocks/navigation-language-switcher/index.js
+/**
+ * Register navigation language switcher block.
+ */
 
 /**
- * Returns the submenu icon if block parameters allow it.
- *
- * @param {boolean} showSubmenuIcon     Whether to show submenu icon or not.
- * @param {boolean} openSubmenusOnClick Whether the submenu can be open on click or not.
- * @param {boolean} dropdown            Whether the language switcher is in dropdown mode or not.
- * @return {HTMLSpanElement|null} The submenu icon or null.
+ * WordPress Dependencies
  */
-const submenuIcon = (showSubmenuIcon, openSubmenusOnClick, dropdown) => {
-  if ((showSubmenuIcon || openSubmenusOnClick) && dropdown) {
-    return /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
-      className: "wp-block-navigation__submenu-icon",
-      children: /*#__PURE__*/(0,jsx_runtime.jsx)(submenu, {})
-    });
-  }
-  return null;
-};
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+(0,external_this_wp_blocks_.registerBlockType)(Navigation_block_namespaceObject.UU, {
+  icon: icons_translation,
+  transforms: {
+    from: [{
+      type: 'block',
+      blocks: ['core/navigation-link'],
+      transform: () => (0,external_this_wp_blocks_.createBlock)(Navigation_block_namespaceObject.UU)
+    }]
+  },
+  edit: edit_Edit
+});
 
 /**
  * Hooks to the classic menu conversion to core/navigation block to be able to convert
  * the language switcher menu item to its corresponding block.
  */
 (0,external_this_wp_hooks_.addFilter)('blocks.navigation.__unstableMenuItemsToBlocks', 'polylang/include-language-switcher', menuItemsToBlocksFilter);
-;// ./js/src/blocks/index.js
+;// ./vendor/wpsyntex/polylang/js/src/blocks/index.js
 /**
- * Registers Polylang block in the editors and enables attributes controls.
+ * Registers Polylang blocks in the editors and enables attributes controls.
  */
+
 
 })();
 

@@ -12,7 +12,7 @@ namespace WpMatomo;
 /**
  * Customizations for the WordPress plugins page.
  */
-class PluginAdminOverrides {
+class PluginAdminOverrides extends Feature {
 	/**
 	 * @var Settings
 	 */
@@ -20,6 +20,10 @@ class PluginAdminOverrides {
 
 	public function __construct( $settings ) {
 		$this->settings = $settings;
+	}
+
+	public function is_active() {
+		return is_admin();
 	}
 
 	public function register_hooks() {
@@ -40,17 +44,25 @@ class PluginAdminOverrides {
 			$deletion_setting_notice = sprintf( $deletion_setting_notice, '<strong style="display:inline;">', '</strong>' );
 		}
 
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// the interpolated values above are already escaped
+		// phpcs:disable WordPress.Security.EscapeOutput.HeredocOutputNotEscaped
 		echo <<<EOF
 <script>
 jQuery(document).ready(
   function () {
-    var \$title = jQuery('body.plugins-php tr[data-slug="matomo"] td.plugin-title > strong:first-child');
-    \$title.after('<p><span style="margin: 0 2px 2px 0; display: inline-block; vertical-align: middle;">ℹ️</span> $note: $deletion_setting_notice<br/><a href="$change_settings_url" id="mwp-data-deletion-settings">$change_data_deletion_settings</a></p>');
+	var pStyles = '';
+
+    var \$title = window.jQuery('body.plugins-php tr[data-slug="matomo"] td.plugin-title > strong:first-child');
+	if (!\$title.length) { // WP > 7.0.2
+		\$title = window.jQuery('body.plugins-php tr[data-slug="matomo"] th.plugin-title > strong:first-child');
+		pStyles = ' style="margin: .5em 0;"';
+	}
+    \$title.after(`<p\${pStyles}><span style="margin: 0 2px 2px 0; display: inline-block; vertical-align: middle;">ℹ️</span> $note: $deletion_setting_notice<br/><a href="$change_settings_url" id="mwp-data-deletion-settings">$change_data_deletion_settings</a></p>`);
   }
 );
 </script>
 EOF;
+		// phpcs:enable WordPress.Security.EscapeOutput.HeredocOutputNotEscaped
 	}
 
 	private function is_plugins_php_page() {

@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // if accessed directly
 }
 
-class AdminSettings {
+class AdminSettings implements MatomoPageContent {
 	const TAB_TRACKING    = 'tracking';
 	const TAB_ACCESS      = 'access';
 	const TAB_EXCLUSIONS  = 'exlusions';
@@ -105,7 +105,7 @@ class AdminSettings {
 		$content_tab     = $setting_tabs[ $active_tab ];
 		$matomo_settings = $this->settings;
 
-		include dirname( __FILE__ ) . '/views/settings.php';
+		include __DIR__ . '/views/settings.php';
 	}
 
 	private function get_plugin_settings_tabs() {
@@ -161,5 +161,9 @@ class AdminSettings {
 			$all_wordpress_plugins
 		);
 		return $all_wordpress_plugins;
+	}
+
+	public function get_title() {
+		return __( 'Settings', 'matomo' );
 	}
 }

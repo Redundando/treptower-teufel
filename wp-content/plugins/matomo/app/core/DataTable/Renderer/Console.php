@@ -23,8 +23,6 @@ class Console extends Renderer
     protected $prefixRows = '#';
     /**
      * Computes the dataTable output and returns the string/binary
-     *
-     * @return string
      */
     public function render() : string
     {
@@ -44,7 +42,6 @@ class Console extends Renderer
      *
      * @param DataTable\Map $map data tables to render
      * @param string $prefix prefix to output before table data
-     * @return string
      */
     protected function renderDataTableMap(DataTable\Map $map, string $prefix) : string
     {
@@ -62,7 +59,6 @@ class Console extends Renderer
      *
      * @param array|DataTable|DataTable\Map $table data table to render
      * @param string $prefix prefix to output before table data
-     * @return string
      */
     protected function renderTable($table, string $prefix = '') : string
     {

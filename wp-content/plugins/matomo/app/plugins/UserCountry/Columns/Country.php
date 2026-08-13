@@ -48,7 +48,10 @@ class Country extends \Piwik\Plugins\UserCountry\Columns\Base
             $item = Piwik::translate('Intl_Country_' . strtoupper($key), [], 'en');
         });
         $segment->setSqlFilterValue(function ($val) use($countryList) {
-            $result = array_search($val, $countryList);
+            $countryList = array_map(function ($countryName) {
+                return mb_strtolower($countryName);
+            }, $countryList);
+            $result = array_search(mb_strtolower($val), $countryList);
             if ($result === \false) {
                 $result = 'UNK';
             }
@@ -64,8 +67,6 @@ class Country extends \Piwik\Plugins\UserCountry\Columns\Base
         return \Piwik\Plugins\UserCountry\countryTranslate($value);
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
      * @return mixed
      */
@@ -84,18 +85,14 @@ class Country extends \Piwik\Plugins\UserCountry\Columns\Base
         return Visit::UNKNOWN_CODE;
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
-     * @return int
+     * @return string|false
      */
     public function onExistingVisit(Request $request, Visitor $visitor, $action)
     {
         return $this->getUrlOverrideValueIfAllowed('country', $request);
     }
     /**
-     * @param Request $request
-     * @param Visitor $visitor
      * @param Action|null $action
      * @return mixed
      */

@@ -61,7 +61,6 @@ class DataArray
      *
      * @param array $newRowToAdd
      * @param array $oldRowToUpdate
-     * @param bool $onlyMetricsAvailableInActionsTable
      *
      * @return void
      */
@@ -107,7 +106,6 @@ class DataArray
      *
      * @param array $newRowToAdd
      * @param array $oldRowToUpdate
-     * @param bool $onlyMetricsAvailableInActionsTable
      *
      * @return void
      */
@@ -161,7 +159,6 @@ class DataArray
         return array(\Piwik\Metrics::INDEX_GOAL_NB_CONVERSIONS => 0, \Piwik\Metrics::INDEX_GOAL_NB_VISITS_CONVERTED => 0, \Piwik\Metrics::INDEX_GOAL_REVENUE => 0, \Piwik\Metrics::INDEX_GOAL_ECOMMERCE_ITEMS => 0);
     }
     /**
-     *
      * @param $newRowToAdd
      * @param $oldRowToUpdate
      */
@@ -233,7 +230,7 @@ class DataArray
      *
      * @param $label
      * @param $row
-     * @throws Exception if the the data row contains non numeric values
+     * @throws Exception if the data row contains non numeric values
      */
     public function sumMetrics($label, $row)
     {

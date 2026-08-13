@@ -8,16 +8,14 @@
  */
 namespace Piwik\Plugins\PrivacyManager;
 
-use Piwik\Container\StaticContainer;
 use Piwik\Exception\DI\DependencyException;
 use Piwik\Exception\DI\NotFoundException;
 use Piwik\Option;
-use Piwik\Plugins\FeatureFlags\FeatureFlagManager;
-use Piwik\Plugins\PrivacyManager\FeatureFlags\PrivacyCompliance;
 use Piwik\Plugins\PrivacyManager\Settings\ReferrerAnonymisation as ReferrerAnonymizationSettings;
 use Piwik\Tracker\Cache;
 use Piwik\Plugins\PrivacyManager\Settings\IpAddressMaskLength as IpAddressMaskLengthSetting;
 use Piwik\Plugins\PrivacyManager\Settings\IPAnonymisation as IPAnonymisationSetting;
+use Piwik\Plugins\Ecommerce\Settings\OrderIdAnonymization as OrderIdAnonymizationSetting;
 /**
  * @property bool $doNotTrackEnabled    Enable / Disable Do Not Track {@see DoNotTrackHeaderChecker}
  * @property bool $ipAnonymizerEnabled  Enable / Disable IP Anonymizer {@see IPAnonymizer}
@@ -97,8 +95,6 @@ class Config
      * If PrivacyCompliance is enabled and specific settings are requested, return their value, otherwise
      * return a provided option value
      *
-     * @param string $name
-     * @param int|null $idSite
      * @param false|string $optionValue
      * @return int|mixed|null
      * @throws DependencyException
@@ -106,15 +102,17 @@ class Config
      */
     private function getOptionValueWithPrivacyComplianceOverride(string $name, ?int $idSite, $optionValue)
     {
-        $featureFlagManager = StaticContainer::get(FeatureFlagManager::class);
-        if ($featureFlagManager->isFeatureActive(PrivacyCompliance::class)) {
-            if ($name === 'ipAddressMaskLength') {
-                return IpAddressMaskLengthSetting::getInstance($idSite)->getValue();
-            } elseif ($name === 'ipAnonymizerEnabled') {
-                return IPAnonymisationSetting::getInstance($idSite)->getValue();
-            } elseif ($name === 'anonymizeReferrer') {
-                return ReferrerAnonymizationSettings::getInstance($idSite)->getValue();
-            }
+        if ($name === 'ipAddressMaskLength') {
+            return IpAddressMaskLengthSetting::getInstance($idSite)->getValue();
+        }
+        if ($name === 'ipAnonymizerEnabled') {
+            return IPAnonymisationSetting::getInstance($idSite)->getValue();
+        }
+        if ($name === 'anonymizeReferrer') {
+            return ReferrerAnonymizationSettings::getInstance($idSite)->getValue();
+        }
+        if ($name === 'anonymizeOrderId') {
+            return OrderIdAnonymizationSetting::getInstance($idSite)->getValue();
         }
         return $optionValue;
     }
@@ -122,8 +120,6 @@ class Config
      * Get a value from the option table, with a potential compliance policy override and a fallback value
      * if there's no option stored for the given name yet
      *
-     * @param string $name
-     * @param bool $allowPolicyComplianceOverride
      * @return mixed
      * @throws DependencyException
      * @throws NotFoundException

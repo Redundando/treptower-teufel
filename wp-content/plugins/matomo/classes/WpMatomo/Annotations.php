@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // if accessed directly
 }
 
-class Annotations {
+class Annotations extends Feature {
 	/**
 	 * @var Settings
 	 */
@@ -58,7 +58,7 @@ class Annotations {
 		}
 
 		if ( 'publish' === $new_status
-			 && 'publish' !== $old_status ) {
+			&& 'publish' !== $old_status ) {
 			$site   = new Site();
 			$idsite = $site->get_current_matomo_site_id();
 

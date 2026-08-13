@@ -39,7 +39,7 @@ class Config extends \Piwik\ViewDataTable\Config
     private $evolutionGraphLinkable = \true;
     /**
      * Adds possibility to set html attributes on the sparklines title / headline.
-     * @var string
+     * @var array
      */
     public $title_attributes = array();
     /**
@@ -49,7 +49,7 @@ class Config extends \Piwik\ViewDataTable\Config
     /**
      * If supplied, this function is used to compute the evolution percent displayed next to non-comparison sparkline views.
      *
-     * The function is passed three parameters:
+     * The function is passed two parameters:
      * - an array mapping column names with column values ['column' => 123]
      * - an array of \Piwik\Plugin\Metrics objects available for the report - useful for formatting values
      *
@@ -185,7 +185,7 @@ class Config extends \Piwik\ViewDataTable\Config
      *
      * @param array $requestParamsForSparkline You need to at least set a module / action eg
      *                                         array('columns' => array('nb_visit'), 'module' => '', 'action' => '')
-     * @param int|float|string|array $value Either the metric value or an array of values.
+     * @param int|float|string|array $metricInfos Either the metric value or an array of values.
      * @param string|array $description Either one description or an array of descriptions. If an array, both
      *                                         $value and $description need the same amount of array entries.
      *                                         $description[0] should be the description for $value[0].

@@ -9,8 +9,6 @@
 namespace Piwik\Db;
 
 use Exception;
-/**
- */
 interface AdapterInterface extends \Piwik\Db\TransactionalDatabaseInterface
 {
     /**
@@ -52,7 +50,7 @@ interface AdapterInterface extends \Piwik\Db\TransactionalDatabaseInterface
      * Test error number
      *
      * @param Exception $e
-     * @param string $errno
+     * @param string|int $errno
      * @return bool
      */
     public function isErrNo($e, $errno);

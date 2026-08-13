@@ -89,6 +89,8 @@ abstract class ReportRenderer extends \Piwik\BaseFactory
     public abstract function sendToBrowserInline($filename);
     /**
      * Get rendered report
+     *
+     * @return string
      */
     public abstract function getRenderedReport();
     /**
@@ -103,7 +105,7 @@ abstract class ReportRenderer extends \Piwik\BaseFactory
     public abstract function renderFrontPage($reportTitle, $prettyDate, $description, $reportMetadata, $segment);
     /**
      * Render the provided report.
-     * Multiple calls to this method before calling outputRendering appends each report content.
+     * Multiple calls to this method before calling getRenderedReport appends each report content.
      *
      * @param array $processedReport @see API::getProcessedReport()
      */
@@ -209,7 +211,20 @@ abstract class ReportRenderer extends \Piwik\BaseFactory
         if ($evolution && !empty($reportMetadata['imageGraphEvolutionUrl'])) {
             $imageGraphUrl = $reportMetadata['imageGraphEvolutionUrl'];
         }
-        $requestGraph = $imageGraphUrl . '&outputType=' . API::GRAPH_OUTPUT_PHP . '&format=original&serialize=0' . '&filter_truncate=' . '&width=' . $width . '&height=' . $height . ($segment != null ? '&segment=' . urlencode($segment['definition']) : '');
+        $queryString = \Piwik\Url::getQueryStringFromUrl($imageGraphUrl);
+        if (!is_string($queryString) || $queryString === '') {
+            $queryString = $imageGraphUrl;
+        }
+        $requestGraph = \Piwik\UrlHelper::getArrayFromQueryString($queryString);
+        $requestGraph['outputType'] = API::GRAPH_OUTPUT_PHP;
+        $requestGraph['format'] = 'original';
+        $requestGraph['serialize'] = 0;
+        $requestGraph['filter_truncate'] = '';
+        $requestGraph['width'] = $width;
+        $requestGraph['height'] = $height;
+        if ($segment != null) {
+            $requestGraph['segment'] = urlencode($segment['definition']);
+        }
         $request = new Request($requestGraph);
         try {
             $imageGraph = $request->process();

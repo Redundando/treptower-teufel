@@ -40,6 +40,16 @@ window.jQuery(document).ready(function ($) {
     });
   }
 
+  // minimum requirements notice dismiss
+  if (typeof mtmMinimumRequirementsNoticeAjax !== 'undefined' && mtmMinimumRequirementsNoticeAjax.ajax_url) {
+    $(document).on( 'click', '#matomo-minimumrequirements .notice-dismiss', function () {
+      $.post(mtmMinimumRequirementsNoticeAjax.ajax_url, {
+        _ajax_nonce: mtmMinimumRequirementsNoticeAjax.nonce,
+        action: 'matomo_minimum_requirements_notice_dismissed',
+      });
+    });
+  }
+
   // scheduled task error dismiss
   if (typeof mtmScheduledTaskErrorAjax !== 'undefined' && mtmScheduledTaskErrorAjax.ajax_url) {
     $('body').on('click', '.matomo-cron-error .notice-dismiss', function (e) {
@@ -64,20 +74,38 @@ window.jQuery(document).ready(function ($) {
 
   // add a notification dot to menu items that need it (see WhatsNewNotification.php)
   if (typeof mtmUnseenWhatsNewNotifications !== 'undefined' && mtmUnseenWhatsNewNotifications.length) {
-      $('#toplevel_page_matomo a').each(function () {
-          var href = $(this).attr('href');
+    $('#toplevel_page_matomo a').each(function () {
+      var href = $(this).attr('href');
 
-          var m = href.match(/\?page=(.*?)$/);
-          var page = m && m[1];
-          if (!page) {
-              return;
-          }
+      var m = href.match(/\?page=(.*?)$/);
+      var page = m && m[1];
+      if (!page) {
+        return;
+      }
 
-          if (!mtmUnseenWhatsNewNotifications.includes(page)) {
-              return;
-          }
+      if (!mtmUnseenWhatsNewNotifications.includes(page)) {
+        return;
+      }
 
-          $(this).addClass('matomo-notification-dot');
-      });
+      $(this).addClass('matomo-notification-dot');
+    });
   }
+
+  // suggestion dismiss
+  if (typeof mtmDismissSuggestionAjax !== 'undefined' && mtmDismissSuggestionAjax.ajax_url) {
+    $('body').on('click', '.matomo-dismiss-suggestion', function (e) {
+      $.post(mtmDismissSuggestionAjax.ajax_url, {
+        _ajax_nonce: mtmDismissSuggestionAjax.nonce,
+        action: 'matomo_dismiss_suggestion',
+        suggestion: $(e.target).data('suggestion')
+      });
+
+      $(e.target).closest('.matomo-plugin-suggestion').remove();
+    });
+  }
+
+  // force external matomo menu links to load in a new tab
+  $('#toplevel_page_matomo span.dashicons-external').each(function () {
+    $(this).closest('a').attr('target', '_blank');
+  });
 });

@@ -25,15 +25,11 @@ class DataCollection
      *
      * array(
      *     '0' => array(
-     *         array(
-     *             '2012-01-01,2012-01-01' => array(...),
-     *             '2012-01-02,2012-01-02' => array(...),
-     *         )
+     *         '2012-01-01,2012-01-01' => array(...),
+     *         '2012-01-02,2012-01-02' => array(...),
      *     ),
      *     '1' => array(
-     *         array(
-     *             '2012-01-01,2012-01-01' => array(...),
-     *         )
+     *         '2012-01-01,2012-01-01' => array(...),
      *     )
      * )
      *
@@ -95,14 +91,12 @@ class DataCollection
     private $segment;
     private $isBuiltWithoutArchives = \true;
     /**
-     * Constructor.
-     *
      * @param array $dataNames @see $this->dataNames
      * @param string $dataType @see $this->dataType
      * @param array $sitesId @see $this->sitesId
      * @param \Piwik\Period[] $periods @see $this->periods
      * @param \Piwik\Segment $segment @see $this->segment
-     * @param array $defaultRow @see $this->defaultRow
+     * @param array|null $defaultRow @see $this->defaultRow
      */
     public function __construct($dataNames, $dataType, $sitesId, $periods, $segment, $defaultRow = null)
     {
@@ -147,7 +141,7 @@ class DataCollection
      * @param int           $idSite
      * @param string        $period eg, '2012-01-01,2012-01-31'
      * @param string        $name   eg 'nb_visits'
-     * @param string        $value  eg 5
+     * @param mixed         $value  eg 5, or a serialized blob string
      * @param array|null    $meta   Optional metadata to add to the row
      */
     public function set($idSite, $period, $name, $value, ?array $meta = null)
@@ -171,7 +165,7 @@ class DataCollection
      * @param int $idSite
      * @param string $period eg, '2012-01-01,2012-01-31'
      * @param string $name The metadata name.
-     * @param mixed $value The metadata name.
+     * @param mixed $value The metadata value.
      */
     public function addMetadata($idSite, $period, $name, $value)
     {

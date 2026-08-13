@@ -13,7 +13,7 @@ use Piwik\DataTable\Row;
 use Piwik\Segment;
 use Piwik\Site;
 /**
- * Creates a DataTable or Set instance based on an array
+ * Creates a DataTable or DataTable\Map instance based on an array
  * index created by DataCollection.
  *
  * This class is only used by DataCollection.
@@ -49,7 +49,7 @@ class DataTableFactory
      * The maximum number of subtable levels to create when creating an expanded
      * DataTable.
      *
-     * @var int
+     * @var int|null
      */
     private $maxSubtableDepth = null;
     /**
@@ -76,9 +76,6 @@ class DataTableFactory
     private $defaultRow;
     public const TABLE_METADATA_SITE_INDEX = 'site';
     public const TABLE_METADATA_PERIOD_INDEX = 'period';
-    /**
-     * Constructor.
-     */
     public function __construct($dataNames, $dataType, $sitesId, $periods, Segment $segment, $defaultRow)
     {
         $this->dataNames = $dataNames;
@@ -93,7 +90,6 @@ class DataTableFactory
      * Returns the ID of the site a table is related to based on the 'site' metadata entry,
      * or null if there is none.
      *
-     * @param DataTable $table
      * @return int|null
      */
     public static function getSiteIdFromMetadata(DataTable $table)
@@ -124,7 +120,7 @@ class DataTableFactory
      * Tells the factory instance to create a DataTable using a blob with the
      * supplied subtable ID.
      *
-     * @param int $idSubtable An in-database subtable ID.
+     * @param int|null $idSubtable An in-database subtable ID.
      * @throws \Exception
      */
     public function useSubtable($idSubtable)
@@ -139,12 +135,13 @@ class DataTableFactory
         return $this->dataType == 'numeric';
     }
     /**
-     * Creates a DataTable|Set instance using an index of
+     * Creates a DataTable|DataTable\Map instance using an index of
      * archive data.
      *
      * @param array $index @see DataCollection
      * @param array $resultIndices an array mapping metadata names with pretty metadata
      *                             labels.
+     * @param array|null $keyMetadata
      * @return DataTable|DataTable\Map
      */
     public function make($index, $resultIndices, $keyMetadata = null)
@@ -198,7 +195,7 @@ class DataTableFactory
         return $dataTable;
     }
     /**
-     * Creates a DataTable|Set instance using an array
+     * Creates a DataTable|DataTable\Map instance using an array
      * of blobs.
      *
      * If only one record is being queried, a single DataTable will
@@ -274,7 +271,7 @@ class DataTableFactory
         return $table;
     }
     /**
-     * Creates a Set from an array index.
+     * Creates a DataTable\Map from an array index.
      *
      * @param array $index @see DataCollection
      * @param array $resultIndices @see make
@@ -401,7 +398,7 @@ class DataTableFactory
         return $label;
     }
     /**
-     * @param $data
+     * @param array $data
      * @return DataTable\Simple
      */
     private function makeFromMetricsArray($data, $keyMetadata)
