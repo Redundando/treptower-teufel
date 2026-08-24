@@ -11,6 +11,7 @@ require_once __DIR__ . '/inc/calendar-shortcode.php';
 require_once __DIR__ . '/inc/blocks.php';
 require_once __DIR__ . '/inc/performance.php';
 require_once __DIR__ . '/inc/block-styles.php';
+require_once __DIR__ . '/inc/lightbox.php';
 
 KlohnKit\Setup\register();
 KlohnKit\Assets\register();
@@ -19,3 +20,4 @@ KlohnKit\Editor\register();
 KlohnKit\Blocks\register();
 KlohnKit\Performance\register();
 KlohnKit\BlockStyles\register();
+KlohnKit\Lightbox\register();
